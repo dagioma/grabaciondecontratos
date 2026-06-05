@@ -24,8 +24,7 @@
         body { 
             display: flex; height: 100vh; overflow: hidden; 
             background-image: url('https://www.ghibli.jp/gallery/howl050.jpg');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
             color: var(--text-main);
         }
 
@@ -38,41 +37,41 @@
         }
 
         /* --- SIDEBAR --- */
-        .sidebar { width: 90px; display: flex; flex-direction: column; align-items: center; padding: 25px 0; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.7); }
+        .sidebar { width: 90px; display: flex; flex-direction: column; align-items: center; padding: 25px 0; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.7); transition: 0.3s; }
         .brand-logo { width: 55px; height: 55px; border-radius: 18px; object-fit: cover; margin-bottom: 40px; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
         .nav-item { width: 55px; height: 55px; display: flex; justify-content: center; align-items: center; color: #cbd5e1; border-radius: 18px; margin-bottom: 20px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.5); transform: translateY(-3px); }
 
         /* --- MAIN LAYOUT --- */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .top-header { height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; border-bottom: 1px solid var(--glass-border); border-radius: 0 0 25px 25px; margin-bottom: 25px; }
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; height: 100%; overflow: hidden; }
+        .top-header { height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; border-bottom: 1px solid var(--glass-border); border-radius: 0 0 25px 25px; margin-bottom: 20px; flex-shrink: 0; }
         .header-title { font-size: 24px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-shrink: 0; }
 
         /* --- VIEWS --- */
-        .view-section { display: none; height: calc(100vh - 130px); overflow: hidden; padding: 0 30px 30px 30px; }
+        .view-section { display: none; flex: 1; overflow-y: auto; padding: 0 30px 30px 30px; }
         .view-section.active { display: block; }
 
         /* --- WORKSPACE GRID --- */
-        .workspace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; height: 100%; }
+        .workspace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; height: 100%; min-height: min-content; }
         .card { border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s;}
-        .card-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 14px; background: rgba(255,255,255,0.03); text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); }
-        .card-body { padding: 35px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; }
+        .card-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 14px; background: rgba(255,255,255,0.03); text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); flex-shrink: 0; }
+        .card-body { padding: 35px; flex: 1; display: flex; flex-direction: column; }
 
-        /* --- RECORDER UI (IZQUIERDA) --- */
+        /* --- RECORDER UI --- */
         .recorder-display { 
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, rgba(0,0,0,0.4) 100%); 
             border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; 
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.4);
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.4); padding: 20px;
         }
         
-        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; }
+        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; text-align: center; }
         .status-text.recording { color: white; background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulseText 1.5s infinite; }
         .status-text.paused { color: black; background: var(--warning); box-shadow: 0 0 15px var(--warning); }
         @keyframes pulseText { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        .timer-text { font-size: 85px; font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; }
+        .timer-text { font-size: 85px; font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; text-align: center; }
         
         .audio-wave { display: flex; justify-content: center; align-items: flex-end; gap: 8px; height: 80px; margin-bottom: 20px; opacity: 0.1; transition: 0.5s; filter: grayscale(1); }
         .audio-wave.active { opacity: 1; filter: grayscale(0); }
@@ -83,7 +82,7 @@
         @keyframes bounce { 0% { height: 15px; } 100% { height: 80px; } }
 
         .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; }
-        .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); }
+        .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); flex-shrink: 0; }
         .btn-round:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.1); }
         .btn-round:disabled { opacity: 0.3; cursor: not-allowed; transform: scale(1); }
         .btn-round svg { width: 35px; height: 35px; }
@@ -97,10 +96,10 @@
         .btn-stop { background: rgba(255,255,255,0.05); }
         .btn-stop:hover:not(:disabled) { background: white; color: black; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); }
 
-        /* --- DECORACIÓN Y GUARDADO (DERECHA) --- */
-        .decoration-container { flex: 1; display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
+        /* --- DECORACIÓN Y GUARDADO --- */
+        .decoration-container { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
         .magic-crystal { 
-            width: 180px; height: 180px; border-radius: 50%; object-fit: cover; 
+            width: 160px; height: 160px; border-radius: 50%; object-fit: cover; 
             border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3);
             box-shadow: 0 15px 35px rgba(0,0,0,0.5); transition: 0.5s;
             animation: float 6s ease-in-out infinite;
@@ -130,20 +129,67 @@
         .btn-save:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; }
 
         /* --- HISTORY TABLE --- */
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .history-table th { background: rgba(0,0,0,0.5); padding: 20px 30px; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); }
-        .history-table td { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 16px; font-weight: 600;}
+        .history-table-wrapper { overflow-x: auto; }
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 500px; }
+        .history-table th { background: rgba(0,0,0,0.5); padding: 20px; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); }
+        .history-table td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 15px; font-weight: 600;}
         .history-table tbody tr { transition: 0.2s; }
-        .history-table tbody tr:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
+        .history-table tbody tr:hover { background: rgba(255,255,255,0.05); }
 
         /* --- TOAST --- */
-        .toast { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 16px 35px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display: flex; align-items: center; gap: 12px; }
+        .toast { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 16px 35px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
         .toast.show { bottom: 50px; }
 
         svg { width: 24px; height: 24px; }
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        /* =========================================
+           MEDIA QUERIES (MODO CELULAR Y TABLET)
+           ========================================= */
+        @media (max-width: 900px) {
+            body { flex-direction: column-reverse; } /* Pasa el sidebar abajo */
+            
+            /* Sidebar a Nav Bar Inferior */
+            .sidebar { 
+                width: 100%; height: 75px; flex-direction: row; justify-content: space-evenly; 
+                padding: 0 20px; border-right: none; border-top: 1px solid var(--glass-border); 
+                border-radius: 25px 25px 0 0; z-index: 100; 
+            }
+            .brand-logo { display: none; } /* Ocultar logo para ahorrar espacio */
+            .nav-item { margin-bottom: 0; width: 50px; height: 50px; transform: none !important; }
+            
+            /* Main Layout */
+            .main-wrapper { height: calc(100vh - 75px); }
+            .top-header { padding: 15px 25px; height: auto; border-radius: 0 0 20px 20px; }
+            .header-title { font-size: 18px; }
+            .avatar { width: 40px; height: 40px; }
+            .view-section { padding: 0 15px 20px 15px; }
+            
+            /* Grilla pasa a 1 Columna Vertical */
+            .workspace-grid { grid-template-columns: 1fr; height: auto; gap: 20px; }
+            .card { overflow: visible; }
+            .card-body { padding: 25px 20px; }
+            
+            /* Ajustes de tamaño para celular */
+            .timer-text { font-size: 55px; }
+            .status-text { font-size: 13px; padding: 8px 15px; }
+            .btn-round { width: 65px; height: 65px; }
+            .btn-round svg { width: 28px; height: 28px; }
+            .magic-crystal { width: 120px; height: 120px; }
+            
+            /* Ondas más pequeñas */
+            .audio-wave { height: 50px; gap: 5px; margin-bottom: 10px; }
+            .bar { width: 6px; }
+            @keyframes bounce { 0% { height: 10px; } 100% { height: 50px; } }
+
+            /* Tabla Historial */
+            .history-table th, .history-table td { padding: 15px; font-size: 13px; }
+            
+            /* Toast más arriba para que no lo tape la barra de navegación */
+            .toast.show { bottom: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -162,7 +208,7 @@
         <header class="top-header glass-panel">
             <div class="header-title" id="top-title">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                VoiceVault ✦ Studio
+                VoiceVault
             </div>
             <div class="avatar">
                 <img src="https://www.ghibli.jp/gallery/howl012.jpg" alt="User" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
@@ -173,7 +219,7 @@
             <div class="workspace-grid">
                 
                 <div class="card glass-panel">
-                    <div class="card-header">Panel de Grabación Master</div>
+                    <div class="card-header">Grabación Master</div>
                     <div class="card-body">
                         <div class="recorder-display">
                             <div class="status-text" id="status-text">ESPERANDO INICIO</div>
@@ -187,13 +233,11 @@
                             <button class="btn-round btn-record" id="btn-record" onclick="startRecording()" title="Iniciar Grabación">
                                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
                             </button>
-
                             <button class="btn-round btn-pause" id="btn-pause" onclick="togglePause()" disabled title="Pausar / Reanudar">
                                 <svg id="icon-pause" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                 </svg>
                             </button>
-
                             <button class="btn-round btn-stop" id="btn-stop" onclick="stopRecording()" disabled title="Detener Grabación">
                                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
                             </button>
@@ -208,33 +252,35 @@
                             <img src="https://www.ghibli.jp/gallery/howl017.jpg" alt="Magic Crystal" class="magic-crystal" id="magic-crystal">
                         </div>
                         <label class="form-label">Nombre del Archivo</label>
-                        <input type="text" class="form-input" id="record-title" placeholder="Ej: ALVARADO PINEDO, FERNANDO" autocomplete="off">
-                        <button class="btn-save" id="btn-save" disabled onclick="saveRecordingData()">Extraer a Carpeta</button>
+                        <input type="text" class="form-input" id="record-title" placeholder="Ej: ALVARADO PINEDO" autocomplete="off">
+                        <button class="btn-save" id="btn-save" disabled onclick="saveRecordingData()">Guardar Audio</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="view-history" class="view-section">
-            <div class="card glass-panel" style="height: 100%;">
-                <div class="card-header">Archivos Locales Exportados</div>
+            <div class="card glass-panel" style="height: 100%; min-height: 400px;">
+                <div class="card-header">Archivos Locales</div>
                 <div class="card-body" style="padding: 0;">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Fecha de Creación</th>
-                                <th>Nombre del Archivo Guardado</th>
-                                <th style="text-align: right;">Duración Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-body"></tbody>
-                    </table>
+                    <div class="history-table-wrapper">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha de Creación</th>
+                                    <th>Nombre del Archivo Guardado</th>
+                                    <th style="text-align: right;">Duración Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="toast" class="toast">
-            <svg fill="currentColor" viewBox="0 0 20 20" style="color: var(--success);"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <svg fill="currentColor" viewBox="0 0 20 20" style="color: var(--success); flex-shrink: 0;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
             <span id="toast-msg">Operación Exitosa</span>
         </div>
     </div>
@@ -246,8 +292,8 @@
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
             document.getElementById('top-title').innerHTML = viewId === 'workspace' 
-                ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg> VoiceVault ✦ Studio' 
-                : '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Bóveda de Archivos';
+                ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg> VoiceVault' 
+                : '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Bóveda';
         }
 
         function showToast(msg) {
@@ -260,7 +306,7 @@
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
-        let isPaused = false; // Nuevo estado para la pausa
+        let isPaused = false;
         let timerInt;
         let sec = 0;
         let lastDuration = "";
@@ -272,8 +318,8 @@
         const elCrystal = document.getElementById('magic-crystal');
         
         const btnRecord = document.getElementById('btn-record');
-        const btnPause = document.getElementById('btn-pause'); // Botón Pausa
-        const iconPause = document.getElementById('icon-pause'); // Icono dentro del botón
+        const btnPause = document.getElementById('btn-pause');
+        const iconPause = document.getElementById('icon-pause');
         const btnStop = document.getElementById('btn-stop');
         const btnSave = document.getElementById('btn-save');
 
@@ -298,7 +344,6 @@
                 mediaRecorder.onstop = () => {
                     audioBlobFinal = new Blob(audioChunks, { type: 'audio/webm' });
                     btnSave.disabled = false;
-                    btnSave.innerHTML = "Extraer a Carpeta";
                     document.getElementById('record-title').focus();
                     showToast("Audio en memoria. Ponle un nombre y guárdalo.");
                 };
@@ -307,22 +352,20 @@
                 isRecording = true;
                 isPaused = false;
                 
-                // Configurar botones
                 btnRecord.disabled = true;
                 btnPause.disabled = false;
                 btnStop.disabled = false;
                 btnSave.disabled = true;
                 
-                updatePauseIcon(); // Asegurar que el icono sea el de "Pausa"
+                updatePauseIcon();
                 
-                // Actualizar UI
                 elStatus.textContent = "● GRABANDO EN VIVO";
                 elStatus.classList.remove('paused');
                 elStatus.classList.add('recording');
                 elWave.classList.add('active');
                 
                 elCrystal.classList.add('recording'); 
-                elCrystal.style.animationPlayState = 'running'; // Asegurar que gira
+                elCrystal.style.animationPlayState = 'running';
 
                 sec = 0; 
                 elTimer.textContent = "00:00:00";
@@ -337,31 +380,29 @@
             if (!isRecording) return;
 
             if (isPaused) {
-                // Reanudar Grabación
                 mediaRecorder.resume();
                 isPaused = false;
-                startTimer(); // Continuar el cronómetro
+                startTimer(); 
 
                 elStatus.textContent = "● GRABANDO EN VIVO";
                 elStatus.classList.remove('paused');
                 elStatus.classList.add('recording');
                 
                 elWave.classList.add('active');
-                elCrystal.style.animationPlayState = 'running'; // Reanudar giro del cristal
+                elCrystal.style.animationPlayState = 'running'; 
                 
                 updatePauseIcon();
             } else {
-                // Pausar Grabación
                 mediaRecorder.pause();
                 isPaused = true;
-                clearInterval(timerInt); // Detener el cronómetro (mantiene los segundos intactos)
+                clearInterval(timerInt);
 
                 elStatus.textContent = "⏸ EN PAUSA";
                 elStatus.classList.remove('recording');
                 elStatus.classList.add('paused');
                 
                 elWave.classList.remove('active');
-                elCrystal.style.animationPlayState = 'paused'; // Congelar giro del cristal
+                elCrystal.style.animationPlayState = 'paused'; 
                 
                 updatePauseIcon();
             }
@@ -369,10 +410,8 @@
 
         function updatePauseIcon() {
             if (isPaused) {
-                // Cambiar icono a Play
                 iconPause.innerHTML = '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>';
             } else {
-                // Cambiar icono a Pause
                 iconPause.innerHTML = '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
             }
         }
@@ -391,12 +430,12 @@
             btnPause.disabled = true;
             btnStop.disabled = true;
             
-            elStatus.textContent = "AUDIO DETENIDO / LISTO PARA EXPORTAR";
+            elStatus.textContent = "AUDIO DETENIDO / EXPORTA";
             elStatus.classList.remove('recording', 'paused');
             elWave.classList.remove('active');
             
             elCrystal.classList.remove('recording'); 
-            elCrystal.style.animationPlayState = 'running'; // Resetear flotación normal
+            elCrystal.style.animationPlayState = 'running'; 
             
             updatePauseIcon();
         }
@@ -429,8 +468,8 @@
                 const tbody = document.getElementById('history-body');
                 const row = `<tr>
                     <td style="color: var(--text-muted); font-family: monospace;">${dateStr}</td>
-                    <td style="color: white; font-weight: 800; font-size: 18px;">${title}</td>
-                    <td style="font-family: monospace; font-size: 18px; color: var(--primary); text-align: right;">${lastDuration}</td>
+                    <td style="color: white; font-weight: 800; font-size: 16px;">${title}</td>
+                    <td style="font-family: monospace; font-size: 16px; color: var(--primary); text-align: right;">${lastDuration}</td>
                 </tr>`;
                 tbody.innerHTML = row + tbody.innerHTML; 
 
@@ -440,7 +479,6 @@
                 elStatus.textContent = "ESPERANDO INICIO";
                 document.getElementById('record-title').value = '';
                 btnSave.disabled = true;
-                btnSave.innerHTML = "Extraer a Carpeta";
                 audioBlobFinal = null; 
 
             } catch (err) {
