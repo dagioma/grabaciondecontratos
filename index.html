@@ -53,27 +53,29 @@
         .view-section.active { display: block; }
 
         /* --- WORKSPACE GRID --- */
-        .workspace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; height: 100%; min-height: min-content; }
-        .card { border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s;}
+        .workspace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; min-height: 100%; }
+        .card { border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s; height: 100%; min-height: 550px; }
         .card-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 14px; background: rgba(255,255,255,0.03); text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); flex-shrink: 0; }
-        .card-body { padding: 35px; flex: 1; display: flex; flex-direction: column; }
+        
+        /* CORRECCIÓN DE DESPLAZAMIENTO AQUÍ */
+        .card-body { padding: 35px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; justify-content: space-between; }
 
         /* --- RECORDER UI --- */
         .recorder-display { 
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
             background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, rgba(0,0,0,0.4) 100%); 
             border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; 
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.4); padding: 20px;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.4); padding: 30px 20px; min-height: 250px;
         }
         
-        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; text-align: center; }
+        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; text-align: center; flex-shrink: 0; }
         .status-text.recording { color: white; background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulseText 1.5s infinite; }
         .status-text.paused { color: black; background: var(--warning); box-shadow: 0 0 15px var(--warning); }
         @keyframes pulseText { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        .timer-text { font-size: 85px; font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; text-align: center; }
+        .timer-text { font-size: clamp(50px, 6vw, 85px); font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; text-align: center; flex-shrink: 0; }
         
-        .audio-wave { display: flex; justify-content: center; align-items: flex-end; gap: 8px; height: 80px; margin-bottom: 20px; opacity: 0.1; transition: 0.5s; filter: grayscale(1); }
+        .audio-wave { display: flex; justify-content: center; align-items: flex-end; gap: 8px; height: 80px; margin-bottom: 10px; opacity: 0.1; transition: 0.5s; filter: grayscale(1); flex-shrink: 0; }
         .audio-wave.active { opacity: 1; filter: grayscale(0); }
         .bar { width: 10px; background: linear-gradient(180deg, #ec4899 0%, var(--primary) 100%); border-radius: 5px; height: 15px; transition: height 0.1s ease; }
         
@@ -81,7 +83,8 @@
         .audio-wave.active .bar:nth-child(1) { animation-delay: 0.0s; } .audio-wave.active .bar:nth-child(2) { animation-delay: 0.2s; } .audio-wave.active .bar:nth-child(3) { animation-delay: 0.4s; } .audio-wave.active .bar:nth-child(4) { animation-delay: 0.1s; } .audio-wave.active .bar:nth-child(5) { animation-delay: 0.3s; } .audio-wave.active .bar:nth-child(6) { animation-delay: 0.5s; } .audio-wave.active .bar:nth-child(7) { animation-delay: 0.2s; }
         @keyframes bounce { 0% { height: 15px; } 100% { height: 80px; } }
 
-        .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; }
+        /* CORRECCIÓN DE BOTONES AQUÍ */
+        .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; flex-shrink: 0; padding-bottom: 10px; }
         .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); flex-shrink: 0; }
         .btn-round:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.1); }
         .btn-round:disabled { opacity: 0.3; cursor: not-allowed; transform: scale(1); }
@@ -97,7 +100,7 @@
         .btn-stop:hover:not(:disabled) { background: white; color: black; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); }
 
         /* --- DECORACIÓN Y GUARDADO --- */
-        .decoration-container { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
+        .decoration-container { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; flex-shrink: 0; }
         .magic-crystal { 
             width: 160px; height: 160px; border-radius: 50%; object-fit: cover; 
             border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3);
@@ -117,21 +120,21 @@
         .form-input { 
             width: 100%; padding: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 18px; 
             font-size: 18px; font-weight: 700; background: rgba(0,0,0,0.4); color: white; margin-bottom: 25px; 
-            outline: none; transition: 0.3s; text-align: center; letter-spacing: 1px;
+            outline: none; transition: 0.3s; text-align: center; letter-spacing: 1px; flex-shrink: 0;
         }
         .form-input:focus { border-color: var(--primary); box-shadow: 0 0 25px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); transform: scale(1.02); }
         
         .btn-save { 
             width: 100%; background: linear-gradient(135deg, var(--primary), #ec4899); color: white; border: none; 
-            padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase;
+            padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0;
         } 
         .btn-save:hover:not(:disabled) { box-shadow: 0 15px 30px rgba(139, 92, 246, 0.5); transform: translateY(-3px); }
         .btn-save:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; }
 
         /* --- HISTORY TABLE --- */
-        .history-table-wrapper { overflow-x: auto; }
+        .history-table-wrapper { overflow-x: auto; height: 100%; }
         .history-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 500px; }
-        .history-table th { background: rgba(0,0,0,0.5); padding: 20px; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); }
+        .history-table th { background: rgba(0,0,0,0.5); padding: 20px; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 5; }
         .history-table td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 15px; font-weight: 600;}
         .history-table tbody tr { transition: 0.2s; }
         .history-table tbody tr:hover { background: rgba(255,255,255,0.05); }
@@ -149,51 +152,44 @@
            MEDIA QUERIES (MODO CELULAR Y TABLET)
            ========================================= */
         @media (max-width: 900px) {
-            body { flex-direction: column-reverse; } /* Pasa el sidebar abajo */
+            body { flex-direction: column-reverse; } 
             
-            /* Sidebar a Nav Bar Inferior */
             .sidebar { 
                 width: 100%; height: 75px; flex-direction: row; justify-content: space-evenly; 
                 padding: 0 20px; border-right: none; border-top: 1px solid var(--glass-border); 
                 border-radius: 25px 25px 0 0; z-index: 100; 
             }
-            .brand-logo { display: none; } /* Ocultar logo para ahorrar espacio */
+            .brand-logo { display: none; } 
             .nav-item { margin-bottom: 0; width: 50px; height: 50px; transform: none !important; }
             
-            /* Main Layout */
             .main-wrapper { height: calc(100vh - 75px); }
             .top-header { padding: 15px 25px; height: auto; border-radius: 0 0 20px 20px; }
             .header-title { font-size: 18px; }
             .avatar { width: 40px; height: 40px; }
             .view-section { padding: 0 15px 20px 15px; }
             
-            /* Grilla pasa a 1 Columna Vertical */
-            .workspace-grid { grid-template-columns: 1fr; height: auto; gap: 20px; }
-            .card { overflow: visible; }
+            .workspace-grid { grid-template-columns: 1fr; height: auto; gap: 20px; min-height: min-content; }
+            .card { min-height: min-content; }
             .card-body { padding: 25px 20px; }
             
-            /* Ajustes de tamaño para celular */
             .timer-text { font-size: 55px; }
             .status-text { font-size: 13px; padding: 8px 15px; }
             .btn-round { width: 65px; height: 65px; }
             .btn-round svg { width: 28px; height: 28px; }
             .magic-crystal { width: 120px; height: 120px; }
             
-            /* Ondas más pequeñas */
             .audio-wave { height: 50px; gap: 5px; margin-bottom: 10px; }
             .bar { width: 6px; }
             @keyframes bounce { 0% { height: 10px; } 100% { height: 50px; } }
 
-            /* Tabla Historial */
             .history-table th, .history-table td { padding: 15px; font-size: 13px; }
-            
-            /* Toast más arriba para que no lo tape la barra de navegación */
             .toast.show { bottom: 20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- SIDEBAR / BOTTOM NAV -->
     <div class="sidebar glass-panel">
         <img src="https://www.ghibli.jp/gallery/howl014.jpg" alt="Logo" class="brand-logo">
         <div class="nav-item active" onclick="switchView('workspace', this)" title="Grabadora">
@@ -204,6 +200,7 @@
         </div>
     </div>
 
+    <!-- MAIN APP -->
     <div class="main-wrapper">
         <header class="top-header glass-panel">
             <div class="header-title" id="top-title">
@@ -215,9 +212,11 @@
             </div>
         </header>
 
+        <!-- VIEW: WORKSPACE -->
         <div id="view-workspace" class="view-section active">
             <div class="workspace-grid">
                 
+                <!-- PANEL GRABADOR -->
                 <div class="card glass-panel">
                     <div class="card-header">Grabación Master</div>
                     <div class="card-body">
@@ -245,6 +244,7 @@
                     </div>
                 </div>
 
+                <!-- PANEL EXPORTAR -->
                 <div class="card glass-panel">
                     <div class="card-header">Exportar Archivo</div>
                     <div class="card-body" style="justify-content: center;">
@@ -259,6 +259,7 @@
             </div>
         </div>
 
+        <!-- VIEW: HISTORIAL -->
         <div id="view-history" class="view-section">
             <div class="card glass-panel" style="height: 100%; min-height: 400px;">
                 <div class="card-header">Archivos Locales</div>
