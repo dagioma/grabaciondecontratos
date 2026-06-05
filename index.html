@@ -12,6 +12,7 @@
             --primary-hover: #7c3aed;
             --success: #10b981; 
             --danger: #f43f5e; 
+            --warning: #fbbf24;
             --glass-bg: rgba(15, 23, 42, 0.55);
             --glass-border: rgba(255, 255, 255, 0.15);
             --text-main: #f8fafc;
@@ -22,7 +23,6 @@
         
         body { 
             display: flex; height: 100vh; overflow: hidden; 
-            /* Fondo Ghibli - Habitación Mágica */
             background-image: url('https://www.ghibli.jp/gallery/howl050.jpg');
             background-size: cover;
             background-position: center;
@@ -67,8 +67,9 @@
             box-shadow: inset 0 0 60px rgba(0,0,0,0.4);
         }
         
-        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; }
+        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; }
         .status-text.recording { color: white; background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulseText 1.5s infinite; }
+        .status-text.paused { color: black; background: var(--warning); box-shadow: 0 0 15px var(--warning); }
         @keyframes pulseText { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         .timer-text { font-size: 85px; font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; }
@@ -81,14 +82,18 @@
         .audio-wave.active .bar:nth-child(1) { animation-delay: 0.0s; } .audio-wave.active .bar:nth-child(2) { animation-delay: 0.2s; } .audio-wave.active .bar:nth-child(3) { animation-delay: 0.4s; } .audio-wave.active .bar:nth-child(4) { animation-delay: 0.1s; } .audio-wave.active .bar:nth-child(5) { animation-delay: 0.3s; } .audio-wave.active .bar:nth-child(6) { animation-delay: 0.5s; } .audio-wave.active .bar:nth-child(7) { animation-delay: 0.2s; }
         @keyframes bounce { 0% { height: 15px; } 100% { height: 80px; } }
 
-        .controls-row { display: flex; gap: 25px; justify-content: center; }
-        .btn-round { width: 90px; height: 90px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); }
+        .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; }
+        .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); }
         .btn-round:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.1); }
         .btn-round:disabled { opacity: 0.3; cursor: not-allowed; transform: scale(1); }
-        .btn-round svg { width: 40px; height: 40px; }
+        .btn-round svg { width: 35px; height: 35px; }
 
         .btn-record { background: rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.5); color: var(--danger); }
         .btn-record:hover:not(:disabled) { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 10px 25px rgba(244, 63, 94, 0.5); }
+        
+        .btn-pause { background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); color: var(--warning); }
+        .btn-pause:hover:not(:disabled) { background: var(--warning); color: black; border-color: var(--warning); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.5); }
+
         .btn-stop { background: rgba(255,255,255,0.05); }
         .btn-stop:hover:not(:disabled) { background: white; color: black; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); }
 
@@ -167,7 +172,6 @@
         <div id="view-workspace" class="view-section active">
             <div class="workspace-grid">
                 
-                <!-- PANEL GRABADOR (IZQUIERDA) -->
                 <div class="card glass-panel">
                     <div class="card-header">Panel de Grabación Master</div>
                     <div class="card-body">
@@ -183,6 +187,13 @@
                             <button class="btn-round btn-record" id="btn-record" onclick="startRecording()" title="Iniciar Grabación">
                                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
                             </button>
+
+                            <button class="btn-round btn-pause" id="btn-pause" onclick="togglePause()" disabled title="Pausar / Reanudar">
+                                <svg id="icon-pause" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+
                             <button class="btn-round btn-stop" id="btn-stop" onclick="stopRecording()" disabled title="Detener Grabación">
                                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
                             </button>
@@ -190,19 +201,14 @@
                     </div>
                 </div>
 
-                <!-- PANEL GUARDADO Y DECORACIÓN (DERECHA) -->
                 <div class="card glass-panel">
                     <div class="card-header">Exportar Archivo</div>
                     <div class="card-body" style="justify-content: center;">
-                        
-                        <!-- Imagen Decorativa (Cristal) -->
                         <div class="decoration-container">
                             <img src="https://www.ghibli.jp/gallery/howl017.jpg" alt="Magic Crystal" class="magic-crystal" id="magic-crystal">
                         </div>
-
                         <label class="form-label">Nombre del Archivo</label>
                         <input type="text" class="form-input" id="record-title" placeholder="Ej: ALVARADO PINEDO, FERNANDO" autocomplete="off">
-                        
                         <button class="btn-save" id="btn-save" disabled onclick="saveRecordingData()">Extraer a Carpeta</button>
                     </div>
                 </div>
@@ -254,6 +260,7 @@
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
+        let isPaused = false; // Nuevo estado para la pausa
         let timerInt;
         let sec = 0;
         let lastDuration = "";
@@ -263,9 +270,22 @@
         const elWave = document.getElementById('audio-wave');
         const elStatus = document.getElementById('status-text');
         const elCrystal = document.getElementById('magic-crystal');
+        
         const btnRecord = document.getElementById('btn-record');
+        const btnPause = document.getElementById('btn-pause'); // Botón Pausa
+        const iconPause = document.getElementById('icon-pause'); // Icono dentro del botón
         const btnStop = document.getElementById('btn-stop');
         const btnSave = document.getElementById('btn-save');
+
+        function startTimer() {
+            timerInt = setInterval(() => {
+                sec++;
+                const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+                const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+                const s = String(sec % 60).padStart(2, '0');
+                elTimer.textContent = `${h}:${m}:${s}`;
+            }, 1000);
+        }
 
         async function startRecording() {
             try {
@@ -285,26 +305,75 @@
 
                 mediaRecorder.start();
                 isRecording = true;
+                isPaused = false;
+                
+                // Configurar botones
                 btnRecord.disabled = true;
+                btnPause.disabled = false;
                 btnStop.disabled = false;
                 btnSave.disabled = true;
                 
+                updatePauseIcon(); // Asegurar que el icono sea el de "Pausa"
+                
+                // Actualizar UI
                 elStatus.textContent = "● GRABANDO EN VIVO";
+                elStatus.classList.remove('paused');
                 elStatus.classList.add('recording');
                 elWave.classList.add('active');
-                elCrystal.classList.add('recording'); // Activa la animación del cristal
+                
+                elCrystal.classList.add('recording'); 
+                elCrystal.style.animationPlayState = 'running'; // Asegurar que gira
 
-                sec = 0; elTimer.textContent = "00:00:00";
-                timerInt = setInterval(() => {
-                    sec++;
-                    const h = String(Math.floor(sec / 3600)).padStart(2, '0');
-                    const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
-                    const s = String(sec % 60).padStart(2, '0');
-                    elTimer.textContent = `${h}:${m}:${s}`;
-                }, 1000);
+                sec = 0; 
+                elTimer.textContent = "00:00:00";
+                startTimer();
 
             } catch (err) {
                 alert("Permite el acceso al micrófono en tu navegador para continuar.");
+            }
+        }
+
+        function togglePause() {
+            if (!isRecording) return;
+
+            if (isPaused) {
+                // Reanudar Grabación
+                mediaRecorder.resume();
+                isPaused = false;
+                startTimer(); // Continuar el cronómetro
+
+                elStatus.textContent = "● GRABANDO EN VIVO";
+                elStatus.classList.remove('paused');
+                elStatus.classList.add('recording');
+                
+                elWave.classList.add('active');
+                elCrystal.style.animationPlayState = 'running'; // Reanudar giro del cristal
+                
+                updatePauseIcon();
+            } else {
+                // Pausar Grabación
+                mediaRecorder.pause();
+                isPaused = true;
+                clearInterval(timerInt); // Detener el cronómetro (mantiene los segundos intactos)
+
+                elStatus.textContent = "⏸ EN PAUSA";
+                elStatus.classList.remove('recording');
+                elStatus.classList.add('paused');
+                
+                elWave.classList.remove('active');
+                elCrystal.style.animationPlayState = 'paused'; // Congelar giro del cristal
+                
+                updatePauseIcon();
+            }
+        }
+
+        function updatePauseIcon() {
+            if (isPaused) {
+                // Cambiar icono a Play
+                iconPause.innerHTML = '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>';
+            } else {
+                // Cambiar icono a Pause
+                iconPause.innerHTML = '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
             }
         }
 
@@ -312,17 +381,24 @@
             if(!isRecording) return;
             mediaRecorder.stop();
             mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            
             clearInterval(timerInt);
             lastDuration = elTimer.textContent;
             isRecording = false;
+            isPaused = false;
 
             btnRecord.disabled = false;
+            btnPause.disabled = true;
             btnStop.disabled = true;
             
-            elStatus.textContent = "AUDIO PAUSADO / LISTO PARA EXPORTAR";
-            elStatus.classList.remove('recording');
+            elStatus.textContent = "AUDIO DETENIDO / LISTO PARA EXPORTAR";
+            elStatus.classList.remove('recording', 'paused');
             elWave.classList.remove('active');
-            elCrystal.classList.remove('recording'); // Detiene el giro del cristal
+            
+            elCrystal.classList.remove('recording'); 
+            elCrystal.style.animationPlayState = 'running'; // Resetear flotación normal
+            
+            updatePauseIcon();
         }
 
         async function saveRecordingData() {
