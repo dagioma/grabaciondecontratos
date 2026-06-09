@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interconexiones 360</title>
+    <title>Interconexiones 360 - CRM</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
@@ -13,7 +13,7 @@
             --success: #10b981; 
             --danger: #f43f5e; 
             --warning: #fbbf24;
-            --glass-bg: rgba(15, 23, 42, 0.55);
+            --glass-bg: rgba(15, 23, 42, 0.65);
             --glass-border: rgba(255, 255, 255, 0.15);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -36,11 +36,42 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
+        /* --- LOGIN OVERLAY --- */
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi8SdFXpruAYwcPHle4dePGCzCSWtVKurbKg&s');
+            background-size: cover; background-position: center;
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .login-overlay::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+        .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        .login-box {
+            position: relative; z-index: 1001; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            padding: 50px 40px; border-radius: 30px; text-align: center;
+            width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .login-box img { width: 80px; height: 80px; border-radius: 20px; margin-bottom: 20px; border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
+        .login-box h2 { color: white; margin-bottom: 5px; font-weight: 800; font-size: 26px; letter-spacing: 1px; }
+        .login-box p { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; font-weight: 600; }
+        .login-input { width: 100%; padding: 18px; border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; font-size: 16px; font-weight: 700; background: rgba(0,0,0,0.4); color: white; margin-bottom: 25px; outline: none; transition: 0.3s; text-align: center; }
+        .login-input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); }
+
         /* --- SIDEBAR --- */
-        .sidebar { width: 90px; display: flex; flex-direction: column; align-items: center; padding: 25px 0; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.7); transition: 0.3s; }
-        .brand-logo { width: 55px; height: 55px; border-radius: 18px; object-fit: cover; margin-bottom: 40px; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
-        .nav-item { width: 55px; height: 55px; display: flex; justify-content: center; align-items: center; color: #cbd5e1; border-radius: 18px; margin-bottom: 20px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.5); transform: translateY(-3px); }
+        .sidebar { width: 280px; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.7); transition: 0.3s; }
+        .brand-logo { width: 60px; height: 60px; border-radius: 18px; object-fit: cover; margin-bottom: 30px; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+        
+        .agent-profile { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 30px; }
+        .agent-profile h3 { font-size: 16px; color: white; font-weight: 800; margin-bottom: 5px; word-break: break-word;}
+        .agent-profile p { font-size: 12px; color: var(--success); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; }
+        .btn-logout { background: rgba(244, 63, 94, 0.2); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; }
+        .btn-logout:hover { background: var(--danger); color: white; box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4); }
+
+        .nav-menu { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .nav-item { width: 100%; padding: 15px 20px; display: flex; align-items: center; gap: 15px; color: #cbd5e1; border-radius: 15px; cursor: pointer; transition: 0.3s; font-weight: 700; font-size: 14px; }
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4); transform: translateX(5px); }
 
         /* --- MAIN LAYOUT --- */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; height: 100%; overflow: hidden; }
@@ -50,15 +81,20 @@
 
         /* --- VIEWS --- */
         .view-section { display: none; flex: 1; overflow-y: auto; padding: 0 30px 30px 30px; }
-        .view-section.active { display: block; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- WORKSPACE GRID --- */
         .workspace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; min-height: 100%; }
         .card { border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s; height: 100%; min-height: 550px; }
-        .card-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 14px; background: rgba(255,255,255,0.03); text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); flex-shrink: 0; }
-        
-        /* CORRECCIÓN DE DESPLAZAMIENTO AQUÍ */
+        .card-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 14px; background: rgba(255,255,255,0.03); text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
         .card-body { padding: 35px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; justify-content: space-between; }
+
+        /* --- BUSCADOR --- */
+        .search-box { position: relative; width: 100%; max-width: 350px; }
+        .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: white; font-size: 14px; outline: none; transition: 0.3s; font-weight: 600;}
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); background: rgba(0,0,0,0.6); }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
 
         /* --- RECORDER UI --- */
         .recorder-display { 
@@ -71,8 +107,7 @@
         .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; text-align: center; flex-shrink: 0; }
         .status-text.recording { color: white; background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulseText 1.5s infinite; }
         .status-text.paused { color: black; background: var(--warning); box-shadow: 0 0 15px var(--warning); }
-        @keyframes pulseText { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
+        
         .timer-text { font-size: clamp(50px, 6vw, 85px); font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; text-align: center; flex-shrink: 0; }
         
         .audio-wave { display: flex; justify-content: center; align-items: flex-end; gap: 8px; height: 80px; margin-bottom: 10px; opacity: 0.1; transition: 0.5s; filter: grayscale(1); flex-shrink: 0; }
@@ -83,7 +118,6 @@
         .audio-wave.active .bar:nth-child(1) { animation-delay: 0.0s; } .audio-wave.active .bar:nth-child(2) { animation-delay: 0.2s; } .audio-wave.active .bar:nth-child(3) { animation-delay: 0.4s; } .audio-wave.active .bar:nth-child(4) { animation-delay: 0.1s; } .audio-wave.active .bar:nth-child(5) { animation-delay: 0.3s; } .audio-wave.active .bar:nth-child(6) { animation-delay: 0.5s; } .audio-wave.active .bar:nth-child(7) { animation-delay: 0.2s; }
         @keyframes bounce { 0% { height: 15px; } 100% { height: 80px; } }
 
-        /* CORRECCIÓN DE BOTONES AQUÍ */
         .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; flex-shrink: 0; padding-bottom: 10px; }
         .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); flex-shrink: 0; }
         .btn-round:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.1); }
@@ -92,52 +126,36 @@
 
         .btn-record { background: rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.5); color: var(--danger); }
         .btn-record:hover:not(:disabled) { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 10px 25px rgba(244, 63, 94, 0.5); }
-        
         .btn-pause { background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); color: var(--warning); }
         .btn-pause:hover:not(:disabled) { background: var(--warning); color: black; border-color: var(--warning); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.5); }
-
         .btn-stop { background: rgba(255,255,255,0.05); }
         .btn-stop:hover:not(:disabled) { background: white; color: black; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); }
 
         /* --- DECORACIÓN Y GUARDADO --- */
         .decoration-container { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; flex-shrink: 0; }
-        .magic-crystal { 
-            width: 160px; height: 160px; border-radius: 50%; object-fit: cover; 
-            border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5); transition: 0.5s;
-            animation: float 6s ease-in-out infinite;
-        }
-        .magic-crystal.recording {
-            border-color: var(--primary);
-            box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), inset 0 0 20px rgba(139, 92, 246, 0.4);
-            animation: spin 10s linear infinite;
-        }
+        .magic-crystal { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.5); transition: 0.5s; animation: float 6s ease-in-out infinite; }
+        .magic-crystal.recording { border-color: var(--primary); box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), inset 0 0 20px rgba(139, 92, 246, 0.4); animation: spin 10s linear infinite; }
 
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .form-label { font-size: 12px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
-        .form-input { 
-            width: 100%; padding: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 18px; 
-            font-size: 18px; font-weight: 700; background: rgba(0,0,0,0.4); color: white; margin-bottom: 25px; 
-            outline: none; transition: 0.3s; text-align: center; letter-spacing: 1px; flex-shrink: 0;
-        }
+        .form-input { width: 100%; padding: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 18px; font-size: 18px; font-weight: 700; background: rgba(0,0,0,0.4); color: white; margin-bottom: 25px; outline: none; transition: 0.3s; text-align: center; letter-spacing: 1px; flex-shrink: 0; }
         .form-input:focus { border-color: var(--primary); box-shadow: 0 0 25px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); transform: scale(1.02); }
         
-        .btn-save { 
-            width: 100%; background: linear-gradient(135deg, var(--primary), #ec4899); color: white; border: none; 
-            padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0;
-        } 
+        .btn-save { width: 100%; background: linear-gradient(135deg, var(--primary), #ec4899); color: white; border: none; padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; } 
         .btn-save:hover:not(:disabled) { box-shadow: 0 15px 30px rgba(139, 92, 246, 0.5); transform: translateY(-3px); }
         .btn-save:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; }
 
         /* --- HISTORY TABLE --- */
         .history-table-wrapper { overflow-x: auto; height: 100%; }
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 500px; }
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
         .history-table th { background: rgba(0,0,0,0.5); padding: 20px; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 5; }
         .history-table td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 15px; font-weight: 600;}
         .history-table tbody tr { transition: 0.2s; }
         .history-table tbody tr:hover { background: rgba(255,255,255,0.05); }
+
+        .agent-tag { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; letter-spacing: 1px; border: 1px solid rgba(139, 92, 246, 0.3); }
 
         /* --- TOAST --- */
         .toast { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 16px 35px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
@@ -149,20 +167,22 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
         /* =========================================
-           MEDIA QUERIES (MODO CELULAR Y TABLET)
+           MEDIA QUERIES
            ========================================= */
         @media (max-width: 900px) {
             body { flex-direction: column-reverse; } 
             
             .sidebar { 
-                width: 100%; height: 75px; flex-direction: row; justify-content: space-evenly; 
-                padding: 0 20px; border-right: none; border-top: 1px solid var(--glass-border); 
+                width: 100%; height: 80px; flex-direction: row; justify-content: space-evenly; 
+                padding: 0 10px; border-right: none; border-top: 1px solid var(--glass-border); 
                 border-radius: 25px 25px 0 0; z-index: 100; 
             }
-            .brand-logo { display: none; } 
-            .nav-item { margin-bottom: 0; width: 50px; height: 50px; transform: none !important; }
+            .brand-logo, .agent-profile { display: none; } 
+            .nav-menu { flex-direction: row; justify-content: space-around; }
+            .nav-item { margin-bottom: 0; width: auto; padding: 10px 15px; }
+            .nav-item span { display: none; }
             
-            .main-wrapper { height: calc(100vh - 75px); }
+            .main-wrapper { height: calc(100vh - 80px); }
             .top-header { padding: 15px 25px; height: auto; border-radius: 0 0 20px 20px; }
             .header-title { font-size: 18px; }
             .avatar { width: 40px; height: 40px; }
@@ -172,35 +192,46 @@
             .card { min-height: min-content; }
             .card-body { padding: 25px 20px; }
             
-            .timer-text { font-size: 55px; }
-            .status-text { font-size: 13px; padding: 8px 15px; }
-            .btn-round { width: 65px; height: 65px; }
-            .btn-round svg { width: 28px; height: 28px; }
-            .magic-crystal { width: 120px; height: 120px; }
-            
-            .audio-wave { height: 50px; gap: 5px; margin-bottom: 10px; }
-            .bar { width: 6px; }
-            @keyframes bounce { 0% { height: 10px; } 100% { height: 50px; } }
-
+            .search-box { max-width: 100%; }
             .history-table th, .history-table td { padding: 15px; font-size: 13px; }
-            .toast.show { bottom: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR / BOTTOM NAV -->
-    <div class="sidebar glass-panel">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9DKXaE2EGzHWqcLHNjIhaUSF1mz1hYh3NuQ&s" alt="Logo" class="brand-logo">
-        <div class="nav-item active" onclick="switchView('workspace', this)" title="Grabadora">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        </div>
-        <div class="nav-item" onclick="switchView('history', this)" title="Historial de Archivos">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-box">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9DKXaE2EGzHWqcLHNjIhaUSF1mz1hYh3NuQ&s" alt="Logo">
+            <h2>Acceso al Sistema</h2>
+            <p>Identifícate para iniciar tu jornada operativa</p>
+            
+            <input type="text" id="agent-input" class="login-input" placeholder="Ej: PEDRO PEREZ" autocomplete="off" onkeypress="if(event.key === 'Enter') loginAgent()">
+            
+            <button class="btn-save" onclick="loginAgent()">Ingresar al Workspace</button>
         </div>
     </div>
 
-    <!-- MAIN APP -->
+    <div class="sidebar glass-panel">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9DKXaE2EGzHWqcLHNjIhaUSF1mz1hYh3NuQ&s" alt="Logo" class="brand-logo">
+        
+        <div class="agent-profile">
+            <h3 id="display-agent-name">BackOffice</h3>
+            <p>Estado: Activo</p>
+            <button class="btn-logout" onclick="logoutAgent()">Cerrar Sesión</button>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchView('workspace', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                <span>Grabadora Web</span>
+            </div>
+            <div class="nav-item" onclick="switchView('history', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span>Auditoría de Archivos</span>
+            </div>
+        </div>
+    </div>
+
     <div class="main-wrapper">
         <header class="top-header glass-panel">
             <div class="header-title" id="top-title">
@@ -212,13 +243,11 @@
             </div>
         </header>
 
-        <!-- VIEW: WORKSPACE -->
         <div id="view-workspace" class="view-section active">
             <div class="workspace-grid">
                 
-                <!-- PANEL GRABADOR -->
                 <div class="card glass-panel">
-                    <div class="card-header">Grabación Master</div>
+                    <div class="card-header">Terminal de Grabación</div>
                     <div class="card-body">
                         <div class="recorder-display">
                             <div class="status-text" id="status-text">ESPERANDO INICIO</div>
@@ -244,36 +273,44 @@
                     </div>
                 </div>
 
-                <!-- PANEL EXPORTAR -->
                 <div class="card glass-panel">
-                    <div class="card-header">Exportar Archivo</div>
+                    <div class="card-header">Validación y Exportación</div>
                     <div class="card-body" style="justify-content: center;">
                         <div class="decoration-container">
                             <img src="https://start-up.pe/wp-content/uploads/2023/02/Internet-WOW.jpg" alt="Magic Crystal" class="magic-crystal" id="magic-crystal">
                         </div>
-                        <label class="form-label">Nombre del Archivo</label>
+                        <label class="form-label">Nombre de la Interacción (DNI/Cliente)</label>
                         <input type="text" class="form-input" id="record-title" placeholder="Ej: ALVARADO PINEDO" autocomplete="off">
-                        <button class="btn-save" id="btn-save" disabled onclick="saveRecordingData()">Guardar Audio</button>
+                        <button class="btn-save" id="btn-save" disabled onclick="saveRecordingData()">Exportar y Registrar</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW: HISTORIAL -->
         <div id="view-history" class="view-section">
             <div class="card glass-panel" style="height: 100%; min-height: 400px;">
-                <div class="card-header">Archivos Locales</div>
+                
+                <div class="card-header">
+                    <span>Base de Datos Local</span>
+                    <div class="search-box">
+                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Buscar por Nombre del Audio o Agente...">
+                    </div>
+                </div>
+
                 <div class="card-body" style="padding: 0;">
                     <div class="history-table-wrapper">
-                        <table class="history-table">
+                        <table class="history-table" id="historyTable">
                             <thead>
                                 <tr>
                                     <th>Fecha de Creación</th>
-                                    <th>Nombre del Archivo Guardado</th>
-                                    <th style="text-align: right;">Duración Total</th>
+                                    <th>Nombre del Archivo</th>
+                                    <th>Agente / Usuario</th>
+                                    <th style="text-align: right;">Duración</th>
                                 </tr>
                             </thead>
-                            <tbody id="history-body"></tbody>
+                            <tbody id="history-body">
+                                </tbody>
                         </table>
                     </div>
                 </div>
@@ -281,20 +318,67 @@
         </div>
 
         <div id="toast" class="toast">
-            <svg fill="currentColor" viewBox="0 0 20 20" style="color: var(--success); flex-shrink: 0;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <svg fill="currentColor" viewBox="0 0 20 20" style="color: var(--success); flex-shrink: 0; width: 24px; height: 24px;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
             <span id="toast-msg">Operación Exitosa</span>
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // GESTIÓN DE SESIÓN (LOGIN)
+        // ==========================================
+        let currentUser = "";
+
+        window.onload = function() {
+            checkSession();
+            loadHistoryTable();
+        };
+
+        function checkSession() {
+            const savedUser = localStorage.getItem('InterconexionesUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('display-agent-name').innerText = currentUser;
+            } else {
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('agent-input').focus();
+            }
+        }
+
+        function loginAgent() {
+            const nameInput = document.getElementById('agent-input').value.trim();
+            if (!nameInput) {
+                alert("Por favor, ingresa tu nombre de agente para continuar.");
+                return;
+            }
+            currentUser = nameInput;
+            localStorage.setItem('InterconexionesUser', currentUser);
+            
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('display-agent-name').innerText = currentUser;
+            showToast(`Bienvenido al sistema, ${currentUser}`);
+        }
+
+        function logoutAgent() {
+            localStorage.removeItem('InterconexionesUser');
+            currentUser = "";
+            document.getElementById('login-overlay').classList.remove('hidden');
+            document.getElementById('agent-input').value = "";
+            document.getElementById('agent-input').focus();
+        }
+
+        // ==========================================
+        // UI Y NAVEGACIÓN
+        // ==========================================
         function switchView(viewId, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
             document.getElementById('top-title').innerHTML = viewId === 'workspace' 
-                ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg> VoiceVault' 
-                : '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Bóveda';
+                ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg> Interconexiones 360' 
+                : '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Auditoría de Archivos';
         }
 
         function showToast(msg) {
@@ -304,6 +388,37 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
+        // ==========================================
+        // BUSCADOR AVANZADO (Nombre y Agente)
+        // ==========================================
+        function filterHistory() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("historyTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                // Obtenemos la columna del Nombre de Archivo (1) y la del Agente (2)
+                let tdName = tr[i].getElementsByTagName("td")[1];
+                let tdAgent = tr[i].getElementsByTagName("td")[2];
+                
+                if (tdName || tdAgent) {
+                    let textName = tdName.textContent || tdName.innerText;
+                    let textAgent = tdAgent.textContent || tdAgent.innerText;
+                    
+                    // Si el filtro coincide con el Nombre del Audio O con el Nombre del Agente
+                    if (textName.toUpperCase().indexOf(filter) > -1 || textAgent.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // ==========================================
+        // LÓGICA DE GRABACIÓN
+        // ==========================================
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
@@ -346,7 +461,7 @@
                     audioBlobFinal = new Blob(audioChunks, { type: 'audio/webm' });
                     btnSave.disabled = false;
                     document.getElementById('record-title').focus();
-                    showToast("Audio en memoria. Ponle un nombre y guárdalo.");
+                    showToast("Audio listo. Asigna un nombre para exportar el archivo.");
                 };
 
                 mediaRecorder.start();
@@ -448,6 +563,7 @@
             const fullFileName = `${title}.webm`;
 
             try {
+                // Exportación del archivo físico
                 if (window.showSaveFilePicker) {
                     const handle = await window.showSaveFilePicker({
                         suggestedName: fullFileName,
@@ -463,19 +579,28 @@
                     document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 }
 
+                // Generar Fecha de creación
                 const dateObj = new Date();
                 const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
 
-                const tbody = document.getElementById('history-body');
-                const row = `<tr>
-                    <td style="color: var(--text-muted); font-family: monospace;">${dateStr}</td>
-                    <td style="color: white; font-weight: 800; font-size: 16px;">${title}</td>
-                    <td style="font-family: monospace; font-size: 16px; color: var(--primary); text-align: right;">${lastDuration}</td>
-                </tr>`;
-                tbody.innerHTML = row + tbody.innerHTML; 
+                // --- GUARDADO EN BASE DE DATOS (CON USUARIO) ---
+                const recordData = {
+                    fecha: dateStr,
+                    nombre: title,
+                    duracion: lastDuration,
+                    agente: currentUser // Aquí se guarda quién realizó la operación
+                };
 
-                showToast(`Audio guardado exitosamente`);
+                let historyList = JSON.parse(localStorage.getItem('InterconexionesHistory') || '[]');
+                historyList.unshift(recordData); 
+                localStorage.setItem('InterconexionesHistory', JSON.stringify(historyList));
 
+                // Refrescar la tabla en pantalla
+                loadHistoryTable();
+
+                showToast(`Validación registrada por ${currentUser}`);
+
+                // Reset de Interfaz
                 elTimer.textContent = "00:00:00";
                 elStatus.textContent = "ESPERANDO INICIO";
                 document.getElementById('record-title').value = '';
@@ -485,6 +610,32 @@
             } catch (err) {
                 showToast("Guardado cancelado por el usuario.");
             }
+        }
+
+        // ==========================================
+        // CARGA DE TABLA DE HISTORIAL
+        // ==========================================
+        function loadHistoryTable() {
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = ''; 
+            
+            let historyList = JSON.parse(localStorage.getItem('InterconexionesHistory') || '[]');
+            
+            if (historyList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">No hay grabaciones en la base de datos local.</td></tr>`;
+                return;
+            }
+
+            historyList.forEach(item => {
+                // Inyección del Agente en la nueva columna
+                const row = `<tr>
+                    <td style="color: var(--text-muted); font-family: monospace;">${item.fecha}</td>
+                    <td style="color: white; font-weight: 800; font-size: 16px;">${item.nombre}</td>
+                    <td><span class="agent-tag">${item.agente}</span></td>
+                    <td style="font-family: monospace; font-size: 16px; color: var(--primary); text-align: right;">${item.duracion}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
         }
     </script>
 </body>
