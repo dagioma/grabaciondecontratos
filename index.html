@@ -18,7 +18,7 @@
             --success: #10b981; 
             --danger: #f43f5e; 
             --warning: #fbbf24;
-            --glass-bg: rgba(15, 23, 42, 0.95); /* Fondo optimizado sin desenfoque pesado */
+            --glass-bg: rgba(15, 23, 42, 0.95);
             --glass-border: rgba(255, 255, 255, 0.15);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -335,10 +335,7 @@
         // ==========================================
         // 1. CONFIGURACIÓN DE FIREBASE (BÓVEDA CENTRAL)
         // ==========================================
-        // ==========================================
-// 1. CONFIGURACIÓN DE FIREBASE (BÓVEDA CENTRAL)
-// ==========================================
-const firebaseConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
             authDomain: "crm-telecom-db014.firebaseapp.com",
             projectId: "crm-telecom-db014",
@@ -579,27 +576,18 @@ const firebaseConfig = {
         }
 
         // ==========================================
-        // EXPORTACIÓN FÍSICA Y GUARDADO EN LA NUBE
+        // EXPORTACIÓN FÍSICA Y GUARDADO EN LA NUBE (OPTIMIZADO)
         // ==========================================
         async function saveRecordingData() {
             let title = document.getElementById('record-title').value.trim();
             if(!title) title = "Audio_Generico";
             
-            // Marca de tiempo única para evitar sobreescrituras en la nube
             const fileTimestamp = Date.now();
             const cloudFileName = `audios/${title}_${fileTimestamp}.webm`;
             const localFileName = `${title}.webm`;
 
             try {
-                // Alerta visual de subida
-                showToast("Subiendo archivo de audio a la Bóveda Central...");
-
-                // 1. GUARDADO DE AUDIO EN FIREBASE STORAGE
-                const storageRef = storage.ref(cloudFileName);
-                const uploadTask = await storageRef.put(audioBlobFinal);
-                const cloudAudioUrl = await uploadTask.ref.getDownloadURL(); 
-
-                // 2. Exportación física inmediata a la PC del agente
+                // 1. DESCARGA LOCAL INMEDIATA
                 if (window.showSaveFilePicker) {
                     const handle = await window.showSaveFilePicker({
                         suggestedName: localFileName,
@@ -615,32 +603,45 @@ const firebaseConfig = {
                     document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 }
 
-                // Generar Fecha
-                const dateObj = new Date();
-                const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
+                // 2. AVISO VISUAL
+                showToast("Archivo guardado. Sincronizando con la nube en segundo plano...");
 
-                // 3. GUARDADO EN FIREBASE FIRESTORE 
-                await db.collection("historial_llamadas").add({
-                    fecha: dateStr,
-                    nombre: title,
-                    duracion: lastDuration,
-                    agente: currentUser,
-                    audioUrl: cloudAudioUrl, 
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                showToast(`Validación y audio registrados en la nube por ${currentUser}`);
-
-                // Reset de Interfaz
-                elTimer.textContent = "00:00:00";
-                elStatus.textContent = "ESPERANDO INICIO";
+                // 3. GUARDAMOS VARIABLES Y RESETEAMOS LA UI
+                const currentAudioBlob = audioBlobFinal; 
+                const currentDuration = lastDuration;
+                
+                document.getElementById('timer').textContent = "00:00:00";
+                document.getElementById('status-text').textContent = "ESPERANDO INICIO";
                 document.getElementById('record-title').value = '';
-                btnSave.disabled = true;
+                document.getElementById('btn-save').disabled = true;
                 audioBlobFinal = null; 
 
+                // 4. SUBIDA A FIREBASE EN SEGUNDO PLANO
+                storage.ref(cloudFileName).put(currentAudioBlob).then(async (uploadTask) => {
+                    const cloudAudioUrl = await uploadTask.ref.getDownloadURL(); 
+
+                    const dateObj = new Date();
+                    const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
+
+                    await db.collection("historial_llamadas").add({
+                        fecha: dateStr,
+                        nombre: title,
+                        duracion: currentDuration,
+                        agente: currentUser,
+                        audioUrl: cloudAudioUrl, 
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    console.log(`Audio ${title} sincronizado en la nube exitosamente.`);
+                }).catch((err) => {
+                    console.error("Error en la subida de fondo:", err);
+                });
+
             } catch (err) {
-                console.error(err);
-                showToast("Error de conexión. Verifica Storage o permisos en Firebase.");
+                if (err.name !== 'AbortError') {
+                    console.error(err);
+                    showToast("Error al exportar el archivo.");
+                }
             }
         }
 
