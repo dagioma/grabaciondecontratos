@@ -18,7 +18,7 @@
             --success: #10b981; 
             --danger: #f43f5e; 
             --warning: #fbbf24;
-            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-bg: rgba(15, 23, 42, 0.95); /* Fondo optimizado sin desenfoque pesado */
             --glass-border: rgba(255, 255, 255, 0.15);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -33,12 +33,11 @@
             color: var(--text-main);
         }
 
+        /* --- PANELES OPTIMIZADOS --- */
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* --- LOGIN OVERLAY --- */
@@ -49,12 +48,12 @@
             z-index: 1000; display: flex; justify-content: center; align-items: center;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .login-overlay::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+        .login-overlay::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); }
         .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         
         .login-box {
-            position: relative; z-index: 1001; background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            position: relative; z-index: 1001; background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--glass-border);
             padding: 50px 40px; border-radius: 30px; text-align: center;
             width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
@@ -65,7 +64,7 @@
         .login-input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); }
 
         /* --- SIDEBAR --- */
-        .sidebar { width: 280px; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.7); transition: 0.3s; }
+        .sidebar { width: 280px; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.95); transition: 0.3s; }
         .brand-logo { width: 60px; height: 60px; border-radius: 18px; object-fit: cover; margin-bottom: 30px; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
         
         .agent-profile { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 30px; }
@@ -76,7 +75,7 @@
 
         .nav-menu { width: 100%; display: flex; flex-direction: column; gap: 10px; }
         .nav-item { width: 100%; padding: 15px 20px; display: flex; align-items: center; gap: 15px; color: #cbd5e1; border-radius: 15px; cursor: pointer; transition: 0.3s; font-weight: 700; font-size: 14px; }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4); transform: translateX(5px); }
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; transform: translateX(5px); }
 
         /* --- MAIN LAYOUT --- */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; height: 100%; overflow: hidden; }
@@ -124,7 +123,7 @@
         @keyframes bounce { 0% { height: 15px; } 100% { height: 80px; } }
 
         .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; flex-shrink: 0; padding-bottom: 10px; }
-        .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); flex-shrink: 0; }
+        .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); flex-shrink: 0; }
         .btn-round:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.1); }
         .btn-round:disabled { opacity: 0.3; cursor: not-allowed; transform: scale(1); }
         .btn-round svg { width: 35px; height: 35px; }
@@ -136,12 +135,11 @@
         .btn-stop { background: rgba(255,255,255,0.05); }
         .btn-stop:hover:not(:disabled) { background: white; color: black; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); }
 
-        /* --- DECORACIÓN Y GUARDADO --- */
+        /* --- DECORACIÓN Y GUARDADO OPTIMIZADO --- */
         .decoration-container { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; flex-shrink: 0; }
-        .magic-crystal { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.5); transition: 0.5s; animation: float 6s ease-in-out infinite; }
-        .magic-crystal.recording { border-color: var(--primary); box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), inset 0 0 20px rgba(139, 92, 246, 0.4); animation: spin 10s linear infinite; }
+        .magic-crystal { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3); transition: 0.5s; }
+        .magic-crystal.recording { border-color: var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); animation: spin 10s linear infinite; }
 
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .form-label { font-size: 12px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
@@ -149,7 +147,7 @@
         .form-input:focus { border-color: var(--primary); box-shadow: 0 0 25px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); transform: scale(1.02); }
         
         .btn-save { width: 100%; background: linear-gradient(135deg, var(--primary), #ec4899); color: white; border: none; padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; } 
-        .btn-save:hover:not(:disabled) { box-shadow: 0 15px 30px rgba(139, 92, 246, 0.5); transform: translateY(-3px); }
+        .btn-save:hover:not(:disabled) { transform: translateY(-3px); }
         .btn-save:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; }
 
         /* --- HISTORY TABLE --- */
@@ -164,7 +162,7 @@
 
         /* Estilo para el botón de descargar de la tabla */
         .btn-table-download { background: rgba(16, 185, 129, 0.2); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.3); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; text-decoration: none; display: inline-block; transition: 0.2s; }
-        .btn-table-download:hover { background: var(--success); color: white; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+        .btn-table-download:hover { background: var(--success); color: white; }
 
         /* --- TOAST --- */
         .toast { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 16px 35px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
@@ -248,7 +246,7 @@
                 Interconexiones 360
             </div>
             <div class="avatar">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQThxcEjZrrOulRo48gNcUzB89S9ahwBQnkUA&s" alt="User" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                <img src="https://start-up.pe/wp-content/uploads/2023/02/Internet-WOW.jpg" alt="User" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
             </div>
         </header>
 
@@ -506,7 +504,6 @@
                 elWave.classList.add('active');
                 
                 elCrystal.classList.add('recording'); 
-                elCrystal.style.animationPlayState = 'running';
 
                 sec = 0; 
                 elTimer.textContent = "00:00:00";
@@ -530,7 +527,6 @@
                 elStatus.classList.add('recording');
                 
                 elWave.classList.add('active');
-                elCrystal.style.animationPlayState = 'running'; 
                 
                 updatePauseIcon();
             } else {
@@ -543,7 +539,6 @@
                 elStatus.classList.add('paused');
                 
                 elWave.classList.remove('active');
-                elCrystal.style.animationPlayState = 'paused'; 
                 
                 updatePauseIcon();
             }
@@ -576,25 +571,24 @@
             elWave.classList.remove('active');
             
             elCrystal.classList.remove('recording'); 
-            elCrystal.style.animationPlayState = 'running'; 
             
             updatePauseIcon();
         }
 
         // ==========================================
-        // EXPORTACIÓN FÍSICA Y GUARDADO EN LA NUBE (CON AUDIO COMPARTIDO)
+        // EXPORTACIÓN FÍSICA Y GUARDADO EN LA NUBE
         // ==========================================
         async function saveRecordingData() {
             let title = document.getElementById('record-title').value.trim();
             if(!title) title = "Audio_Generico";
             
-            // Usamos una marca de tiempo única en el nombre del archivo para evitar sobreescrituras en la nube
+            // Marca de tiempo única para evitar sobreescrituras en la nube
             const fileTimestamp = Date.now();
             const cloudFileName = `audios/${title}_${fileTimestamp}.webm`;
             const localFileName = `${title}.webm`;
 
             try {
-                // Alerta visual de que el proceso de subida inició
+                // Alerta visual de subida
                 showToast("Subiendo archivo de audio a la Bóveda Central...");
 
                 // 1. GUARDADO DE AUDIO EN FIREBASE STORAGE
@@ -618,7 +612,7 @@
                     document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 }
 
-                // Generar Fecha de creación actual
+                // Generar Fecha
                 const dateObj = new Date();
                 const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
 
@@ -648,14 +642,14 @@
         }
 
         // ==========================================
-        // CARGA Y SINCRONIZACIÓN DE LA TABLA (CON BOTÓN DE DESCARGA MULTIUSUARIO)
+        // CARGA Y SINCRONIZACIÓN DE LA TABLA (LIMITADO A 30 PARA OPTIMIZAR)
         // ==========================================
         function loadHistoryTable() {
             const tbody = document.getElementById('history-body');
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Conectando con la Bóveda Central...</td></tr>`;
 
-            // Escuchar cambios en la nube constantemente
-            db.collection("historial_llamadas").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            // Limitado a 30 resultados para no sobrecargar el navegador de la oficina
+            db.collection("historial_llamadas").orderBy("timestamp", "desc").limit(30).onSnapshot((snapshot) => {
                 tbody.innerHTML = ''; 
                 
                 if (snapshot.empty) {
@@ -666,7 +660,6 @@
                 snapshot.forEach((doc) => {
                     const item = doc.data();
                     
-                    // Condición por si hay registros antiguos sin enlace de audio cargado
                     const downloadButtonHtml = item.audioUrl 
                         ? `<a href="${item.audioUrl}" target="_blank" class="btn-table-download">⬇ Descargar</a>`
                         : `<span style="color: var(--text-muted); font-size: 13px;">Sin audio en nube</span>`;
