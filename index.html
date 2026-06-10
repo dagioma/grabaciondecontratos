@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interconexiones 360 - CRM</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
@@ -157,6 +162,10 @@
 
         .agent-tag { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; letter-spacing: 1px; border: 1px solid rgba(139, 92, 246, 0.3); }
 
+        /* Estilo para el botón de descargar de la tabla */
+        .btn-table-download { background: rgba(16, 185, 129, 0.2); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.3); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .btn-table-download:hover { background: var(--success); color: white; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+
         /* --- TOAST --- */
         .toast { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 16px 35px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
         .toast.show { bottom: 50px; }
@@ -291,7 +300,7 @@
             <div class="card glass-panel" style="height: 100%; min-height: 400px;">
                 
                 <div class="card-header">
-                    <span>Base de Datos Local</span>
+                    <span>Base de Datos Centralizada</span>
                     <div class="search-box">
                         <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                         <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Buscar por Nombre del Audio o Agente...">
@@ -307,6 +316,7 @@
                                     <th>Nombre del Archivo</th>
                                     <th>Agente / Usuario</th>
                                     <th style="text-align: right;">Duración</th>
+                                    <th style="text-align: center;">Escuchar / Bajar</th>
                                 </tr>
                             </thead>
                             <tbody id="history-body">
@@ -324,6 +334,23 @@
     </div>
 
     <script>
+        // ==========================================
+        // 1. CONFIGURACIÓN DE FIREBASE (BÓVEDA CENTRAL)
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
+            authDomain: "crm-telecom-db014.firebaseapp.com",
+            projectId: "crm-telecom-db014",
+            storageBucket: "crm-telecom-db014.firebasestorage.app",
+            messagingSenderId: "92366048720",
+            appId: "1:92366048720:web:f45c610cdb1ed6326d7dd5",
+            measurementId: "G-XXYC3NXKDG"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage(); 
+
         // ==========================================
         // GESTIÓN DE SESIÓN (LOGIN)
         // ==========================================
@@ -398,7 +425,6 @@
             const tr = table.getElementsByTagName("tr");
 
             for (let i = 1; i < tr.length; i++) {
-                // Obtenemos la columna del Nombre de Archivo (1) y la del Agente (2)
                 let tdName = tr[i].getElementsByTagName("td")[1];
                 let tdAgent = tr[i].getElementsByTagName("td")[2];
                 
@@ -406,7 +432,6 @@
                     let textName = tdName.textContent || tdName.innerText;
                     let textAgent = tdAgent.textContent || tdAgent.innerText;
                     
-                    // Si el filtro coincide con el Nombre del Audio O con el Nombre del Agente
                     if (textName.toUpperCase().indexOf(filter) > -1 || textAgent.toUpperCase().indexOf(filter) > -1) {
                         tr[i].style.display = "";
                     } else {
@@ -556,17 +581,31 @@
             updatePauseIcon();
         }
 
+        // ==========================================
+        // EXPORTACIÓN FÍSICA Y GUARDADO EN LA NUBE (CON AUDIO COMPARTIDO)
+        // ==========================================
         async function saveRecordingData() {
             let title = document.getElementById('record-title').value.trim();
             if(!title) title = "Audio_Generico";
             
-            const fullFileName = `${title}.webm`;
+            // Usamos una marca de tiempo única en el nombre del archivo para evitar sobreescrituras en la nube
+            const fileTimestamp = Date.now();
+            const cloudFileName = `audios/${title}_${fileTimestamp}.webm`;
+            const localFileName = `${title}.webm`;
 
             try {
-                // Exportación del archivo físico
+                // Alerta visual de que el proceso de subida inició
+                showToast("Subiendo archivo de audio a la Bóveda Central...");
+
+                // 1. GUARDADO DE AUDIO EN FIREBASE STORAGE
+                const storageRef = storage.ref(cloudFileName);
+                const uploadTask = await storageRef.put(audioBlobFinal);
+                const cloudAudioUrl = await uploadTask.ref.getDownloadURL(); 
+
+                // 2. Exportación física inmediata a la PC del agente
                 if (window.showSaveFilePicker) {
                     const handle = await window.showSaveFilePicker({
-                        suggestedName: fullFileName,
+                        suggestedName: localFileName,
                         types: [{ description: 'Archivo de Audio', accept: {'audio/webm': ['.webm']} }],
                     });
                     const writable = await handle.createWritable();
@@ -575,30 +614,25 @@
                 } else {
                     const audioUrl = URL.createObjectURL(audioBlobFinal);
                     const a = document.createElement('a');
-                    a.href = audioUrl; a.download = fullFileName;
+                    a.href = audioUrl; a.download = localFileName;
                     document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 }
 
-                // Generar Fecha de creación
+                // Generar Fecha de creación actual
                 const dateObj = new Date();
                 const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
 
-                // --- GUARDADO EN BASE DE DATOS (CON USUARIO) ---
-                const recordData = {
+                // 3. GUARDADO EN FIREBASE FIRESTORE 
+                await db.collection("historial_llamadas").add({
                     fecha: dateStr,
                     nombre: title,
                     duracion: lastDuration,
-                    agente: currentUser // Aquí se guarda quién realizó la operación
-                };
+                    agente: currentUser,
+                    audioUrl: cloudAudioUrl, 
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-                let historyList = JSON.parse(localStorage.getItem('InterconexionesHistory') || '[]');
-                historyList.unshift(recordData); 
-                localStorage.setItem('InterconexionesHistory', JSON.stringify(historyList));
-
-                // Refrescar la tabla en pantalla
-                loadHistoryTable();
-
-                showToast(`Validación registrada por ${currentUser}`);
+                showToast(`Validación y audio registrados en la nube por ${currentUser}`);
 
                 // Reset de Interfaz
                 elTimer.textContent = "00:00:00";
@@ -608,33 +642,47 @@
                 audioBlobFinal = null; 
 
             } catch (err) {
-                showToast("Guardado cancelado por el usuario.");
+                console.error(err);
+                showToast("Error de conexión. Verifica Storage o permisos en Firebase.");
             }
         }
 
         // ==========================================
-        // CARGA DE TABLA DE HISTORIAL
+        // CARGA Y SINCRONIZACIÓN DE LA TABLA (CON BOTÓN DE DESCARGA MULTIUSUARIO)
         // ==========================================
         function loadHistoryTable() {
             const tbody = document.getElementById('history-body');
-            tbody.innerHTML = ''; 
-            
-            let historyList = JSON.parse(localStorage.getItem('InterconexionesHistory') || '[]');
-            
-            if (historyList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">No hay grabaciones en la base de datos local.</td></tr>`;
-                return;
-            }
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Conectando con la Bóveda Central...</td></tr>`;
 
-            historyList.forEach(item => {
-                // Inyección del Agente en la nueva columna
-                const row = `<tr>
-                    <td style="color: var(--text-muted); font-family: monospace;">${item.fecha}</td>
-                    <td style="color: white; font-weight: 800; font-size: 16px;">${item.nombre}</td>
-                    <td><span class="agent-tag">${item.agente}</span></td>
-                    <td style="font-family: monospace; font-size: 16px; color: var(--primary); text-align: right;">${item.duracion}</td>
-                </tr>`;
-                tbody.innerHTML += row;
+            // Escuchar cambios en la nube constantemente
+            db.collection("historial_llamadas").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                tbody.innerHTML = ''; 
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No hay grabaciones en la base de datos central.</td></tr>`;
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const item = doc.data();
+                    
+                    // Condición por si hay registros antiguos sin enlace de audio cargado
+                    const downloadButtonHtml = item.audioUrl 
+                        ? `<a href="${item.audioUrl}" target="_blank" class="btn-table-download">⬇ Descargar</a>`
+                        : `<span style="color: var(--text-muted); font-size: 13px;">Sin audio en nube</span>`;
+
+                    const row = `<tr>
+                        <td style="color: var(--text-muted); font-family: monospace;">${item.fecha}</td>
+                        <td style="color: white; font-weight: 800; font-size: 16px;">${item.nombre}</td>
+                        <td><span class="agent-tag">${item.agente}</span></td>
+                        <td style="font-family: monospace; font-size: 16px; color: var(--primary); text-align: right;">${item.duracion}</td>
+                        <td style="text-align: center;">${downloadButtonHtml}</td> 
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            }, (error) => {
+                console.error("Error obteniendo datos: ", error);
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--danger);">Error de conexión con la base de datos.</td></tr>`;
             });
         }
     </script>
