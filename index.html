@@ -10,330 +10,233 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary: #8b5cf6; 
-            --primary-hover: #7c3aed;
-            --success: #10b981; 
-            --danger: #f43f5e; 
-            --warning: #fbbf24;
-            --glass-bg: rgba(15, 23, 42, 0.95);
-            --glass-border: rgba(255, 255, 255, 0.15);
+            --bg-body: #0f172a;       /* Fondo oscuro principal */
+            --bg-card: #1e293b;       /* Fondo de paneles */
+            --bg-hover: #334155;
+            --primary: #3b82f6;       /* Azul profesional */
+            --primary-hover: #2563eb;
+            --danger: #ef4444;        /* Rojo para grabar */
+            --warning: #f59e0b;       /* Amarillo para pausa */
+            --success: #10b981;       /* Verde para éxito */
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --border: #334155;
         }
 
-        * { box-sizing: border-box; font-family: 'Nunito', sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         
         body { 
             display: flex; height: 100vh; overflow: hidden; 
-            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi8SdFXpruAYwcPHle4dePGCzCSWtVKurbKg&s');
-            background-size: cover; background-position: center;
+            background-color: var(--bg-body);
             color: var(--text-main);
         }
 
-        /* --- PANELES OPTIMIZADOS --- */
-        .glass-panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+        /* --- UTILIDADES --- */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+        .hidden { display: none !important; }
 
-        /* --- LOGIN OVERLAY --- */
+        /* --- LOGIN --- */
         .login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi8SdFXpruAYwcPHle4dePGCzCSWtVKurbKg&s');
-            background-size: cover; background-position: center;
-            z-index: 1000; display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            background: var(--bg-body); z-index: 1000; 
+            display: flex; justify-content: center; align-items: center;
         }
-        .login-overlay::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); }
-        .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        
         .login-box {
-            position: relative; z-index: 1001; background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--glass-border);
-            padding: 50px 40px; border-radius: 30px; text-align: center;
-            width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 100%; max-width: 400px; padding: 40px; text-align: center;
         }
-        .login-box img { width: 80px; height: 80px; border-radius: 20px; margin-bottom: 20px; border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
-        .login-box h2 { color: white; margin-bottom: 5px; font-weight: 800; font-size: 26px; letter-spacing: 1px; }
-        .login-box p { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; font-weight: 600; }
-        .login-input { width: 100%; padding: 18px; border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; font-size: 16px; font-weight: 700; background: rgba(0,0,0,0.4); color: white; margin-bottom: 25px; outline: none; transition: 0.3s; text-align: center; }
-        .login-input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); }
+        .login-box h2 { margin-bottom: 8px; font-size: 24px; }
+        .login-box p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+        .form-input {
+            width: 100%; padding: 14px; background: var(--bg-body); border: 1px solid var(--border);
+            border-radius: 8px; color: white; font-size: 16px; outline: none; margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        .btn-main {
+            width: 100%; padding: 14px; background: var(--primary); color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .btn-main:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* --- SIDEBAR --- */
-        .sidebar { width: 280px; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; z-index: 20; border-right: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.95); transition: 0.3s; }
-        .brand-logo { width: 60px; height: 60px; border-radius: 18px; object-fit: cover; margin-bottom: 30px; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+        .sidebar { width: 260px; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--bg-card); }
+        .brand { padding: 24px; font-size: 18px; font-weight: 700; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;}
         
-        .agent-profile { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 30px; }
-        .agent-profile h3 { font-size: 16px; color: white; font-weight: 800; margin-bottom: 5px; word-break: break-word;}
-        .agent-profile p { font-size: 12px; color: var(--success); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; }
-        .btn-logout { background: rgba(244, 63, 94, 0.2); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; }
-        .btn-logout:hover { background: var(--danger); color: white; box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4); }
+        .agent-info { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+        .agent-info h3 { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;}
+        .agent-info p { font-size: 16px; font-weight: 600; margin-bottom: 12px; word-break: break-all;}
+        .btn-logout { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; width: 100%; }
+        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
 
-        .nav-menu { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        .nav-item { width: 100%; padding: 15px 20px; display: flex; align-items: center; gap: 15px; color: #cbd5e1; border-radius: 15px; cursor: pointer; transition: 0.3s; font-weight: 700; font-size: 14px; }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; transform: translateX(5px); }
+        .nav-menu { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { padding: 12px 16px; display: flex; align-items: center; gap: 12px; color: var(--text-muted); border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .nav-item svg { width: 20px; height: 20px; }
 
-        /* --- MAIN LAYOUT --- */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; height: 100%; overflow: hidden; }
-        .top-header { height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; border-bottom: 1px solid var(--glass-border); border-radius: 0 0 25px 25px; margin-bottom: 20px; flex-shrink: 0; }
-        .header-title { font-size: 24px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-shrink: 0; }
-
-        /* --- VIEWS --- */
-        .view-section { display: none; flex: 1; overflow-y: auto; padding: 0 30px 30px 30px; }
-        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- WORKSPACE GRID --- */
-        .workspace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; min-height: 100%; }
-        .card { border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s; height: 100%; min-height: 550px; }
-        .card-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 14px; background: rgba(255,255,255,0.03); text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
-        .card-body { padding: 35px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; justify-content: space-between; }
-
-        /* --- BUSCADOR --- */
-        .search-box { position: relative; width: 100%; max-width: 350px; }
-        .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: white; font-size: 14px; outline: none; transition: 0.3s; font-weight: 600;}
-        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); background: rgba(0,0,0,0.6); }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
-
-        /* --- RECORDER UI --- */
-        .recorder-display { 
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, rgba(0,0,0,0.4) 100%); 
-            border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; 
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.4); padding: 30px 20px; min-height: 250px;
-        }
+        /* --- MAIN CONTENT --- */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .header { height: 70px; display: flex; align-items: center; padding: 0 30px; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 18px; font-weight: 600; }
         
-        .status-text { font-size: 16px; font-weight: 800; color: var(--text-muted); letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px; transition: 0.3s; text-align: center; flex-shrink: 0; }
-        .status-text.recording { color: white; background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulseText 1.5s infinite; }
-        .status-text.paused { color: black; background: var(--warning); box-shadow: 0 0 15px var(--warning); }
+        .view-section { display: none; flex: 1; overflow-y: auto; padding: 30px; }
+        .view-section.active { display: block; }
+
+        /* --- WORKSPACE (GRABADORA) --- */
+        .recorder-container { max-width: 600px; margin: 0 auto; }
+        .recorder-box { padding: 40px; text-align: center; margin-bottom: 20px; }
         
-        .timer-text { font-size: clamp(50px, 6vw, 85px); font-weight: 800; letter-spacing: 4px; margin-bottom: 25px; text-shadow: 0 10px 25px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; color: white; text-align: center; flex-shrink: 0; }
+        .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px; background: var(--border); color: var(--text-muted); }
+        .status-badge.recording { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); animation: pulse 1.5s infinite; }
+        .status-badge.paused { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        .timer { font-size: 64px; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 40px; color: white; }
+
+        .controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .btn-ctrl { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-ctrl svg { width: 24px; height: 24px; }
+        .btn-ctrl:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
         
-        .audio-wave { display: flex; justify-content: center; align-items: flex-end; gap: 8px; height: 80px; margin-bottom: 10px; opacity: 0.1; transition: 0.5s; filter: grayscale(1); flex-shrink: 0; }
-        .audio-wave.active { opacity: 1; filter: grayscale(0); }
-        .bar { width: 10px; background: linear-gradient(180deg, #ec4899 0%, var(--primary) 100%); border-radius: 5px; height: 15px; transition: height 0.1s ease; }
-        
-        .audio-wave.active .bar { animation: bounce 0.6s infinite alternate ease-in-out; box-shadow: 0 0 20px var(--primary); }
-        .audio-wave.active .bar:nth-child(1) { animation-delay: 0.0s; } .audio-wave.active .bar:nth-child(2) { animation-delay: 0.2s; } .audio-wave.active .bar:nth-child(3) { animation-delay: 0.4s; } .audio-wave.active .bar:nth-child(4) { animation-delay: 0.1s; } .audio-wave.active .bar:nth-child(5) { animation-delay: 0.3s; } .audio-wave.active .bar:nth-child(6) { animation-delay: 0.5s; } .audio-wave.active .bar:nth-child(7) { animation-delay: 0.2s; }
-        @keyframes bounce { 0% { height: 15px; } 100% { height: 80px; } }
-
-        .controls-row { display: flex; gap: 20px; justify-content: center; align-items: center; flex-shrink: 0; padding-bottom: 10px; }
-        .btn-round { width: 85px; height: 85px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.05); color: white; border: 2px solid rgba(255,255,255,0.1); flex-shrink: 0; }
-        .btn-round:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.1); }
-        .btn-round:disabled { opacity: 0.3; cursor: not-allowed; transform: scale(1); }
-        .btn-round svg { width: 35px; height: 35px; }
-
-        .btn-record { background: rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.5); color: var(--danger); }
-        .btn-record:hover:not(:disabled) { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 10px 25px rgba(244, 63, 94, 0.5); }
-        .btn-pause { background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); color: var(--warning); }
-        .btn-pause:hover:not(:disabled) { background: var(--warning); color: black; border-color: var(--warning); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.5); }
-        .btn-stop { background: rgba(255,255,255,0.05); }
-        .btn-stop:hover:not(:disabled) { background: white; color: black; box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4); }
-
-        /* --- DECORACIÓN Y GUARDADO OPTIMIZADO --- */
-        .decoration-container { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; flex-shrink: 0; }
-        .magic-crystal { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.1); padding: 5px; background: rgba(0,0,0,0.3); transition: 0.5s; }
-        .magic-crystal.recording { border-color: var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); animation: spin 10s linear infinite; }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .form-label { font-size: 12px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
-        .form-input { width: 100%; padding: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 18px; font-size: 18px; font-weight: 700; background: rgba(0,0,0,0.4); color: white; margin-bottom: 25px; outline: none; transition: 0.3s; text-align: center; letter-spacing: 1px; flex-shrink: 0; }
-        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 25px rgba(139, 92, 246, 0.3); background: rgba(0,0,0,0.6); transform: scale(1.02); }
-        
-        .btn-save { width: 100%; background: linear-gradient(135deg, var(--primary), #ec4899); color: white; border: none; padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; } 
-        .btn-save:hover:not(:disabled) { transform: translateY(-3px); }
-        .btn-save:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; }
+        .btn-record { background: var(--danger); }
+        .btn-record:hover:not(:disabled) { transform: scale(1.05); }
+        .btn-pause { background: var(--warning); color: black; }
+        .btn-stop { background: var(--border); }
+        .btn-stop:hover:not(:disabled) { background: #475569; }
 
         /* --- HISTORY TABLE --- */
-        .history-table-wrapper { overflow-x: auto; height: 100%; }
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
-        .history-table th { background: rgba(0,0,0,0.5); padding: 20px; font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 5; }
-        .history-table td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 15px; font-weight: 600;}
-        .history-table tbody tr { transition: 0.2s; }
-        .history-table tbody tr:hover { background: rgba(255,255,255,0.05); }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .search-box { display: flex; align-items: center; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; width: 300px; }
+        .search-box input { border: none; background: transparent; color: white; padding: 10px; width: 100%; outline: none; font-size: 14px; }
+        .search-box svg { color: var(--text-muted); width: 18px; height: 18px; }
 
-        .agent-tag { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; letter-spacing: 1px; border: 1px solid rgba(139, 92, 246, 0.3); }
-
-        /* Estilo para el botón de descargar de la tabla */
-        .btn-table-download { background: rgba(16, 185, 129, 0.2); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.3); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; text-decoration: none; display: inline-block; transition: 0.2s; }
-        .btn-table-download:hover { background: var(--success); color: white; }
+        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: auto; height: calc(100vh - 180px); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: var(--bg-body); padding: 16px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; position: sticky; top: 0; border-bottom: 1px solid var(--border); }
+        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+        .tag { background: var(--border); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+        
+        .btn-download { display: inline-block; background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2); transition: 0.2s;}
+        .btn-download:hover { background: var(--success); color: white; }
 
         /* --- TOAST --- */
-        .toast { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 16px 35px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
-        .toast.show { bottom: 50px; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--success); color: white; padding: 16px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: 0.3s ease; z-index: 1000; display: flex; align-items: center; gap: 10px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
 
-        svg { width: 24px; height: 24px; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-
-        /* =========================================
-           MEDIA QUERIES
-           ========================================= */
-        @media (max-width: 900px) {
-            body { flex-direction: column-reverse; } 
-            
-            .sidebar { 
-                width: 100%; height: 80px; flex-direction: row; justify-content: space-evenly; 
-                padding: 0 10px; border-right: none; border-top: 1px solid var(--glass-border); 
-                border-radius: 25px 25px 0 0; z-index: 100; 
-            }
-            .brand-logo, .agent-profile { display: none; } 
-            .nav-menu { flex-direction: row; justify-content: space-around; }
-            .nav-item { margin-bottom: 0; width: auto; padding: 10px 15px; }
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; padding: 0; height: 60px; border-right: none; border-bottom: 1px solid var(--border); }
+            .agent-info, .brand { display: none; }
+            .nav-menu { flex-direction: row; padding: 0 10px; width: 100%; justify-content: space-around; }
+            .nav-item { padding: 10px; }
             .nav-item span { display: none; }
-            
-            .main-wrapper { height: calc(100vh - 80px); }
-            .top-header { padding: 15px 25px; height: auto; border-radius: 0 0 20px 20px; }
-            .header-title { font-size: 18px; }
-            .avatar { width: 40px; height: 40px; }
-            .view-section { padding: 0 15px 20px 15px; }
-            
-            .workspace-grid { grid-template-columns: 1fr; height: auto; gap: 20px; min-height: min-content; }
-            .card { min-height: min-content; }
-            .card-body { padding: 25px 20px; }
-            
-            .search-box { max-width: 100%; }
-            .history-table th, .history-table td { padding: 15px; font-size: 13px; }
+            .header { display: none; }
+            .table-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .search-box { width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <div class="login-overlay" id="login-overlay">
-        <div class="login-box">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9DKXaE2EGzHWqcLHNjIhaUSF1mz1hYh3NuQ&s" alt="Logo">
-            <h2>Acceso al Sistema</h2>
-            <p>Identifícate para iniciar tu jornada operativa</p>
-            
-            <input type="text" id="agent-input" class="login-input" placeholder="Ej: PEDRO PEREZ" autocomplete="off" onkeypress="if(event.key === 'Enter') loginAgent()">
-            
-            <button class="btn-save" onclick="loginAgent()">Ingresar al Workspace</button>
+        <div class="card login-box">
+            <h2>Acceso BackOffice</h2>
+            <p>Identifícate para iniciar tu jornada</p>
+            <input type="text" id="agent-input" class="form-input" placeholder="Nombre de Agente (Ej: JUAN PEREZ)" autocomplete="off" onkeypress="if(event.key === 'Enter') loginAgent()">
+            <button class="btn-main" onclick="loginAgent()">Ingresar al Sistema</button>
         </div>
     </div>
 
-    <div class="sidebar glass-panel">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9DKXaE2EGzHWqcLHNjIhaUSF1mz1hYh3NuQ&s" alt="Logo" class="brand-logo">
-        
-        <div class="agent-profile">
-            <h3 id="display-agent-name">BackOffice</h3>
-            <p>Estado: Activo</p>
+    <div class="sidebar">
+        <div class="brand">
+            <svg fill="none" stroke="var(--primary)" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+            INT 360 CRM
+        </div>
+        <div class="agent-info">
+            <h3>AGENTE ACTIVO</h3>
+            <p id="display-agent-name">Cargando...</p>
             <button class="btn-logout" onclick="logoutAgent()">Cerrar Sesión</button>
         </div>
-
         <div class="nav-menu">
             <div class="nav-item active" onclick="switchView('workspace', this)">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
                 <span>Grabadora Web</span>
             </div>
             <div class="nav-item" onclick="switchView('history', this)">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                <span>Auditoría de Archivos</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                <span>Auditoría e Historial</span>
             </div>
         </div>
     </div>
 
     <div class="main-wrapper">
-        <header class="top-header glass-panel">
-            <div class="header-title" id="top-title">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                Interconexiones 360
-            </div>
-            <div class="avatar">
-                <img src="https://start-up.pe/wp-content/uploads/2023/02/Internet-WOW.jpg" alt="User" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-            </div>
-        </header>
+        <div class="header" id="top-title">Grabadora Web</div>
 
         <div id="view-workspace" class="view-section active">
-            <div class="workspace-grid">
-                
-                <div class="card glass-panel">
-                    <div class="card-header">Terminal de Grabación</div>
-                    <div class="card-body">
-                        <div class="recorder-display">
-                            <div class="status-text" id="status-text">ESPERANDO INICIO</div>
-                            <div class="timer-text" id="timer">00:00:00</div>
-                            <div class="audio-wave" id="audio-wave">
-                                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                            </div>
-                        </div>
-                        <div class="controls-row">
-                            <button class="btn-round btn-record" id="btn-record" onclick="startRecording()" title="Iniciar Grabación">
-                                <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
-                            </button>
-                            <button class="btn-round btn-pause" id="btn-pause" onclick="togglePause()" disabled title="Pausar / Reanudar">
-                                <svg id="icon-pause" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                            </button>
-                            <button class="btn-round btn-stop" id="btn-stop" onclick="stopRecording()" disabled title="Detener Grabación">
-                                <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
-                            </button>
-                        </div>
+            <div class="recorder-container">
+                <div class="card recorder-box">
+                    <div class="status-badge" id="status-text">LISTO PARA GRABAR</div>
+                    <div class="timer" id="timer">00:00:00</div>
+                    
+                    <div class="controls">
+                        <button class="btn-ctrl btn-record" id="btn-record" onclick="startRecording()" title="Iniciar">
+                            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
+                        </button>
+                        <button class="btn-ctrl btn-pause" id="btn-pause" onclick="togglePause()" disabled title="Pausar">
+                            <svg id="icon-pause" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        </button>
+                        <button class="btn-ctrl btn-stop" id="btn-stop" onclick="stopRecording()" disabled title="Detener">
+                            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
+                        </button>
                     </div>
-                </div>
 
-                <div class="card glass-panel">
-                    <div class="card-header">Validación y Exportación</div>
-                    <div class="card-body" style="justify-content: center;">
-                        <div class="decoration-container">
-                            <img src="https://start-up.pe/wp-content/uploads/2023/02/Internet-WOW.jpg" alt="Magic Crystal" class="magic-crystal" id="magic-crystal">
-                        </div>
-                        <label class="form-label">Nombre de la Interacción (DNI/Cliente)</label>
-                        <input type="text" class="form-input" id="record-title" placeholder="Ej: ALVARADO PINEDO" autocomplete="off">
-                        <button class="btn-save" id="btn-save" disabled onclick="saveRecordingData()">Exportar y Registrar</button>
+                    <div style="border-top: 1px solid var(--border); padding-top: 30px; margin-top: 10px;">
+                        <input type="text" class="form-input" id="record-title" placeholder="DNI o Nombre del Cliente" autocomplete="off" style="text-align: center;">
+                        <button class="btn-main" id="btn-save" disabled onclick="saveRecordingData()">Exportar y Registrar Audio</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="view-history" class="view-section">
-            <div class="card glass-panel" style="height: 100%; min-height: 400px;">
-                
-                <div class="card-header">
-                    <span>Base de Datos Centralizada</span>
-                    <div class="search-box">
-                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Buscar por Nombre del Audio o Agente...">
-                    </div>
-                </div>
-
-                <div class="card-body" style="padding: 0;">
-                    <div class="history-table-wrapper">
-                        <table class="history-table" id="historyTable">
-                            <thead>
-                                <tr>
-                                    <th>Fecha de Creación</th>
-                                    <th>Nombre del Archivo</th>
-                                    <th>Agente / Usuario</th>
-                                    <th style="text-align: right;">Duración</th>
-                                    <th style="text-align: center;">Escuchar / Bajar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-body">
-                                </tbody>
-                        </table>
-                    </div>
+            <div class="table-header">
+                <h2 style="font-size: 18px; font-weight: 600;">Base de Datos Centralizada</h2>
+                <div class="search-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="searchInput" onkeyup="filterHistory()" placeholder="Buscar DNI o Agente...">
                 </div>
             </div>
-        </div>
 
-        <div id="toast" class="toast">
-            <svg fill="currentColor" viewBox="0 0 20 20" style="color: var(--success); flex-shrink: 0; width: 24px; height: 24px;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-            <span id="toast-msg">Operación Exitosa</span>
+            <div class="table-container">
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Identificador (Archivo)</th>
+                            <th>Agente</th>
+                            <th>Duración</th>
+                            <th style="text-align: right;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        </tbody>
+                </table>
+            </div>
         </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <svg fill="currentColor" viewBox="0 0 20 20" width="20" height="20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+        <span id="toast-msg">Mensaje</span>
     </div>
 
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN DE FIREBASE (BÓVEDA CENTRAL)
+        // 1. CONFIGURACIÓN DE FIREBASE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
@@ -350,7 +253,7 @@
         const storage = firebase.storage(); 
 
         // ==========================================
-        // GESTIÓN DE SESIÓN (LOGIN)
+        // GESTIÓN DE SESIÓN
         // ==========================================
         let currentUser = "";
 
@@ -374,7 +277,7 @@
         function loginAgent() {
             const nameInput = document.getElementById('agent-input').value.trim();
             if (!nameInput) {
-                alert("Por favor, ingresa tu nombre de agente para continuar.");
+                alert("Ingresa tu nombre para continuar.");
                 return;
             }
             currentUser = nameInput;
@@ -382,7 +285,7 @@
             
             document.getElementById('login-overlay').classList.add('hidden');
             document.getElementById('display-agent-name').innerText = currentUser;
-            showToast(`Bienvenido al sistema, ${currentUser}`);
+            showToast(`Bienvenido, ${currentUser}`);
         }
 
         function logoutAgent() {
@@ -401,40 +304,26 @@
             element.classList.add('active');
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
-            document.getElementById('top-title').innerHTML = viewId === 'workspace' 
-                ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg> Interconexiones 360' 
-                : '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Auditoría de Archivos';
+            document.getElementById('top-title').innerText = viewId === 'workspace' ? 'Grabadora Web' : 'Auditoría e Historial';
         }
 
         function showToast(msg) {
             document.getElementById('toast-msg').innerText = msg;
             const toast = document.getElementById('toast');
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // ==========================================
-        // BUSCADOR AVANZADO (Nombre y Agente)
-        // ==========================================
         function filterHistory() {
-            const input = document.getElementById("searchInput");
-            const filter = input.value.toUpperCase();
-            const table = document.getElementById("historyTable");
-            const tr = table.getElementsByTagName("tr");
+            const filter = document.getElementById("searchInput").value.toUpperCase();
+            const tr = document.getElementById("historyTable").getElementsByTagName("tr");
 
             for (let i = 1; i < tr.length; i++) {
                 let tdName = tr[i].getElementsByTagName("td")[1];
                 let tdAgent = tr[i].getElementsByTagName("td")[2];
-                
                 if (tdName || tdAgent) {
-                    let textName = tdName.textContent || tdName.innerText;
-                    let textAgent = tdAgent.textContent || tdAgent.innerText;
-                    
-                    if (textName.toUpperCase().indexOf(filter) > -1 || textAgent.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
+                    let textContent = (tdName.textContent || tdName.innerText) + " " + (tdAgent.textContent || tdAgent.innerText);
+                    tr[i].style.display = textContent.toUpperCase().indexOf(filter) > -1 ? "" : "none";
                 }
             }
         }
@@ -452,10 +341,7 @@
         let audioBlobFinal = null;
 
         const elTimer = document.getElementById('timer');
-        const elWave = document.getElementById('audio-wave');
         const elStatus = document.getElementById('status-text');
-        const elCrystal = document.getElementById('magic-crystal');
-        
         const btnRecord = document.getElementById('btn-record');
         const btnPause = document.getElementById('btn-pause');
         const iconPause = document.getElementById('icon-pause');
@@ -484,7 +370,7 @@
                     audioBlobFinal = new Blob(audioChunks, { type: 'audio/webm' });
                     btnSave.disabled = false;
                     document.getElementById('record-title').focus();
-                    showToast("Audio listo. Asigna un nombre para exportar el archivo.");
+                    showToast("Audio completado. Asigna DNI para guardar.");
                 };
 
                 mediaRecorder.start();
@@ -498,19 +384,15 @@
                 
                 updatePauseIcon();
                 
-                elStatus.textContent = "● GRABANDO EN VIVO";
-                elStatus.classList.remove('paused');
-                elStatus.classList.add('recording');
-                elWave.classList.add('active');
-                
-                elCrystal.classList.add('recording'); 
+                elStatus.textContent = "● GRABANDO";
+                elStatus.className = "status-badge recording";
 
                 sec = 0; 
                 elTimer.textContent = "00:00:00";
                 startTimer();
 
             } catch (err) {
-                alert("Permite el acceso al micrófono en tu navegador para continuar.");
+                alert("Debes permitir el acceso al micrófono.");
             }
         }
 
@@ -521,35 +403,22 @@
                 mediaRecorder.resume();
                 isPaused = false;
                 startTimer(); 
-
-                elStatus.textContent = "● GRABANDO EN VIVO";
-                elStatus.classList.remove('paused');
-                elStatus.classList.add('recording');
-                
-                elWave.classList.add('active');
-                
-                updatePauseIcon();
+                elStatus.textContent = "● GRABANDO";
+                elStatus.className = "status-badge recording";
             } else {
                 mediaRecorder.pause();
                 isPaused = true;
                 clearInterval(timerInt);
-
                 elStatus.textContent = "⏸ EN PAUSA";
-                elStatus.classList.remove('recording');
-                elStatus.classList.add('paused');
-                
-                elWave.classList.remove('active');
-                
-                updatePauseIcon();
+                elStatus.className = "status-badge paused";
             }
+            updatePauseIcon();
         }
 
         function updatePauseIcon() {
-            if (isPaused) {
-                iconPause.innerHTML = '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>';
-            } else {
-                iconPause.innerHTML = '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
-            }
+            iconPause.innerHTML = isPaused 
+                ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>'
+                : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
         }
 
         function stopRecording() {
@@ -566,32 +435,26 @@
             btnPause.disabled = true;
             btnStop.disabled = true;
             
-            elStatus.textContent = "AUDIO DETENIDO / EXPORTA";
-            elStatus.classList.remove('recording', 'paused');
-            elWave.classList.remove('active');
-            
-            elCrystal.classList.remove('recording'); 
-            
+            elStatus.textContent = "AUDIO DETENIDO";
+            elStatus.className = "status-badge";
             updatePauseIcon();
         }
 
         // ==========================================
-        // EXPORTACIÓN FÍSICA Y GUARDADO EN LA NUBE (OPTIMIZADO)
+        // EXPORTACIÓN Y GUARDADO FIREBASE
         // ==========================================
         async function saveRecordingData() {
-            let title = document.getElementById('record-title').value.trim();
-            if(!title) title = "Audio_Generico";
-            
+            let title = document.getElementById('record-title').value.trim() || "Audio_Sin_DNI";
             const fileTimestamp = Date.now();
             const cloudFileName = `audios/${title}_${fileTimestamp}.webm`;
             const localFileName = `${title}.webm`;
 
             try {
-                // 1. DESCARGA LOCAL INMEDIATA
+                // Descarga local
                 if (window.showSaveFilePicker) {
                     const handle = await window.showSaveFilePicker({
                         suggestedName: localFileName,
-                        types: [{ description: 'Archivo de Audio', accept: {'audio/webm': ['.webm']} }],
+                        types: [{ description: 'Audio', accept: {'audio/webm': ['.webm']} }],
                     });
                     const writable = await handle.createWritable();
                     await writable.write(audioBlobFinal);
@@ -603,23 +466,21 @@
                     document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 }
 
-                // 2. AVISO VISUAL
-                showToast("Archivo guardado. Sincronizando con la nube en segundo plano...");
+                showToast("Guardado local. Subiendo a la nube...");
 
-                // 3. GUARDAMOS VARIABLES Y RESETEAMOS LA UI
+                // Reset UI
                 const currentAudioBlob = audioBlobFinal; 
                 const currentDuration = lastDuration;
                 
-                document.getElementById('timer').textContent = "00:00:00";
-                document.getElementById('status-text').textContent = "ESPERANDO INICIO";
+                elTimer.textContent = "00:00:00";
+                elStatus.textContent = "LISTO PARA GRABAR";
                 document.getElementById('record-title').value = '';
-                document.getElementById('btn-save').disabled = true;
+                btnSave.disabled = true;
                 audioBlobFinal = null; 
 
-                // 4. SUBIDA A FIREBASE EN SEGUNDO PLANO
+                // Subida Firebase
                 storage.ref(cloudFileName).put(currentAudioBlob).then(async (uploadTask) => {
                     const cloudAudioUrl = await uploadTask.ref.getDownloadURL(); 
-
                     const dateObj = new Date();
                     const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
 
@@ -631,55 +492,42 @@
                         audioUrl: cloudAudioUrl, 
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
-
-                    console.log(`Audio ${title} sincronizado en la nube exitosamente.`);
-                }).catch((err) => {
-                    console.error("Error en la subida de fondo:", err);
+                    console.log(`Audio subido: ${title}`);
                 });
 
             } catch (err) {
-                if (err.name !== 'AbortError') {
-                    console.error(err);
-                    showToast("Error al exportar el archivo.");
-                }
+                if (err.name !== 'AbortError') showToast("Error al exportar.");
             }
         }
 
         // ==========================================
-        // CARGA Y SINCRONIZACIÓN DE LA TABLA (SIN LÍMITE)
+        // TABLA DE HISTORIAL (SIN LÍMITE)
         // ==========================================
         function loadHistoryTable() {
             const tbody = document.getElementById('history-body');
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Conectando con la Bóveda Central...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">Conectando con base de datos...</td></tr>`;
 
-            // Sin límite de resultados (cargará todo el historial)
             db.collection("historial_llamadas").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
                 tbody.innerHTML = ''; 
-                
                 if (snapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No hay grabaciones en la base de datos central.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">No hay grabaciones registradas.</td></tr>`;
                     return;
                 }
 
                 snapshot.forEach((doc) => {
                     const item = doc.data();
-                    
-                    const downloadButtonHtml = item.audioUrl 
-                        ? `<a href="${item.audioUrl}" target="_blank" class="btn-table-download">⬇ Descargar</a>`
-                        : `<span style="color: var(--text-muted); font-size: 13px;">Sin audio en nube</span>`;
+                    const downloadBtn = item.audioUrl 
+                        ? `<a href="${item.audioUrl}" target="_blank" class="btn-download">Descargar</a>`
+                        : `<span style="color:var(--text-muted); font-size:12px;">Sin archivo</span>`;
 
-                    const row = `<tr>
-                        <td style="color: var(--text-muted); font-family: monospace;">${item.fecha}</td>
-                        <td style="color: white; font-weight: 800; font-size: 16px;">${item.nombre}</td>
-                        <td><span class="agent-tag">${item.agente}</span></td>
-                        <td style="font-family: monospace; font-size: 16px; color: var(--primary); text-align: right;">${item.duracion}</td>
-                        <td style="text-align: center;">${downloadButtonHtml}</td> 
+                    tbody.innerHTML += `<tr>
+                        <td style="color: var(--text-muted);">${item.fecha}</td>
+                        <td style="font-weight: 600;">${item.nombre}</td>
+                        <td><span class="tag">${item.agente}</span></td>
+                        <td style="color: var(--primary); font-family: monospace;">${item.duracion}</td>
+                        <td style="text-align: right;">${downloadBtn}</td> 
                     </tr>`;
-                    tbody.innerHTML += row;
                 });
-            }, (error) => {
-                console.error("Error obteniendo datos: ", error);
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--danger);">Error de conexión con la base de datos.</td></tr>`;
             });
         }
     </script>
