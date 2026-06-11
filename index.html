@@ -646,14 +646,14 @@
         }
 
         // ==========================================
-        // CARGA Y SINCRONIZACIÓN DE LA TABLA (LIMITADO A 30 PARA OPTIMIZAR)
+        // CARGA Y SINCRONIZACIÓN DE LA TABLA (SIN LÍMITE)
         // ==========================================
         function loadHistoryTable() {
             const tbody = document.getElementById('history-body');
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Conectando con la Bóveda Central...</td></tr>`;
 
-            // Limitado a 30 resultados para no sobrecargar el navegador de la oficina
-            db.collection("historial_llamadas").orderBy("timestamp", "desc").limit(30).onSnapshot((snapshot) => {
+            // Sin límite de resultados (cargará todo el historial)
+            db.collection("historial_llamadas").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
                 tbody.innerHTML = ''; 
                 
                 if (snapshot.empty) {
