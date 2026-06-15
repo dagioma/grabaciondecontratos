@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interconexiones 360 - CRM</title>
+    <title>Grabadora Web Profesional</title>
     
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
             --bg-body: #0f172a;       /* Fondo oscuro principal */
             --bg-card: #1e293b;       /* Fondo de paneles */
-            --bg-hover: #334155;
-            --primary: #3b82f6;       /* Azul profesional */
+            --primary: #3b82f6;       /* Azul interactivo */
             --primary-hover: #2563eb;
-            --danger: #ef4444;        /* Rojo para grabar */
-            --warning: #f59e0b;       /* Amarillo para pausa */
-            --success: #10b981;       /* Verde para éxito */
+            --danger: #ef4444;        /* Rojo grabación */
+            --warning: #f59e0b;       /* Amarillo pausa */
+            --success: #10b981;       /* Verde éxito */
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
@@ -29,316 +24,254 @@
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         
         body { 
-            display: flex; height: 100vh; overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            min-height: 100vh; 
             background-color: var(--bg-body);
             color: var(--text-main);
+            padding: 20px;
         }
 
-        /* --- UTILIDADES --- */
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
-        .hidden { display: none !important; }
+        /* --- BARRA DE NAVEGACIÓN (PESTAÑAS) --- */
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 6px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
 
-        /* --- LOGIN --- */
-        .login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-body); z-index: 1000; 
-            display: flex; justify-content: center; align-items: center;
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .login-box {
-            width: 100%; max-width: 400px; padding: 40px; text-align: center;
+
+        .tab-btn svg { width: 18px; height: 18px; }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
         }
-        .login-box h2 { margin-bottom: 8px; font-size: 24px; }
-        .login-box p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+
+        /* --- VISTAS (SECCIONES) --- */
+        .view-section {
+            display: none;
+            width: 100%;
+            max-width: 550px;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- PANEL DE GRABACIÓN --- */
+        .card { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 40px 35px; 
+            text-align: center; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        h2 { margin-bottom: 25px; font-weight: 600; font-size: 22px; color: var(--text-main); }
+
         .form-input {
             width: 100%; padding: 14px; background: var(--bg-body); border: 1px solid var(--border);
             border-radius: 8px; color: white; font-size: 16px; outline: none; margin-bottom: 20px;
-            transition: border-color 0.2s;
+            text-align: center; transition: border-color 0.2s;
         }
         .form-input:focus { border-color: var(--primary); }
+
+        .status-badge { 
+            display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 12px; 
+            font-weight: 700; letter-spacing: 1px; margin-bottom: 25px; 
+            background: var(--border); color: var(--text-muted);
+        }
+        .status-badge.recording { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); animation: pulse 1.5s infinite; }
+        .status-badge.paused { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        .status-badge.success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+        
+        @keyframes pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
+        }
+
+        .timer { font-size: 60px; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 30px; color: white; }
+
+        .controls { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
+        .btn-ctrl { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer; color: white; transition: transform 0.2s, background 0.2s; }
+        .btn-ctrl svg { width: 24px; height: 24px; }
+        .btn-ctrl:disabled { opacity: 0.2; cursor: not-allowed; transform: none !important; }
+        
+        .btn-record { background: var(--danger); }
+        .btn-record:hover:not(:disabled) { transform: scale(1.05); }
+        .btn-pause { background: var(--warning); color: black; }
+        .btn-pause:hover:not(:disabled) { transform: scale(1.05); }
+        .btn-stop { background: #475569; }
+        .btn-stop:hover:not(:disabled) { transform: scale(1.05); }
+
+        .playback-container { margin-top: 20px; display: none; flex-direction: column; gap: 15px; border-top: 1px solid var(--border); padding-top: 25px;}
+        .playback-container.active { display: flex; }
+        audio { width: 100%; outline: none; }
+
         .btn-main {
             width: 100%; padding: 14px; background: var(--primary); color: white;
             border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
             cursor: pointer; transition: background 0.2s;
         }
-        .btn-main:hover:not(:disabled) { background: var(--primary-hover); }
-        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-main:hover { background: var(--primary-hover); }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: 260px; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--bg-card); }
-        .brand { padding: 24px; font-size: 18px; font-weight: 700; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;}
-        
-        .agent-info { padding: 20px 24px; border-bottom: 1px solid var(--border); }
-        .agent-info h3 { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;}
-        .agent-info p { font-size: 16px; font-weight: 600; margin-bottom: 12px; word-break: break-all;}
-        .btn-logout { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; width: 100%; }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
-
-        .nav-menu { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
-        .nav-item { padding: 12px 16px; display: flex; align-items: center; gap: 12px; color: var(--text-muted); border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: 0.2s; }
-        .nav-item:hover, .nav-item.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .nav-item svg { width: 20px; height: 20px; }
-
-        /* --- MAIN CONTENT --- */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .header { height: 70px; display: flex; align-items: center; padding: 0 30px; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 18px; font-weight: 600; }
-        
-        .view-section { display: none; flex: 1; overflow-y: auto; padding: 30px; }
-        .view-section.active { display: block; }
-
-        /* --- WORKSPACE (GRABADORA) --- */
-        .recorder-container { max-width: 600px; margin: 0 auto; }
-        .recorder-box { padding: 40px; text-align: center; margin-bottom: 20px; }
-        
-        .status-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px; background: var(--border); color: var(--text-muted); }
-        .status-badge.recording { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); animation: pulse 1.5s infinite; }
-        .status-badge.paused { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
-        .timer { font-size: 64px; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 40px; color: white; }
-
-        .controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .btn-ctrl { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-ctrl svg { width: 24px; height: 24px; }
-        .btn-ctrl:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
-        
-        .btn-record { background: var(--danger); }
-        .btn-record:hover:not(:disabled) { transform: scale(1.05); }
-        .btn-pause { background: var(--warning); color: black; }
-        .btn-stop { background: var(--border); }
-        .btn-stop:hover:not(:disabled) { background: #475569; }
-
-        /* --- HISTORY TABLE --- */
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .search-box { display: flex; align-items: center; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; width: 300px; }
-        .search-box input { border: none; background: transparent; color: white; padding: 10px; width: 100%; outline: none; font-size: 14px; }
-        .search-box svg { color: var(--text-muted); width: 18px; height: 18px; }
-
-        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: auto; height: calc(100vh - 180px); }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: var(--bg-body); padding: 16px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; position: sticky; top: 0; border-bottom: 1px solid var(--border); }
-        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
-        tr:hover td { background: rgba(255, 255, 255, 0.02); }
-        .tag { background: var(--border); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
-        
-        .btn-download { display: inline-block; background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2); transition: 0.2s;}
-        .btn-download:hover { background: var(--success); color: white; }
-
-        /* --- TOAST --- */
-        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--success); color: white; padding: 16px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: 0.3s ease; z-index: 1000; display: flex; align-items: center; gap: 10px; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; padding: 0; height: 60px; border-right: none; border-bottom: 1px solid var(--border); }
-            .agent-info, .brand { display: none; }
-            .nav-menu { flex-direction: row; padding: 0 10px; width: 100%; justify-content: space-around; }
-            .nav-item { padding: 10px; }
-            .nav-item span { display: none; }
-            .header { display: none; }
-            .table-header { flex-direction: column; gap: 15px; align-items: flex-start; }
-            .search-box { width: 100%; }
+        /* --- VISTA DE HISTORIAL Y BUSCADOR --- */
+        .history-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 14px;
+            margin-bottom: 20px;
+        }
+        .search-box svg { color: var(--text-muted); width: 20px; height: 20px; }
+        .search-input {
+            width: 100%; border: none; background: transparent; color: white;
+            padding: 12px; outline: none; font-size: 14px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 4px;
+        }
+        .history-header h3 { font-size: 15px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .btn-clear {
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-clear:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); }
+
+        .table-wrapper { max-height: 320px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-body); }
+        
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { background: #1e293b; padding: 12px 14px; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; position: sticky; top: 0; border-bottom: 1px solid var(--border); }
+        td { padding: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+        
+        .empty-msg { text-align: center; color: var(--text-muted); padding: 30px; font-size: 13px; }
+        .td-duration { font-family: monospace; color: var(--primary); font-weight: 600; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div class="login-overlay" id="login-overlay">
-        <div class="card login-box">
-            <h2>Acceso BackOffice</h2>
-            <p>Identifícate para iniciar tu jornada</p>
-            <input type="text" id="agent-input" class="form-input" placeholder="Nombre de Agente (Ej: JUAN PEREZ)" autocomplete="off" onkeypress="if(event.key === 'Enter') loginAgent()">
-            <button class="btn-main" onclick="loginAgent()">Ingresar al Sistema</button>
-        </div>
-    </div>
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchView('recorder')">
+            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
+            Grabación
+        </button>
+        <button class="tab-btn" onclick="switchView('history')">
+            <svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+            Historial Local
+        </button>
+    </nav>
 
-    <div class="sidebar">
-        <div class="brand">
-            <svg fill="none" stroke="var(--primary)" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-            INT 360 CRM
-        </div>
-        <div class="agent-info">
-            <h3>AGENTE ACTIVO</h3>
-            <p id="display-agent-name">Cargando...</p>
-            <button class="btn-logout" onclick="logoutAgent()">Cerrar Sesión</button>
-        </div>
-        <div class="nav-menu">
-            <div class="nav-item active" onclick="switchView('workspace', this)">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
-                <span>Grabadora Web</span>
-            </div>
-            <div class="nav-item" onclick="switchView('history', this)">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                <span>Auditoría e Historial</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-wrapper">
-        <div class="header" id="top-title">Grabadora Web</div>
-
-        <div id="view-workspace" class="view-section active">
-            <div class="recorder-container">
-                <div class="card recorder-box">
-                    <div class="status-badge" id="status-text">LISTO PARA GRABAR</div>
-                    <div class="timer" id="timer">00:00:00</div>
-                    
-                    <div class="controls">
-                        <button class="btn-ctrl btn-record" id="btn-record" onclick="startRecording()" title="Iniciar">
-                            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
-                        </button>
-                        <button class="btn-ctrl btn-pause" id="btn-pause" onclick="togglePause()" disabled title="Pausar">
-                            <svg id="icon-pause" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                        </button>
-                        <button class="btn-ctrl btn-stop" id="btn-stop" onclick="stopRecording()" disabled title="Detener">
-                            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
-                        </button>
-                    </div>
-
-                    <div style="border-top: 1px solid var(--border); padding-top: 30px; margin-top: 10px;">
-                        <input type="text" class="form-input" id="record-title" placeholder="DNI o Nombre del Cliente" autocomplete="off" style="text-align: center;">
-                        <button class="btn-main" id="btn-save" disabled onclick="saveRecordingData()">Exportar y Registrar Audio</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-history" class="view-section">
-            <div class="table-header">
-                <h2 style="font-size: 18px; font-weight: 600;">Base de Datos Centralizada</h2>
-                <div class="search-box">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="searchInput" onkeyup="filterHistory()" placeholder="Buscar DNI o Agente...">
-                </div>
+    <section id="view-recorder" class="view-section active">
+        <div class="card">
+            <h2>Grabadora Web</h2>
+            
+            <input type="text" id="record-title" class="form-input" placeholder="Nombre del archivo..." autocomplete="off">
+            
+            <div class="status-badge" id="status-text">LISTO PARA GRABAR</div>
+            <div class="timer" id="timer">00:00</div>
+            
+            <div class="controls">
+                <button class="btn-ctrl btn-record" id="btn-record" onclick="startRecording()" title="Iniciar">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
+                </button>
+                <button class="btn-ctrl btn-pause" id="btn-pause" onclick="togglePause()" disabled title="Pausar / Reanudar">
+                    <svg id="icon-pause" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                </button>
+                <button class="btn-ctrl btn-stop" id="btn-stop" onclick="stopRecording()" disabled title="Detener">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
+                </button>
             </div>
 
-            <div class="table-container">
-                <table id="historyTable">
+            <div class="playback-container" id="playback-container">
+                <audio id="audio-playback" controls></audio>
+                <button class="btn-main" id="btn-save" onclick="saveAudio()">Elegir carpeta y Guardar</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-history" class="view-section">
+        <div class="history-card">
+            <div class="search-box">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="search-input" class="search-input" placeholder="Buscar por nombre de archivo o fecha..." oninput="filterHistory()">
+            </div>
+
+            <div class="history-header">
+                <h3>Registros en este equipo</h3>
+                <button class="btn-clear" onclick="clearHistory()">Limpiar todo</button>
+            </div>
+            
+            <div class="table-wrapper">
+                <table>
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th>Identificador (Archivo)</th>
-                            <th>Agente</th>
+                            <th>Fecha / Hora</th>
+                            <th>Nombre de Archivo</th>
                             <th>Duración</th>
-                            <th style="text-align: right;">Acción</th>
                         </tr>
                     </thead>
-                    <tbody id="history-body">
-                        </tbody>
+                    <tbody id="history-body"></tbody>
                 </table>
+                <div id="empty-state" class="empty-msg">No se encontraron registros.</div>
             </div>
         </div>
-    </div>
-
-    <div id="toast" class="toast">
-        <svg fill="currentColor" viewBox="0 0 20 20" width="20" height="20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-        <span id="toast-msg">Mensaje</span>
-    </div>
+    </section>
 
     <script>
-        // ==========================================
-        // 1. CONFIGURACIÓN DE FIREBASE
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
-            authDomain: "crm-telecom-db014.firebaseapp.com",
-            projectId: "crm-telecom-db014",
-            storageBucket: "crm-telecom-db014.firebasestorage.app",
-            messagingSenderId: "92366048720",
-            appId: "1:92366048720:web:f45c610cdb1ed6326d7dd5",
-            measurementId: "G-XXYC3NXKDG"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage(); 
-
-        // ==========================================
-        // GESTIÓN DE SESIÓN
-        // ==========================================
-        let currentUser = "";
-
-        window.onload = function() {
-            checkSession();
-            loadHistoryTable();
-        };
-
-        function checkSession() {
-            const savedUser = localStorage.getItem('InterconexionesUser');
-            if (savedUser) {
-                currentUser = savedUser;
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('display-agent-name').innerText = currentUser;
-            } else {
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('agent-input').focus();
-            }
-        }
-
-        function loginAgent() {
-            const nameInput = document.getElementById('agent-input').value.trim();
-            if (!nameInput) {
-                alert("Ingresa tu nombre para continuar.");
-                return;
-            }
-            currentUser = nameInput;
-            localStorage.setItem('InterconexionesUser', currentUser);
-            
-            document.getElementById('login-overlay').classList.add('hidden');
-            document.getElementById('display-agent-name').innerText = currentUser;
-            showToast(`Bienvenido, ${currentUser}`);
-        }
-
-        function logoutAgent() {
-            localStorage.removeItem('InterconexionesUser');
-            currentUser = "";
-            document.getElementById('login-overlay').classList.remove('hidden');
-            document.getElementById('agent-input').value = "";
-            document.getElementById('agent-input').focus();
-        }
-
-        // ==========================================
-        // UI Y NAVEGACIÓN
-        // ==========================================
-        function switchView(viewId, element) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${viewId}`).classList.add('active');
-            document.getElementById('top-title').innerText = viewId === 'workspace' ? 'Grabadora Web' : 'Auditoría e Historial';
-        }
-
-        function showToast(msg) {
-            document.getElementById('toast-msg').innerText = msg;
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        function filterHistory() {
-            const filter = document.getElementById("searchInput").value.toUpperCase();
-            const tr = document.getElementById("historyTable").getElementsByTagName("tr");
-
-            for (let i = 1; i < tr.length; i++) {
-                let tdName = tr[i].getElementsByTagName("td")[1];
-                let tdAgent = tr[i].getElementsByTagName("td")[2];
-                if (tdName || tdAgent) {
-                    let textContent = (tdName.textContent || tdName.innerText) + " " + (tdAgent.textContent || tdAgent.innerText);
-                    tr[i].style.display = textContent.toUpperCase().indexOf(filter) > -1 ? "" : "none";
-                }
-            }
-        }
-
-        // ==========================================
-        // LÓGICA DE GRABACIÓN
-        // ==========================================
         let mediaRecorder;
         let audioChunks = [];
-        let isRecording = false;
-        let isPaused = false;
         let timerInt;
         let sec = 0;
-        let lastDuration = "";
         let audioBlobFinal = null;
+        let lastDuration = "00:00"; 
 
         const elTimer = document.getElementById('timer');
         const elStatus = document.getElementById('status-text');
@@ -346,189 +279,204 @@
         const btnPause = document.getElementById('btn-pause');
         const iconPause = document.getElementById('icon-pause');
         const btnStop = document.getElementById('btn-stop');
-        const btnSave = document.getElementById('btn-save');
+        const playbackContainer = document.getElementById('playback-container');
+        const audioPlayback = document.getElementById('audio-playback');
+        const inputTitle = document.getElementById('record-title');
+        const historyBody = document.getElementById('history-body');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
 
-        function startTimer() {
-            timerInt = setInterval(() => {
-                sec++;
-                const h = String(Math.floor(sec / 3600)).padStart(2, '0');
-                const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
-                const s = String(sec % 60).padStart(2, '0');
-                elTimer.textContent = `${h}:${m}:${s}`;
-            }, 1000);
+        window.onload = () => { renderHistory(); };
+
+        // --- SISTEMA DE CAMBIO DE PESTAÑAS (VISTAS) ---
+        function switchView(viewId) {
+            // Alternar clases activas en botones
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Alternar visibilidad de las secciones
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+
+            // Recargar datos o limpiar buscador al cambiar al historial
+            if (viewId === 'history') {
+                searchInput.value = ""; 
+                renderHistory();
+            }
         }
 
+        // --- LÓGICA DEL TEMPORIZADOR ---
+        function updateTimerDisplay() {
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            elTimer.textContent = `${m}:${s}`;
+        }
+
+        function startTimer() {
+            timerInt = setInterval(() => { sec++; updateTimerDisplay(); }, 1000);
+        }
+
+        // --- CONTROLADORES DE AUDIO ---
         async function startRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
 
-                mediaRecorder.ondataavailable = event => { audioChunks.push(event.data); };
-                
+                mediaRecorder.ondataavailable = event => { if(event.data.size > 0) audioChunks.push(event.data); };
                 mediaRecorder.onstop = () => {
                     audioBlobFinal = new Blob(audioChunks, { type: 'audio/webm' });
-                    btnSave.disabled = false;
-                    document.getElementById('record-title').focus();
-                    showToast("Audio completado. Asigna DNI para guardar.");
+                    audioPlayback.src = URL.createObjectURL(audioBlobFinal);
+                    playbackContainer.classList.add('active');
                 };
 
                 mediaRecorder.start();
-                isRecording = true;
-                isPaused = false;
-                
-                btnRecord.disabled = true;
-                btnPause.disabled = false;
-                btnStop.disabled = false;
-                btnSave.disabled = true;
-                
-                updatePauseIcon();
-                
-                elStatus.textContent = "● GRABANDO";
-                elStatus.className = "status-badge recording";
-
-                sec = 0; 
-                elTimer.textContent = "00:00:00";
-                startTimer();
-
+                playbackContainer.classList.remove('active');
+                btnRecord.disabled = true; btnPause.disabled = false; btnStop.disabled = false;
+                updatePauseIcon(false);
+                elStatus.textContent = "● GRABANDO"; elStatus.className = "status-badge recording";
+                sec = 0; updateTimerDisplay(); startTimer();
             } catch (err) {
-                alert("Debes permitir el acceso al micrófono.");
+                alert("Permiso de micrófono denegado.");
             }
         }
 
         function togglePause() {
-            if (!isRecording) return;
-
-            if (isPaused) {
-                mediaRecorder.resume();
-                isPaused = false;
-                startTimer(); 
-                elStatus.textContent = "● GRABANDO";
-                elStatus.className = "status-badge recording";
-            } else {
-                mediaRecorder.pause();
-                isPaused = true;
-                clearInterval(timerInt);
-                elStatus.textContent = "⏸ EN PAUSA";
-                elStatus.className = "status-badge paused";
+            if (!mediaRecorder) return;
+            if (mediaRecorder.state === "recording") {
+                mediaRecorder.pause(); clearInterval(timerInt);
+                elStatus.textContent = "⏸ EN PAUSA"; elStatus.className = "status-badge paused";
+                updatePauseIcon(true);
+            } else if (mediaRecorder.state === "paused") {
+                mediaRecorder.resume(); startTimer(); 
+                elStatus.textContent = "● GRABANDO"; elStatus.className = "status-badge recording";
+                updatePauseIcon(false);
             }
-            updatePauseIcon();
         }
 
-        function updatePauseIcon() {
+        function updatePauseIcon(isPaused) {
             iconPause.innerHTML = isPaused 
                 ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>'
                 : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
         }
 
         function stopRecording() {
-            if(!isRecording) return;
+            if(!mediaRecorder || mediaRecorder.state === "inactive") return;
             mediaRecorder.stop();
             mediaRecorder.stream.getTracks().forEach(track => track.stop());
-            
             clearInterval(timerInt);
-            lastDuration = elTimer.textContent;
-            isRecording = false;
-            isPaused = false;
-
-            btnRecord.disabled = false;
-            btnPause.disabled = true;
-            btnStop.disabled = true;
             
-            elStatus.textContent = "AUDIO DETENIDO";
-            elStatus.className = "status-badge";
-            updatePauseIcon();
+            lastDuration = elTimer.textContent; 
+            
+            btnRecord.disabled = false; btnPause.disabled = true; btnStop.disabled = true;
+            elStatus.textContent = "AUDIO PROCESADO"; elStatus.className = "status-badge";
+            updatePauseIcon(false);
         }
 
-        // ==========================================
-        // EXPORTACIÓN Y GUARDADO FIREBASE
-        // ==========================================
-        async function saveRecordingData() {
-            let title = document.getElementById('record-title').value.trim() || "Audio_Sin_DNI";
-            const fileTimestamp = Date.now();
-            const cloudFileName = `audios/${title}_${fileTimestamp}.webm`;
-            const localFileName = `${title}.webm`;
+        // --- EXPORTACIÓN Y PERSISTENCIA ---
+        async function saveAudio() {
+            if (!audioBlobFinal) return;
+            let title = inputTitle.value.trim() || "Audio_Grabado";
 
-            try {
-                // Descarga local
-                if (window.showSaveFilePicker) {
+            if (window.showSaveFilePicker) {
+                try {
                     const handle = await window.showSaveFilePicker({
-                        suggestedName: localFileName,
-                        types: [{ description: 'Audio', accept: {'audio/webm': ['.webm']} }],
+                        suggestedName: `${title}.webm`,
+                        types: [{ description: 'Audio WebM', accept: { 'audio/webm': ['.webm'] } }],
                     });
                     const writable = await handle.createWritable();
                     await writable.write(audioBlobFinal);
                     await writable.close();
-                } else {
-                    const audioUrl = URL.createObjectURL(audioBlobFinal);
-                    const a = document.createElement('a');
-                    a.href = audioUrl; a.download = localFileName;
-                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                    
+                    addRecordToLocalStorage(title, lastDuration);
+                    resetUI();
+                } catch (err) {
+                    console.log("Guardado cancelado por el usuario.");
                 }
-
-                showToast("Guardado local. Subiendo a la nube...");
-
-                // Reset UI
-                const currentAudioBlob = audioBlobFinal; 
-                const currentDuration = lastDuration;
+            } else {
+                const audioUrl = URL.createObjectURL(audioBlobFinal);
+                const a = document.createElement('a');
+                a.href = audioUrl; a.download = `${title}.webm`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 
-                elTimer.textContent = "00:00:00";
-                elStatus.textContent = "LISTO PARA GRABAR";
-                document.getElementById('record-title').value = '';
-                btnSave.disabled = true;
-                audioBlobFinal = null; 
-
-                // Subida Firebase
-                storage.ref(cloudFileName).put(currentAudioBlob).then(async (uploadTask) => {
-                    const cloudAudioUrl = await uploadTask.ref.getDownloadURL(); 
-                    const dateObj = new Date();
-                    const dateStr = `${String(dateObj.getDate()).padStart(2,'0')}/${String(dateObj.getMonth()+1).padStart(2,'0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
-
-                    await db.collection("historial_llamadas").add({
-                        fecha: dateStr,
-                        nombre: title,
-                        duracion: currentDuration,
-                        agente: currentUser,
-                        audioUrl: cloudAudioUrl, 
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    console.log(`Audio subido: ${title}`);
-                });
-
-            } catch (err) {
-                if (err.name !== 'AbortError') showToast("Error al exportar.");
+                addRecordToLocalStorage(title, lastDuration);
+                resetUI();
             }
         }
 
-        // ==========================================
-        // TABLA DE HISTORIAL (SIN LÍMITE)
-        // ==========================================
-        function loadHistoryTable() {
-            const tbody = document.getElementById('history-body');
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">Conectando con base de datos...</td></tr>`;
+        function resetUI() {
+            elStatus.textContent = "✓ GUARDADO Y REGISTRADO";
+            elStatus.className = "status-badge success";
+            inputTitle.value = "";
+            playbackContainer.classList.remove('active');
+            elTimer.textContent = "00:00";
+        }
 
-            db.collection("historial_llamadas").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-                tbody.innerHTML = ''; 
-                if (snapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">No hay grabaciones registradas.</td></tr>`;
-                    return;
-                }
+        function addRecordToLocalStorage(nombre, duracion) {
+            const ahora = new Date();
+            const fechaStr = `${String(ahora.getDate()).padStart(2, '0')}/${String(ahora.getMonth() + 1).padStart(2, '0')}/${ahora.getFullYear()} ${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
 
-                snapshot.forEach((doc) => {
-                    const item = doc.data();
-                    const downloadBtn = item.audioUrl 
-                        ? `<a href="${item.audioUrl}" target="_blank" class="btn-download">Descargar</a>`
-                        : `<span style="color:var(--text-muted); font-size:12px;">Sin archivo</span>`;
+            let localHistory = JSON.parse(localStorage.getItem('app_audio_history')) || [];
+            localHistory.unshift({ fecha: fechaStr, nombre: nombre, duracion: duracion });
+            localStorage.setItem('app_audio_history', JSON.stringify(localHistory));
+        }
 
-                    tbody.innerHTML += `<tr>
-                        <td style="color: var(--text-muted);">${item.fecha}</td>
-                        <td style="font-weight: 600;">${item.nombre}</td>
-                        <td><span class="tag">${item.agente}</span></td>
-                        <td style="color: var(--primary); font-family: monospace;">${item.duracion}</td>
-                        <td style="text-align: right;">${downloadBtn}</td> 
-                    </tr>`;
-                });
+        // --- RENDEREADO Y FILTRADO DEL HISTORIAL ---
+        function renderHistory() {
+            let localHistory = JSON.parse(localStorage.getItem('app_audio_history')) || [];
+            historyBody.innerHTML = "";
+
+            if (localHistory.length === 0) {
+                emptyState.style.display = "block";
+                emptyState.textContent = "No hay audios registrados en este equipo.";
+                return;
+            }
+
+            emptyState.style.display = "none";
+            localHistory.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="color: var(--text-muted);">${item.fecha}</td>
+                    <td style="font-weight: 500;">${item.nombre}</td>
+                    <td class="td-duration">${item.duracion}</td>
+                `;
+                historyBody.appendChild(row);
             });
+        }
+
+        // FUNCIÓN DEL BUSCADOR EN TIEMPO REAL
+        function filterHistory() {
+            const filterValue = searchInput.value.toLowerCase().trim();
+            const rows = historyBody.getElementsByTagName('tr');
+            let visibleRowsCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                // Obtener texto de la fecha (columna 0) y del nombre (columna 1)
+                const dateText = rows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+                const nameText = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+
+                if (dateText.includes(filterValue) || nameText.includes(filterValue)) {
+                    rows[i].style.display = "";
+                    visibleRowsCount++;
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+
+            // Mostrar mensaje de vacío si no coincide nada con la búsqueda
+            if (visibleRowsCount === 0 && rows.length > 0) {
+                emptyState.style.display = "block";
+                emptyState.textContent = "No se encontraron resultados para tu búsqueda.";
+            } else if (rows.length > 0) {
+                emptyState.style.display = "none";
+            }
+        }
+
+        function clearHistory() {
+            if (confirm("¿Estás seguro de que deseas borrar todo el historial de registros de esta computadora?")) {
+                localStorage.removeItem('app_audio_history');
+                renderHistory();
+            }
         }
     </script>
 </body>
