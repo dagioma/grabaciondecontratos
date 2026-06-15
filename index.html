@@ -136,7 +136,6 @@
 
         .playback-container { margin-top: 20px; display: none; flex-direction: column; gap: 15px; border-top: 1px solid var(--border); padding-top: 25px;}
         .playback-container.active { display: flex; }
-        audio { width: 100%; outline: none; }
 
         .btn-main {
             width: 100%; padding: 14px; background: var(--primary); color: white;
@@ -231,7 +230,6 @@
             </div>
 
             <div class="playback-container" id="playback-container">
-                <audio id="audio-playback" controls></audio>
                 <button class="btn-main" id="btn-save" onclick="saveAudio()">Elegir carpeta y Guardar</button>
             </div>
         </div>
@@ -280,7 +278,6 @@
         const iconPause = document.getElementById('icon-pause');
         const btnStop = document.getElementById('btn-stop');
         const playbackContainer = document.getElementById('playback-container');
-        const audioPlayback = document.getElementById('audio-playback');
         const inputTitle = document.getElementById('record-title');
         const historyBody = document.getElementById('history-body');
         const emptyState = document.getElementById('empty-state');
@@ -326,7 +323,6 @@
                 mediaRecorder.ondataavailable = event => { if(event.data.size > 0) audioChunks.push(event.data); };
                 mediaRecorder.onstop = () => {
                     audioBlobFinal = new Blob(audioChunks, { type: 'audio/webm' });
-                    audioPlayback.src = URL.createObjectURL(audioBlobFinal);
                     playbackContainer.classList.add('active');
                 };
 
