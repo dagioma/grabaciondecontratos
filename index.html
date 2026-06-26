@@ -643,22 +643,10 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
                 <input type="text" id="call-rec-name" class="inp" placeholder="ej. cliente_venta_001" style="font-size:13px;">
               </div>
 
-              <div style="margin-bottom:18px;">
-                <label class="field-label">Resultado / Tipificación</label>
-                <select id="call-typification" class="inp">
-                  <option value="" disabled selected>— Selecciona tipificación —</option>
-                  <option value="Venta Cerrada">✅ Venta Cerrada (Aprobada)</option>
-                  <option value="Interesado - Agendar">⏳ Interesado – Agendar llamada</option>
-                  <option value="Rechaza / No le interesa">❌ No le interesa / Rechaza</option>
-                  <option value="Buzón / No contesta">📞 Buzón / No contesta</option>
-                  <option value="Número incorrecto">🚫 Número incorrecto</option>
-                </select>
-              </div>
-
               <button class="end-call-btn" onclick="endCall()">
                 <svg style="width:26px;height:26px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" transform="rotate(135 10 10) translate(-10 -10) translate(10 10)"></path></svg>
               </button>
-              <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:-10px;">Colgar y registrar gestión</div>
+              <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:-10px;">Colgar</div>
             </div>
           </div>
         </div>
@@ -1093,7 +1081,6 @@ function startMockCall() {
 
     document.getElementById('call-avatar-letter').textContent = '👤';
     document.getElementById('call-phone-display').textContent = phone;
-    document.getElementById('call-typification').value='';
     document.getElementById('call-rec-name').value=`Llamada_${phone}`;
     document.getElementById('rec-in-call-btn').classList.remove('recording-active');
     document.getElementById('rec-in-call-label').textContent='Grabar';
@@ -1176,9 +1163,7 @@ async function downloadDuringCall() {
 
 async function endCall() {
   const phone = document.getElementById('client-phone').value.trim();
-  const typi = document.getElementById('call-typification').value;
   const dur = document.getElementById('call-timer').textContent;
-  if(!typi) return showToast('Selecciona una tipificación','⚠️');
 
   playHangupTone();
   clearInterval(callInterval);
@@ -1193,22 +1178,34 @@ async function endCall() {
   const blobA = currentCallAudioBlob;
 
   resetCallUI();
-  showToast('Gestión registrada. Guardando…','⏳');
+
+  const finalBlob = blobA || (chunksA.length>0 ? new Blob(chunksA,{type:'audio/webm'}) : null);
+  
+  if (!finalBlob) {
+    showToast('Llamada finalizada (Sin grabación)','📞');
+    return; // Si no hay audio grabado, no se registra en la base de datos
+  }
+
+  showToast('Guardando grabación…','⏳');
 
   setTimeout(async()=>{
-    const finalBlob = blobA || (chunksA.length>0 ? new Blob(chunksA,{type:'audio/webm'}) : null);
     let audioUrl = null;
-    if(finalBlob){
-      try {
-        const tsName=`${nameInput}_${Date.now()}.webm`;
-        const snap=await storage.ref(`audios_crm/${tsName}`).put(finalBlob);
-        audioUrl=await snap.ref.getDownloadURL();
-      } catch(e){ console.error(e); }
-    }
     try {
-      await db.collection('historial_llamadas').add({fecha:getDateStr(),nombre:nameInput,tipo:typi,duracion:dur,agente:CUP.name,audioUrl,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      showToast('Gestión guardada en Firebase','✅');
-    } catch(e){ console.error(e); }
+      const tsName=`${nameInput}_${Date.now()}.webm`;
+      const snap=await storage.ref(`audios_crm/${tsName}`).put(finalBlob);
+      audioUrl=await snap.ref.getDownloadURL();
+      
+      await db.collection('historial_llamadas').add({
+        fecha:getDateStr(),
+        nombre:nameInput,
+        tipo:'Grabación de Llamada',
+        duracion:dur,
+        agente:CUP.name,
+        audioUrl:audioUrl,
+        timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('Grabación guardada en Firebase','✅');
+    } catch(e){ console.error(e); showToast('Error al guardar','❌'); }
   },400);
 }
 
