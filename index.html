@@ -497,6 +497,12 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
         <span>Chat Equipo</span>
         <div class="notif-dot"></div>
       </div>
+      <div class="nav-item" onclick="goto('music', this)">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+        </svg>
+        <span>Música YT</span>
+      </div>
     </nav>
     <div class="sb-footer">
       <button class="btn danger" onclick="doLogout()" style="font-size:13px;padding:10px;">Cerrar sesión</button>
@@ -711,6 +717,31 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="v-music">
+        <div class="card" style="max-width: 650px; margin: 0 auto;">
+          <div class="card-head">Buscador de YouTube</div>
+          <div class="card-body">
+            
+            <div class="search-bar" style="margin-bottom: 20px;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
+              <input type="text" id="yt-search-input" placeholder="Buscar canciones, artistas, mixes..." onkeypress="if(event.key==='Enter')searchYouTube()">
+              <button class="btn sm info-btn" onclick="searchYouTube()">Buscar</button>
+            </div>
+
+            <div id="yt-player-wrapper" style="display: none; margin-bottom: 20px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--border);">
+              <iframe id="yt-iframe" width="100%" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+
+            <div id="yt-results-list" style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">
+                Busca una canción para empezar a escuchar.
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -930,14 +961,17 @@ function goto(viewId, element) {
   if(target) target.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if(element) element.classList.add('active');
+  
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
     recorder:  { t:'Grabadora', s:'Captura de audio' },
     call:      { t:'Gestión de Llamadas', s:'Consola telefónica' },
     history:   { t:'Auditoría', s:'Historial de gestiones' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
-    chat:      { t:'Chat de Equipo', s:'Comunicación interna' }
+    chat:      { t:'Chat de Equipo', s:'Comunicación interna' },
+    music:     { t:'Reproductor', s:'Música de fondo' }
   };
+  
   if(titles[viewId]) {
     document.getElementById('page-title').textContent = titles[viewId].t;
     document.getElementById('page-sub').textContent = titles[viewId].s;
@@ -1187,7 +1221,7 @@ function resetCallUI() {
   document.getElementById('call-start-btn').classList.add('ringing');
 }
 
-// ── FIREBASE LISTENERS (CORREGIDOS) ──
+// ── FIREBASE LISTENERS ──
 function initListeners() {
   console.log("⏳ Sincronizando datos con Firebase...");
 
@@ -1196,7 +1230,6 @@ function initListeners() {
     const box = document.getElementById('chat-msgs'); box.innerHTML = ''; let c = 0;
     snap.forEach(doc => {
       c++; const m = doc.data(); const isMe = m.uid === CU.uid; 
-      // Se mantiene la validación de 'ia' en caso de que hayan mensajes antiguos guardados en la BD
       const isIA = m.tipo === 'ia'; 
       const cls = isIA ? 'in' : isMe ? 'out' : 'in';
       const bubble_style = isIA ? 'background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.12);color:#86efac;' : '';
@@ -1290,6 +1323,69 @@ async function sendMsg() {
   try { 
     await db.collection('chat_general').add({uid:CU.uid,author:CUP.name,text:t,hora:h,tipo:'usuario',ts:firebase.firestore.FieldValue.serverTimestamp()}); 
   } catch(e) { console.error("Error enviando mensaje:", e); }
+}
+
+// ── BUSCADOR DE YOUTUBE ──
+const YOUTUBE_API_KEY = 'AIzaSyDRptcuOZDyYAU3Tdp5Osrox238Z4l4zD8'; 
+
+async function searchYouTube() {
+  const query = document.getElementById('yt-search-input').value.trim();
+  if (!query) return showToast('Escribe algo para buscar', '⚠️');
+
+  const list = document.getElementById('yt-results-list');
+  list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px;">Buscando...</div>';
+
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.error) {
+      console.error(data.error);
+      list.innerHTML = '<div style="text-align:center; color:var(--danger); font-size:13px;">Error de API. Verifica tu API Key.</div>';
+      return;
+    }
+
+    if (data.items && data.items.length > 0) {
+      list.innerHTML = data.items.map(item => `
+        <div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r); cursor:pointer; transition:0.2s;" 
+             onclick="playYouTubeVideo('${item.id.videoId}')" 
+             onmouseover="this.style.background='rgba(124,107,255,0.1)'" 
+             onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+          
+          <img src="${item.snippet.thumbnails.default.url}" style="width:100px; height:56px; border-radius:6px; object-fit:cover;">
+          
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              ${item.snippet.title}
+            </div>
+            <div style="font-size:10px; color:var(--muted2); margin-top:3px;">
+              ${item.snippet.channelTitle}
+            </div>
+          </div>
+          
+          <div style="padding-right:10px; color:var(--p);">
+            <svg style="width:24px; height:24px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px;">No se encontraron resultados</div>';
+    }
+  } catch (error) {
+    console.error("Error buscando en YT:", error);
+    list.innerHTML = '<div style="text-align:center; color:var(--danger); font-size:13px;">Error de red al buscar.</div>';
+  }
+}
+
+function playYouTubeVideo(videoId) {
+  const wrapper = document.getElementById('yt-player-wrapper');
+  const iframe = document.getElementById('yt-iframe');
+  
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  wrapper.style.display = 'block';
+  
+  showToast('Reproduciendo video...', '🎵');
 }
 
 </script>
