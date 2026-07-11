@@ -126,6 +126,11 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .page-title { font-size: 16px; font-weight: 800; color: var(--text); }
 .page-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
 
+/* Botón Logout Móvil (Oculto por defecto) */
+.mobile-logout-btn { display: none; background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s; }
+.mobile-logout-btn:active { background: rgba(239, 68, 68, 0.1); }
+.mobile-logout-btn svg { width: 20px; height: 20px; }
+
 .content { flex: 1; overflow: hidden; position: relative; }
 .view { display: none; height: 100%; overflow-y: auto; padding: 24px; scroll-behavior: smooth; }
 .view.active { display: block; animation: fadeIn .2s ease; }
@@ -232,6 +237,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .main { height: calc(100vh - 64px - var(--safe-bottom)); }
   .view { padding: 16px; }
   .topbar { height: 56px; min-height: 56px; padding: 0 20px; padding-top: var(--safe-top); }
+  .mobile-logout-btn { display: block; } /* Mostrar botón en celular */
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .stat-value { font-size: 24px; }
   .card { max-width: 100%; }
@@ -244,7 +250,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 </head>
 <body>
 
-<!-- PANTALLA DE LOGIN -->
 <div id="auth-screen">
   <div class="auth-box">
     <div class="auth-glow">360</div>
@@ -258,9 +263,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   </div>
 </div>
 
-<!-- APLICACIÓN PRINCIPAL -->
 <div id="app" style="display:none">
-  <!-- SIDEBAR (MENÚ LATERAL) -->
   <aside class="sidebar">
     <div class="sb-header">
       <div class="sb-logo">360</div>
@@ -307,7 +310,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
     </div>
   </aside>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <main class="main">
     <header class="topbar">
       <div>
@@ -319,13 +321,15 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           <div style="font-size:14px;font-weight:800;" id="clock-time">00:00</div>
           <div style="font-size:11px;color:var(--muted); font-weight:600;" id="clock-date"></div>
         </div>
+        <button class="mobile-logout-btn" onclick="doLogout()" title="Cerrar Sesión">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        </button>
         <div class="user-av" style="width:36px;height:36px;font-size:14px;"><span id="top-av-letter">A</span></div>
       </div>
     </header>
 
     <div class="content">
 
-      <!-- VISTA: DASHBOARD -->
       <div class="view active" id="v-dashboard">
         <div class="stats-row">
           <div class="stat-card"><div class="stat-label">Grabaciones hoy</div><div class="stat-value" id="stat-hoy" style="color:var(--p)">0</div></div>
@@ -343,7 +347,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA: GRABADORA -->
       <div class="view" id="v-recorder">
         <div class="card">
           <div class="card-head">Grabadora de Audio</div>
@@ -378,7 +381,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA: AUDITORÍA -->
       <div class="view" id="v-history">
         <div style="max-width:1000px;margin:0 auto;">
           <div class="search-bar">
@@ -405,7 +407,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA: MURO / FEED -->
       <div class="view" id="v-feed">
         <div style="max-width:600px;margin:0 auto;">
           <div class="card" style="margin-bottom:20px;">
@@ -420,7 +421,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA: CHAT -->
       <div class="view" id="v-chat" style="padding:0;height:100%;">
         <div class="chat-layout">
           <div class="chat-room">
@@ -442,7 +442,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA: MUSIC YT -->
       <div class="view" id="v-music">
         <div class="card" style="max-width: 650px; margin: 0 auto;">
           <div class="card-head">Buscador de YouTube</div>
@@ -468,10 +467,8 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   </main>
 </div>
 
-<!-- COMPONENTE TOAST (ALERTAS) -->
 <div id="toast"><span id="toast-txt">Mensaje</span></div>
 
-<!-- SCRIPTS DE FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
