@@ -12,41 +12,59 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+/* =========================================
+   1. VARIABLES DE COLOR (TEMA OSCURO SUAVE)
+   ========================================= */
 :root {
-  --bg: #07090f;
-  --bg2: #0d1117;
-  --bg3: #161b24;
-  --bg4: #1c2330;
-  --surface: rgba(13,17,23,0.97);
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.11);
-  --text: #e8edf4;
-  --muted: #556070;
-  --muted2: #8892a0;
-  --p: #7c6bff;
-  --p2: #6554f5;
-  --p3: #4f3ee8;
-  --p-glow: rgba(124,107,255,0.15);
-  --success: #22c55e;
-  --danger: #f43f5e;
-  --warning: #f59e0b;
-  --info: #38bdf8;
+  /* Fondos y Superficies (No deslumbrantes) */
+  --bg: #18191c;           /* Fondo general oscuro suave */
+  --bg2: #212228;          /* Tarjetas y contenedores */
+  --surface: #212228;      /* Menú lateral */
+  
+  /* Bordes */
+  --border: #32343e;       /* Borde sutil */
+  --border2: #424552;      /* Borde más marcado para inputs */
+  
+  /* Textos */
+  --text: #f1f2f5;         /* Texto principal claro */
+  --muted: #9ba1b0;        /* Texto secundario */
+  --muted2: #6c7182;       /* Texto terciario / placeholders */
+  
+  /* Colores Principales (Azul Profesional) */
+  --p: #3b82f6;            /* Azul principal */
+  --p2: #2563eb;           /* Azul hover */
+  --p3: #60a5fa;           /* Azul claro */
+  --p-glow: rgba(59, 130, 246, 0.2); /* Sombra azul */
+  
+  /* Colores de Estado (Ajustados para fondo oscuro) */
+  --success: #10b981;      /* Verde */
+  --danger: #ef4444;       /* Rojo */
+  --warning: #f59e0b;      /* Ámbar */
+  --info: #0ea5e9;         /* Celeste */
+  
+  /* Radios y Espaciados */
   --r: 10px;
   --r2: 14px;
-  --r3: 18px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 }
 
+/* =========================================
+   2. ESTILOS GENERALES
+   ========================================= */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { height: 100%; -webkit-text-size-adjust: 100%; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; overflow: hidden; display: flex; }
 
-::-webkit-scrollbar { width: 3px; height: 3px; }
+/* Scrollbar moderno */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(124,107,255,0.25); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: #4a4d5a; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #6c7182; }
 
-/* ── AUTH ── */
+/* =========================================
+   3. PANTALLA DE LOGIN (AUTH)
+   ========================================= */
 #auth-screen {
   position: fixed; inset: 0; z-index: 200;
   background: var(--bg);
@@ -58,10 +76,11 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .auth-box {
   width: 100%; max-width: 360px;
   background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 22px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
   padding: 40px 28px 32px;
   text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
 }
 .auth-glow {
   width: 72px; height: 72px; border-radius: 20px;
@@ -69,21 +88,23 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
   display: flex; align-items: center; justify-content: center;
   font-weight: 900; font-size: 20px; color: #fff;
   margin: 0 auto 22px;
-  box-shadow: 0 0 40px rgba(124,107,255,0.3);
+  box-shadow: 0 8px 20px var(--p-glow);
 }
-.auth-box h1 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-.auth-box .sub { font-size: 13px; color: var(--muted2); margin-bottom: 28px; }
+.auth-box h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; color: var(--text); }
+.auth-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
 
-/* ── INPUTS & BUTTONS ── */
+/* =========================================
+   4. COMPONENTES (INPUTS Y BOTONES)
+   ========================================= */
 .inp {
   width: 100%; padding: 13px 15px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(0,0,0,0.15);
   border: 1px solid var(--border2);
   border-radius: var(--r); color: var(--text); font-size: 14px;
   outline: none; transition: .2s; font-family: inherit;
 }
-.inp:focus { border-color: var(--p); background: rgba(124,107,255,0.06); box-shadow: 0 0 0 3px var(--p-glow); }
-.inp::placeholder { color: var(--muted); }
+.inp:focus { border-color: var(--p); background: rgba(0,0,0,0.3); box-shadow: 0 0 0 3px var(--p-glow); }
+.inp::placeholder { color: var(--muted2); }
 
 .btn {
   width: 100%; padding: 13px;
@@ -91,17 +112,21 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
   border: none; border-radius: var(--r);
   font-weight: 700; font-size: 14px; font-family: inherit;
   cursor: pointer; transition: .2s; touch-action: manipulation;
+  box-shadow: 0 4px 10px var(--p-glow);
 }
 .btn:active { transform: scale(0.97); }
-.btn:hover { background: var(--p2); }
-.btn:disabled { background: rgba(255,255,255,0.07); color: var(--muted); cursor: not-allowed; pointer-events: none; }
-.btn.danger { background: rgba(244,63,94,0.12); color: #fda4af; border: 1px solid rgba(244,63,94,0.18); }
+.btn:hover { background: var(--p2); box-shadow: 0 6px 15px var(--p-glow); }
+.btn:disabled { background: var(--border); color: var(--muted2); box-shadow: none; cursor: not-allowed; pointer-events: none; }
+
+.btn.danger { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); box-shadow: none; }
 .btn.danger:hover { background: var(--danger); color: #fff; }
 .btn.sm { width: auto; padding: 9px 18px; font-size: 13px; }
-.btn.info-btn { background: rgba(56,189,248,0.12); color: var(--info); border: 1px solid rgba(56,189,248,0.2); }
+.btn.info-btn { background: rgba(14,165,233,0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.2); box-shadow:none; }
 .btn.info-btn:hover { background: var(--info); color: #fff; }
 
-/* ── LAYOUT ── */
+/* =========================================
+   5. LAYOUT PRINCIPAL (SIDEBAR Y TOPBAR)
+   ========================================= */
 #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
 
 .sidebar {
@@ -109,354 +134,202 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
   display: flex; flex-direction: column;
   background: var(--surface);
   border-right: 1px solid var(--border);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
-.sb-header {
-  padding: 18px 14px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-}
-.sb-logo {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: linear-gradient(135deg, var(--p), var(--p3));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 11px; color: #fff; flex-shrink: 0;
-}
-.sb-brand { font-weight: 700; font-size: 13px; line-height: 1.2; }
-.sb-brand span { display: block; font-size: 10px; font-weight: 400; color: var(--muted2); }
+.sb-header { padding: 18px 14px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.sb-logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--p), var(--p3)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; color: #fff; flex-shrink: 0; box-shadow: 0 2px 6px var(--p-glow); }
+.sb-brand { font-weight: 700; font-size: 14px; line-height: 1.2; }
+.sb-brand span { display: block; font-size: 10px; font-weight: 500; color: var(--muted); margin-top:2px; }
 
-.user-card {
-  margin: 10px;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  display: flex; align-items: center; gap: 9px;
-}
-.user-av {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--p), var(--p3));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0;
-}
+.user-card { margin: 12px 10px; padding: 10px 12px; background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: var(--r); display: flex; align-items: center; gap: 10px; }
+.user-av { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--p), var(--p3)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; }
 .user-info { flex: 1; min-width: 0; }
-.user-info strong { display: block; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.user-info span { font-size: 10px; color: var(--success); }
+.user-info strong { display: block; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.user-info span { font-size: 11px; color: var(--success); font-weight: 600; display:flex; align-items:center; }
 
-.sb-nav { flex: 1; padding: 6px; overflow-y: auto; display: flex; flex-direction: column; gap: 1px; }
-.nav-section { font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: 1px; padding: 10px 8px 3px; text-transform: uppercase; }
-.nav-item {
-  display: flex; align-items: center; gap: 9px;
-  padding: 9px 11px; border-radius: var(--r);
-  cursor: pointer; transition: .12s;
-  font-size: 13px; font-weight: 500; color: var(--muted2);
-  touch-action: manipulation; user-select: none;
-}
-.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
-.nav-item.active { background: rgba(124,107,255,0.1); color: var(--p); }
-.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-.sb-footer { padding: 10px; border-top: 1px solid var(--border); }
+.sb-nav { flex: 1; padding: 6px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.nav-section { font-size: 10px; font-weight: 700; color: var(--muted2); letter-spacing: 1px; padding: 10px 8px 3px; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: var(--r); cursor: pointer; transition: .15s; font-size: 13px; font-weight: 600; color: var(--muted); touch-action: manipulation; user-select: none; }
+.nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.nav-item.active { background: rgba(59, 130, 246, 0.1); color: var(--p); border-left: 3px solid var(--p); border-radius: 0 var(--r) var(--r) 0; padding-left: 8px;}
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sb-footer { padding: 12px; border-top: 1px solid var(--border); }
 
-/* ── MAIN ── */
-.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
-.topbar {
-  height: 54px; min-height: 54px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(7,9,15,0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.page-title { font-size: 15px; font-weight: 700; }
-.page-sub { font-size: 11px; color: var(--muted2); }
+/* Main Area */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--bg); }
+.topbar { height: 60px; min-height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--surface); box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10; }
+.page-title { font-size: 16px; font-weight: 800; color: var(--text); }
+.page-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
 
 .content { flex: 1; overflow: hidden; position: relative; }
-.view { display: none; height: 100%; overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
+.view { display: none; height: 100%; overflow-y: auto; padding: 24px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
 .view.active { display: block; animation: fadeIn .2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ── CARDS ── */
-.card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  overflow: hidden;
-  margin: 0 auto 16px auto;
-  max-width: 580px;
-}
-.card-head {
-  padding: 13px 18px;
-  border-bottom: 1px solid var(--border);
-  font-size: 11px; font-weight: 700;
-  color: var(--muted2);
-  text-transform: uppercase;
-  letter-spacing: .6px;
-  text-align: center;
-}
-.card-body { padding: 18px; }
-.field-label { font-size: 11px; font-weight: 600; color: var(--muted2); margin-bottom: 5px; display: block; text-align: left; }
+/* =========================================
+   6. TARJETAS Y ESTADÍSTICAS
+   ========================================= */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; margin: 0 auto 20px auto; max-width: 580px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.card-head { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; text-align: center; background: rgba(0,0,0,0.1); }
+.card-body { padding: 20px; }
+.field-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; display: block; text-align: left; }
 
-/* ── STATS ── */
-.stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
-.stat-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r2); padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 3px;
-}
-.stat-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-.stat-value { font-size: 26px; font-weight: 900; line-height: 1; }
+.stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.stat-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.stat-value { font-size: 28px; font-weight: 900; line-height: 1; }
 
-/* ── RECORDING ── */
-.rec-display {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  padding: 28px 20px;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-}
-.rec-status {
-  font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
-  padding: 4px 12px; border-radius: 20px;
-  background: rgba(255,255,255,0.05); color: var(--muted2);
-  border: 1px solid var(--border);
-}
-.rec-status.recording { background: rgba(244,63,94,0.1); color: #fda4af; border-color: rgba(244,63,94,0.22); }
-.rec-status.paused { background: rgba(245,158,11,0.1); color: var(--warning); border-color: rgba(245,158,11,0.22); }
-.rec-time {
-  font-size: 56px; font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 2px; line-height: 1;
-  color: var(--text);
-}
+/* =========================================
+   7. GRABADORA Y LLAMADAS
+   ========================================= */
+.rec-display { background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: var(--r2); padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.rec-status { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border2); }
+.rec-status.recording { background: rgba(239,68,68,0.1); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+.rec-status.paused { background: rgba(245,158,11,0.1); color: var(--warning); border-color: rgba(245,158,11,0.2); }
+.rec-time { font-size: 56px; font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: 1px; line-height: 1; color: var(--text); }
 .waveform { display: flex; align-items: center; gap: 3px; height: 28px; opacity: .2; transition: .3s; }
 .waveform.active { opacity: 1; }
-.wv { width: 3px; border-radius: 2px; background: var(--p); height: 4px; }
+.wv { width: 4px; border-radius: 2px; background: var(--danger); height: 4px; }
 .waveform.active .wv { animation: wvAnim 0.7s ease infinite alternate; }
 .waveform.active .wv:nth-child(odd) { animation-duration: 0.85s; }
 .waveform.active .wv:nth-child(3n) { animation-duration: 0.55s; }
-@keyframes wvAnim { from { height: 3px; } to { height: 24px; } }
+@keyframes wvAnim { from { height: 4px; } to { height: 24px; } }
 
-.rec-controls { display: flex; gap: 10px; justify-content: center; align-items: center; width: 100%; }
-.ctrl-btn {
-  width: 48px; height: 48px; border-radius: 50%;
-  border: 1px solid var(--border2);
-  background: rgba(255,255,255,0.04);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: .15s; touch-action: manipulation;
-}
+.rec-controls { display: flex; gap: 14px; justify-content: center; align-items: center; width: 100%; }
+.ctrl-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--border2); background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .15s; touch-action: manipulation; color: var(--text); }
 .ctrl-btn:active { transform: scale(0.93); }
-.ctrl-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
-.ctrl-btn svg { width: 20px; height: 20px; }
-.ctrl-btn.rec-btn { background: rgba(244,63,94,0.08); color: var(--danger); border-color: rgba(244,63,94,0.2); }
-.ctrl-btn.pause-btn { background: rgba(245,158,11,0.06); color: var(--warning); border-color: rgba(245,158,11,0.2); }
+.ctrl-btn:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+.ctrl-btn svg { width: 22px; height: 22px; }
+.ctrl-btn.rec-btn { background: rgba(239,68,68,0.05); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+.ctrl-btn.rec-btn:hover:not(:disabled) { background: var(--danger); color: #fff; }
 
-/* ── DIALPAD ── */
-.dialpad {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px; max-width: 210px; margin: 0 auto 12px;
-}
-.dial-btn {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 50%; width: 52px; height: 52px;
-  font-size: 20px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: .12s;
-  margin: 0 auto; color: var(--text);
-  touch-action: manipulation; user-select: none;
-}
-.dial-btn:active { background: rgba(124,107,255,0.25); transform: scale(0.92); border-color: var(--p); }
-.dial-btn .sub-label { font-size: 7px; display: block; color: var(--muted); font-weight: 500; letter-spacing: .5px; }
+.dialpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 210px; margin: 0 auto 16px; }
+.dial-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 50%; width: 56px; height: 56px; font-size: 22px; font-weight: 700; display: flex; flex-direction:column; align-items: center; justify-content: center; cursor: pointer; transition: .12s; margin: 0 auto; color: var(--text); user-select: none; }
+.dial-btn:active { background: rgba(59, 130, 246, 0.1); transform: scale(0.92); border-color: var(--p); }
+.dial-btn .sub-label { font-size: 9px; display: block; color: var(--muted); font-weight: 600; letter-spacing: .5px; margin-top:-2px;}
 
-.dial-action-row { display: flex; gap: 16px; justify-content: center; margin-top: 16px; align-items: center; }
-.btn-round { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: .15s; border: none; outline: none; color: #fff; touch-action: manipulation; }
-.btn-round-call { background: var(--success); box-shadow: 0 6px 20px rgba(34,197,94,0.28); }
-.btn-round-call:active { transform: scale(0.93); background: #16a34a; }
-.btn-round-del { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted2); }
-.btn-round-del:active { background: rgba(244,63,94,0.12); color: #fda4af; }
+.dial-action-row { display: flex; gap: 20px; justify-content: center; margin-top: 20px; align-items: center; }
+.btn-round { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: .15s; border: none; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn-round-call { background: var(--success); }
+.btn-round-call:active { transform: scale(0.93); background: #059669; }
+.btn-round-del { background: rgba(255,255,255,0.05); border: 1px solid var(--border2); color: var(--muted); box-shadow:none; }
+.btn-round-del:active { background: rgba(239,68,68,0.1); color: var(--danger); border-color:var(--danger); }
 
-/* ── CALL IN PROGRESS ── */
-.call-contact-av {
-  width: 70px; height: 70px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--p), var(--p3));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 800; color: #fff;
-  margin: 0 auto 12px;
-  box-shadow: 0 0 30px rgba(124,107,255,0.25);
-}
-#call-timer { font-size: 44px; font-weight: 900; text-align: center; font-variant-numeric: tabular-nums; }
-#call-phone-display { text-align: center; font-size: 14px; color: var(--muted2); margin-top: 3px; margin-bottom: 18px; }
+/* Llamada Activa */
+.call-contact-av { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--p), var(--p3)); display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; margin: 0 auto 16px; box-shadow: 0 4px 15px var(--p-glow); }
+#call-timer { font-size: 48px; font-weight: 900; text-align: center; font-variant-numeric: tabular-nums; color: var(--text); }
+#call-phone-display { text-align: center; font-size: 15px; font-weight:600; color: var(--muted); margin-top: 4px; margin-bottom: 20px; letter-spacing: 1px;}
 
-.in-call-actions { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 16px 0; }
-.in-call-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
-  padding: 12px 8px; border-radius: 12px;
-  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-  cursor: pointer; transition: .15s; touch-action: manipulation;
-  font-size: 10px; color: var(--muted2); font-weight: 600;
-}
+.in-call-actions { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 16px 0 24px 0; }
+.in-call-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); cursor: pointer; transition: .15s; font-size: 11px; color: var(--muted); font-weight: 600; }
 .in-call-btn:active { transform: scale(0.95); }
 .in-call-btn svg { width: 20px; height: 20px; }
-.in-call-btn.active { background: rgba(124,107,255,0.12); color: var(--p); border-color: rgba(124,107,255,0.3); }
-.in-call-btn.recording-active { background: rgba(244,63,94,0.1); color: #fda4af; border-color: rgba(244,63,94,0.25); }
+.in-call-btn.active { background: rgba(59, 130, 246, 0.1); color: var(--p); border-color: var(--p); }
+.in-call-btn.recording-active { background: rgba(239,68,68,0.1); color: var(--danger); border-color: rgba(239,68,68,0.3); }
 
-.end-call-btn {
-  width: 62px; height: 62px; border-radius: 50%;
-  background: var(--danger);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: .15s; touch-action: manipulation;
-  border: none; color: #fff;
-  box-shadow: 0 6px 20px rgba(244,63,94,0.28);
-  margin: 0 auto 20px;
-}
-.end-call-btn:active { transform: scale(0.93); background: #e11d48; }
+.end-call-btn { width: 64px; height: 64px; border-radius: 50%; background: var(--danger); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: .15s; border: none; color: #fff; box-shadow: 0 6px 15px rgba(239,68,68,0.3); margin: 0 auto 10px; }
+.end-call-btn:active { transform: scale(0.93); background: #dc2626; }
 
-/* ── TAGS ── */
-.tag { display: inline-flex; padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 600; }
-.tag.purple { background: rgba(124,107,255,0.12); color: #a5b4fc; }
-.tag.green { background: rgba(34,197,94,0.1); color: #86efac; }
-.tag.blue { background: rgba(56,189,248,0.1); color: #7dd3fc; }
-.tag.amber { background: rgba(245,158,11,0.1); color: #fcd34d; }
-.tag.red { background: rgba(244,63,94,0.1); color: #fda4af; }
+/* =========================================
+   8. TABLAS, ETIQUETAS Y AUDITORÍA
+   ========================================= */
+.tag { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
+.tag.purple { background: rgba(147,51,234,0.15); color: #d8b4fe; border: 1px solid rgba(147,51,234,0.3); }
+.tag.green { background: rgba(22,163,74,0.15); color: #6ee7b7; border: 1px solid rgba(22,163,74,0.3); }
+.tag.blue { background: rgba(37,99,235,0.15); color: #93c5fd; border: 1px solid rgba(37,99,235,0.3); }
+.tag.amber { background: rgba(217,119,6,0.15); color: #fcd34d; border: 1px solid rgba(217,119,6,0.3); }
+.tag.red { background: rgba(220,38,38,0.15); color: #fca5a5; border: 1px solid rgba(220,38,38,0.3); }
 
-/* ── TABLE ── */
-.search-bar {
-  display: flex; align-items: center; gap: 8px;
-  background: rgba(0,0,0,0.3); border: 1px solid var(--border2);
-  border-radius: var(--r); padding: 0 13px; margin-bottom: 13px;
-}
-.search-bar svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
-.search-bar input { background: transparent; border: none; color: var(--text); padding: 10px 0; font-size: 13px; outline: none; flex: 1; font-family: inherit; }
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; min-width: 560px; }
-th { background: rgba(0,0,0,0.35); padding: 11px 14px; text-align: left; font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; position: sticky; top: 0; z-index: 1; }
-td { padding: 11px 14px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; }
-tr:hover td { background: rgba(255,255,255,0.02); }
-.btn-dl-mini {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: rgba(34,197,94,0.1); color: #86efac;
-  padding: 5px 10px; border-radius: 6px; font-size: 11px;
-  text-decoration: none; border: 1px solid rgba(34,197,94,0.22);
-  font-weight: 600; cursor: pointer; white-space: nowrap;
-  touch-action: manipulation;
-}
+.search-bar { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.15); border: 1px solid var(--border2); border-radius: var(--r); padding: 0 16px; margin-bottom: 16px; }
+.search-bar svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+.search-bar input { background: transparent; border: none; color: var(--text); padding: 12px 0; font-size: 14px; outline: none; flex: 1; font-family: inherit; }
 
-/* ── CHAT & FEED ── */
-.chat-layout { display: flex; flex-direction: column; height: 100%; }
-.chat-room { background: var(--bg2); display: flex; flex-direction: column; height: 100%; min-height: 0; width: 100%; }
-.msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; }
-.msg { max-width: 75%; display: flex; flex-direction: column; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 0 0 var(--r2) var(--r2); background: var(--bg2); }
+table { width: 100%; border-collapse: collapse; min-width: 680px; }
+th { background: rgba(0,0,0,0.2); padding: 14px 16px; text-align: left; font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
+td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; color: var(--text); }
+tr:hover td { background: rgba(255,255,255,0.03); }
+
+.btn-dl-mini { display: inline-flex; align-items: center; justify-content: center; gap: 4px; background: rgba(22,163,74,0.15); color: #6ee7b7; padding: 6px 12px; border-radius: 8px; font-size: 11px; text-decoration: none; border: 1px solid rgba(22,163,74,0.3); font-weight: 700; cursor: pointer; white-space: nowrap; transition: .2s; }
+.btn-dl-mini:hover { background: rgba(22,163,74,0.25); }
+
+/* =========================================
+   9. CHAT Y FEED
+   ========================================= */
+.chat-layout { display: flex; flex-direction: column; height: 100%; border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; background: var(--bg2); }
+.chat-room { display: flex; flex-direction: column; height: 100%; width: 100%; }
+.msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+.msg { max-width: 80%; display: flex; flex-direction: column; }
 .msg.out { align-self: flex-end; align-items: flex-end; }
 .msg.in { align-self: flex-start; }
-.bubble { padding: 9px 13px; border-radius: 13px; font-size: 13px; line-height: 1.5; }
-.msg.out .bubble { background: var(--p); border-bottom-right-radius: 3px; }
-.msg.in .bubble { background: rgba(255,255,255,0.06); border-bottom-left-radius: 3px; }
-.msg-meta { font-size: 10px; color: var(--muted); margin: 2px 4px 0; }
-.chat-bar { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; gap: 7px; background: rgba(0,0,0,0.2); }
-.chat-bar input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 9px 12px; font-size: 13px; outline: none; font-family: inherit; }
-.chat-bar input:focus { border-color: var(--p); }
-.send-btn { width: 36px; height: 36px; border-radius: 9px; background: var(--p); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bubble { padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.msg.out .bubble { background: var(--p); color: #fff; border-bottom-right-radius: 4px; }
+.msg.in .bubble { background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 4px; color: var(--text); }
+.msg-meta { font-size: 10px; color: var(--muted2); margin: 4px 6px 0; font-weight: 600; }
+.chat-bar { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: rgba(0,0,0,0.2); }
+.chat-bar input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border2); border-radius: var(--r); color: var(--text); padding: 10px 14px; font-size: 14px; outline: none; }
+.chat-bar input:focus { border-color: var(--p); background: rgba(0,0,0,0.5); }
+.send-btn { width: 42px; height: 42px; border-radius: 10px; background: var(--p); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: .2s; }
+.send-btn:active { transform: scale(0.95); }
 
-/* ── TOAST ── */
-#toast {
-  position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%);
-  background: var(--bg3); border: 1px solid var(--border2);
-  color: var(--text); padding: 10px 20px; border-radius: 40px;
-  font-size: 13px; font-weight: 600; transition: bottom .3s cubic-bezier(.34,1.56,.64,1);
-  z-index: 9999; white-space: nowrap; max-width: 90vw;
-  bottom: calc(-80px); 
-}
+/* =========================================
+   10. EXTRAS (TOAST, NOTIFICACIONES, MOBILE)
+   ========================================= */
+#toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: #f1f2f5; color: #18191c; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; transition: bottom .4s cubic-bezier(.34,1.56,.64,1); z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 #toast.show { bottom: calc(var(--safe-bottom) + 80px); }
 
-/* ── NOTIFICATION BADGE ── */
-.notif-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--danger); margin-left: auto; flex-shrink: 0;
-}
-
-/* ── MOBILE BOTTOM NAV ── */
-@media (max-width: 767px) {
-  .sidebar {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    width: 100%; flex-direction: row; height: calc(56px + var(--safe-bottom));
-    min-width: 0; border-right: none; border-top: 1px solid var(--border);
-    z-index: 50; background: rgba(7,9,15,0.97);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    padding-bottom: var(--safe-bottom);
-  }
-  .sb-header, .user-card, .sb-footer, .nav-section { display: none !important; }
-  .sb-nav { flex-direction: row; justify-content: space-around; padding: 0; gap: 0; }
-  .nav-item {
-    flex-direction: column; gap: 3px; padding: 8px 6px;
-    font-size: 9px; border-radius: 8px; min-width: 50px;
-    justify-content: center;
-    color: var(--muted);
-  }
-  .nav-item.active { background: rgba(124,107,255,0.1); color: var(--p); }
-  .nav-item svg { width: 20px; height: 20px; }
-  .notif-dot { display: none; }
-
-  #app { flex-direction: column; }
-  .main { height: calc(100vh - 56px - var(--safe-bottom)); }
-  
-  .view { padding: 14px; }
-  
-  .topbar { height: 50px; min-height: 50px; padding: 0 16px; padding-top: var(--safe-top); }
-
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .stat-value { font-size: 22px; }
-
-  .card { max-width: 100%; }
-  .card-body { padding: 14px; }
-  
-  .in-call-actions { grid-template-columns: repeat(3, 1fr); }
-  
-  #toast.show { bottom: calc(56px + var(--safe-bottom) + 12px); }
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-  .sidebar { width: 200px; min-width: 200px; }
-  .stats-row { grid-template-columns: repeat(4, 1fr); }
-}
-
-@media (min-width: 1025px) {
-  .stats-row { grid-template-columns: repeat(4, 1fr); }
-}
-
-/* ── CALL RINGING ANIMATION ── */
-@keyframes ringPulse { 
-  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(34,197,94,0); }
-}
-.ringing { animation: ringPulse 1.2s ease infinite; }
-
-/* ── SCROLL IMPROVEMENTS ── */
-.view { scroll-behavior: smooth; }
-select.inp { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 36px; }
-
-/* ── PULSE DOTS ── */
-.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); display: inline-block; }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); margin-left: auto; flex-shrink: 0; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+.pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
 .pulse-dot.anim { animation: pulseDot 2s ease infinite; }
 @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 50% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); } }
+.ringing { animation: ringPulse 1.5s ease infinite; }
+
+select.inp { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ba1b0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; cursor: pointer;}
+select.inp option { background: var(--bg2); color: var(--text); }
+
+@media (max-width: 767px) {
+  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; height: calc(64px + var(--safe-bottom)); min-width: 0; border-right: none; border-top: 1px solid var(--border); z-index: 50; background: var(--surface); padding-bottom: var(--safe-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+  .sb-header, .user-card, .sb-footer, .nav-section { display: none !important; }
+  .sb-nav { flex-direction: row; justify-content: space-around; padding: 0; gap: 0; }
+  .nav-item { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 10px; border-radius: 12px; min-width: 55px; justify-content: center; }
+  .nav-item.active { background: transparent; color: var(--p); border-left: none; border-top: 3px solid var(--p); border-radius: 0; padding-top: 7px; }
+  .nav-item svg { width: 22px; height: 22px; }
+  .notif-dot { display: none; }
+  #app { flex-direction: column; }
+  .main { height: calc(100vh - 64px - var(--safe-bottom)); }
+  .view { padding: 16px; }
+  .topbar { height: 56px; min-height: 56px; padding: 0 20px; padding-top: var(--safe-top); }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .stat-value { font-size: 24px; }
+  .card { max-width: 100%; }
+  .card-body { padding: 16px; }
+  .in-call-actions { grid-template-columns: repeat(3, 1fr); }
+  #toast.show { bottom: calc(64px + var(--safe-bottom) + 16px); }
+}
+@media (min-width: 768px) and (max-width: 1024px) { .sidebar { width: 200px; min-width: 200px; } .stats-row { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1025px) { .stats-row { grid-template-columns: repeat(4, 1fr); } }
 </style>
 </head>
 <body>
 
+<!-- PANTALLA DE LOGIN -->
 <div id="auth-screen">
   <div class="auth-box">
     <div class="auth-glow">360</div>
     <h1>Interconexiones 360</h1>
     <p class="sub">Plataforma Back Office Operativa</p>
-    <div style="margin-bottom:14px;">
-      <input type="text" class="inp" id="l-name" placeholder="Tu nombre de agente" autocomplete="off"
-        onkeypress="if(event.key==='Enter')doLogin()" style="text-align:center;">
+    <div style="margin-bottom:16px;">
+      <input type="text" class="inp" id="l-name" placeholder="Tu nombre de agente" autocomplete="off" onkeypress="if(event.key==='Enter')doLogin()" style="text-align:center; font-weight:600;">
     </div>
     <button class="btn" onclick="doLogin()">Ingresar al sistema</button>
-    <p style="font-size:11px; color:var(--muted); margin-top:16px;">Acceso exclusivo para operadores certificados</p>
+    <p style="font-size:12px; color:var(--muted2); margin-top:20px; font-weight:500;">Acceso exclusivo para operadores</p>
   </div>
 </div>
 
+<!-- APLICACIÓN PRINCIPAL -->
 <div id="app" style="display:none">
+  <!-- SIDEBAR (MENÚ LATERAL) -->
   <aside class="sidebar">
     <div class="sb-header">
       <div class="sb-logo">360</div>
@@ -466,7 +339,7 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
       <div class="user-av"><span id="sb-av-letter">A</span></div>
       <div class="user-info">
         <strong id="sb-name">Agente</strong>
-        <span><span class="pulse-dot anim" style="width:6px;height:6px;margin-right:4px;"></span>En línea</span>
+        <span><span class="pulse-dot anim" style="margin-right:4px;"></span>En línea</span>
       </div>
     </div>
     <nav class="sb-nav">
@@ -498,9 +371,7 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
         <div class="notif-dot"></div>
       </div>
       <div class="nav-item" onclick="goto('music', this)">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
-        </svg>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
         <span>Música YT</span>
       </div>
     </nav>
@@ -509,23 +380,25 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
     </div>
   </aside>
 
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="main">
     <header class="topbar">
       <div>
         <div class="page-title" id="page-title">Dashboard</div>
         <div class="page-sub" id="page-sub">Resumen operativo</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div style="display:flex;align-items:center;gap:12px;">
         <div style="text-align:right;display:none;" class="desktop-info" id="desktop-time">
-          <div style="font-size:13px;font-weight:700;" id="clock-time">00:00</div>
-          <div style="font-size:10px;color:var(--muted2);" id="clock-date"></div>
+          <div style="font-size:14px;font-weight:800;" id="clock-time">00:00</div>
+          <div style="font-size:11px;color:var(--muted); font-weight:600;" id="clock-date"></div>
         </div>
-        <div class="user-av" style="width:32px;height:32px;font-size:13px;"><span id="top-av-letter">A</span></div>
+        <div class="user-av" style="width:36px;height:36px;font-size:14px;"><span id="top-av-letter">A</span></div>
       </div>
     </header>
 
     <div class="content">
 
+      <!-- VISTA: DASHBOARD -->
       <div class="view active" id="v-dashboard">
         <div class="stats-row">
           <div class="stat-card"><div class="stat-label">Gestiones hoy</div><div class="stat-value" id="stat-hoy" style="color:var(--p)">0</div></div>
@@ -533,19 +406,20 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
           <div class="stat-card"><div class="stat-label">Posts en muro</div><div class="stat-value" id="stat-posts" style="color:var(--success)">0</div></div>
           <div class="stat-card"><div class="stat-label">Mensajes chat</div><div class="stat-value" id="stat-msgs" style="color:var(--warning)">0</div></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="card" style="margin:0;"><div class="card-head">Actividad reciente</div>
-            <div id="dash-activity"><div style="padding:18px;text-align:center;color:var(--muted2);font-size:13px;">Cargando…</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Actividad reciente</div>
+            <div id="dash-activity"><div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;font-weight:500;">Cargando…</div></div>
           </div>
-          <div class="card" style="margin:0;"><div class="card-head">Agentes en línea</div>
-            <div id="dash-agents" style="padding:14px;display:flex;flex-direction:column;gap:8px;"><div style="color:var(--muted2);font-size:13px;">Sincronizando…</div></div>
+          <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Agentes en línea</div>
+            <div id="dash-agents" style="padding:16px;display:flex;flex-direction:column;gap:10px;"><div style="color:var(--muted);font-size:13px;font-weight:500;">Sincronizando…</div></div>
           </div>
         </div>
       </div>
 
+      <!-- VISTA: GRABADORA -->
       <div class="view" id="v-recorder">
         <div class="card">
-          <div class="card-head">Grabadora de Audio</div>
+          <div class="card-head">Grabadora de Audio Libre</div>
           <div class="card-body">
             <div class="rec-display">
               <div class="rec-status" id="old-status">ESPERANDO</div>
@@ -555,21 +429,21 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
                 <div class="wv"></div><div class="wv"></div><div class="wv"></div><div class="wv"></div>
               </div>
             </div>
-            <div class="rec-controls" style="margin-top:18px">
+            <div class="rec-controls" style="margin-top:24px">
               <button class="ctrl-btn rec-btn" id="old-btn-rec" onclick="startOldRec()" title="Grabar">
                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
               </button>
-              <button class="ctrl-btn pause-btn" id="old-btn-pause" onclick="pauseOldRec()" disabled title="Pausar">
+              <button class="ctrl-btn pause-btn" id="old-btn-pause" onclick="pauseOldRec()" disabled title="Pausar" style="color:var(--warning); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05);">
                 <svg id="old-pause-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
               </button>
-              <button class="ctrl-btn" id="old-btn-stop" style="color:var(--p);border-color:rgba(124,107,255,0.3);" onclick="stopOldRec()" disabled title="Detener">
+              <button class="ctrl-btn" id="old-btn-stop" style="color:var(--p); border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);" onclick="stopOldRec()" disabled title="Detener">
                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
               </button>
             </div>
-            <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;">
               <div>
                 <label class="field-label">Nombre del audio</label>
-                <input type="text" id="old-rec-title" class="inp" placeholder="Nombre del archivo…">
+                <input type="text" id="old-rec-title" class="inp" placeholder="Ej: Audio_Prueba_01">
               </div>
               <button class="btn" id="old-btn-save" onclick="saveOldRec()" disabled>Guardar audio</button>
             </div>
@@ -577,16 +451,19 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
         </div>
       </div>
 
+      <!-- VISTA: LLAMADAS -->
       <div class="view" id="v-call">
         <div class="card">
           <div class="card-head">Consola de Llamadas</div>
           <div class="card-body">
 
+            <!-- Panel de Marcado -->
             <div id="dial-panel">
               <input type="tel" id="client-phone" class="inp"
                 placeholder="Número del cliente"
-                style="font-size:22px;font-weight:800;text-align:center;letter-spacing:2px;margin-bottom:16px;background:rgba(0,0,0,0.4);"
+                style="font-size:24px; font-weight:800; text-align:center; letter-spacing:3px; margin-bottom:20px; background:rgba(0,0,0,0.2); border:2px solid var(--border2);"
                 inputmode="numeric">
+              
               <div class="dialpad">
                 <div class="dial-btn" onclick="addNum('1')"><span>1</span></div>
                 <div class="dial-btn" onclick="addNum('2')"><span>2</span><span class="sub-label">ABC</span></div>
@@ -601,72 +478,92 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
                 <div class="dial-btn" onclick="addNum('0')"><span>0</span><span class="sub-label">+</span></div>
                 <div class="dial-btn" onclick="addNum('#')">#</div>
               </div>
+
               <div class="dial-action-row">
                 <button class="btn-round btn-round-del" onclick="delNum()" title="Borrar">
-                  <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
+                  <svg style="width:24px;height:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
                 </button>
                 <button class="btn-round btn-round-call ringing" id="call-start-btn"
                   onclick="navigator.mediaDevices.getUserMedia({audio:true}).then(startMockCall).catch(()=>showToast('Se requiere permiso de micrófono','⚠️'))"
                   title="Llamar">
-                  <svg style="width:24px;height:24px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
+                  <svg style="width:28px;height:28px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
                 </button>
               </div>
             </div>
 
+            <!-- Panel de Llamada Activa -->
             <div id="active-call-panel" style="display:none;">
               <div class="call-contact-av" id="call-avatar-letter">📞</div>
-              <div style="text-align:center;margin-bottom:6px;">
-                <div style="font-size:11px;font-weight:700;color:var(--success);letter-spacing:1px;">
-                  <span class="pulse-dot anim" style="width:6px;height:6px;margin-right:5px;"></span>LLAMADA EN CURSO
+              <div style="text-align:center;margin-bottom:8px;">
+                <div style="font-size:12px;font-weight:800;color:var(--success);letter-spacing:1px;">
+                  <span class="pulse-dot anim" style="margin-right:6px;"></span>LLAMADA EN CURSO
                 </div>
               </div>
+              
               <div id="call-timer">00:00</div>
               <div id="call-phone-display"></div>
 
               <div class="in-call-actions">
                 <div class="in-call-btn" id="mute-btn" onclick="toggleMute()">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                  <span>Silencio</span>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                  <span>Silenciar</span>
                 </div>
                 <div class="in-call-btn" id="rec-in-call-btn" onclick="toggleCallRec()">
-                  <svg fill="currentColor" viewBox="0 0 20 20" style="width:20px;height:20px"><circle cx="10" cy="10" r="5"></circle></svg>
+                  <svg fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5"></circle></svg>
                   <span id="rec-in-call-label">Grabar</span>
                 </div>
-                <div class="in-call-btn" onclick="downloadDuringCall()" id="dl-during-call" style="opacity:.4;">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <div class="in-call-btn" onclick="downloadDuringCall()" id="dl-during-call" style="opacity:.4; pointer-events:none;">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   <span>Descargar</span>
                 </div>
               </div>
 
-              <div style="margin-bottom:14px;">
-                <label class="field-label">Nombre del archivo de grabación</label>
-                <input type="text" id="call-rec-name" class="inp" placeholder="ej. cliente_venta_001" style="font-size:13px;">
+              <!-- TIPIFICACIÓN DE LLAMADA -->
+              <div style="margin-bottom:12px; background:rgba(0,0,0,0.1); padding:12px; border-radius:var(--r); border:1px solid var(--border);">
+                <label class="field-label">Resultado / Tipificación</label>
+                <select id="call-type-select" class="inp" style="margin-bottom:10px; font-weight:600;">
+                  <option value="Venta">✅ Venta Cerrada</option>
+                  <option value="Interesado">⏳ Interesado / Seguimiento</option>
+                  <option value="Rechaza">❌ Rechaza / No Interesado</option>
+                  <option value="Buzón">📞 Buzón / No Contesta</option>
+                  <option value="Otros">⚙️ Soporte / Otros</option>
+                </select>
+                
+                <label class="field-label">Nombre del Cliente / Referencia</label>
+                <input type="text" id="call-rec-name" class="inp" placeholder="Nombre del cliente para el historial">
               </div>
 
-              <button class="end-call-btn" onclick="endCall()">
-                <svg style="width:26px;height:26px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" transform="rotate(135 10 10) translate(-10 -10) translate(10 10)"></path></svg>
+              <button class="end-call-btn" onclick="endCall()" title="Finalizar llamada">
+                <svg style="width:30px;height:30px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" transform="rotate(135 10 10) translate(-10 -10) translate(10 10)"></path></svg>
               </button>
-              <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:-10px;">Colgar</div>
+              <div style="text-align:center;font-size:12px;color:var(--muted);font-weight:600;margin-top:-6px;">Finalizar y Guardar</div>
             </div>
+
           </div>
         </div>
       </div>
 
+      <!-- VISTA: AUDITORÍA -->
       <div class="view" id="v-history">
-        <div style="max-width:960px;margin:0 auto;">
+        <div style="max-width:1000px;margin:0 auto;">
           <div class="search-bar">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
-            <input type="text" id="hist-search" placeholder="Buscar por cliente, agente o tipo…" oninput="filterHist()">
+            <input type="text" id="hist-search" placeholder="Filtrar por cliente, agente o tipificación..." oninput="filterHist()">
           </div>
-          <div class="card" style="max-width:100%;margin:0;border-radius:12px;">
+          <div class="card" style="max-width:100%;margin:0;border-radius:16px;">
             <div class="table-wrap">
               <table>
                 <thead><tr>
-                  <th>Fecha</th><th>Identificador</th><th>Tipo</th>
-                  <th>Duración</th><th>Agente</th><th>Audio</th>
+                  <th>Fecha</th>
+                  <th>Cliente/Ref.</th>
+                  <th>Tipificación</th>
+                  <th>Duración</th>
+                  <th>Agente</th>
+                  <th>Audio</th>
+                  <th>Acciones</th>
                 </tr></thead>
                 <tbody id="hist-body">
-                  <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">Cargando registros…</td></tr>
+                  <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros…</td></tr>
                 </tbody>
               </table>
             </div>
@@ -674,62 +571,61 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
         </div>
       </div>
 
+      <!-- VISTA: MURO / FEED -->
       <div class="view" id="v-feed">
-        <div style="max-width:580px;margin:0 auto;">
-          <div class="card" style="margin-bottom:14px;">
-            <div style="padding:14px;">
-              <textarea id="feed-text" class="inp" style="background:rgba(0,0,0,0.2);min-height:76px;text-align:left;resize:none;line-height:1.5;" placeholder="Escribe un anuncio para el equipo…"></textarea>
-              <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-                <button class="btn sm" onclick="publishPost()">Publicar</button>
+        <div style="max-width:600px;margin:0 auto;">
+          <div class="card" style="margin-bottom:20px;">
+            <div style="padding:16px;">
+              <textarea id="feed-text" class="inp" style="min-height:90px; resize:none; line-height:1.5;" placeholder="Escribe un anuncio para el equipo…"></textarea>
+              <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                <button class="btn sm" onclick="publishPost()">Publicar en Muro</button>
               </div>
             </div>
           </div>
-          <div id="feed-list"><div style="text-align:center;color:var(--muted);font-size:13px;padding:20px;">Cargando publicaciones…</div></div>
+          <div id="feed-list"><div style="text-align:center;color:var(--muted);font-size:13px;font-weight:500;padding:24px;">Cargando publicaciones…</div></div>
         </div>
       </div>
 
+      <!-- VISTA: CHAT -->
       <div class="view" id="v-chat" style="padding:0;height:100%;">
         <div class="chat-layout">
           <div class="chat-room">
-            <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;background:rgba(0,0,0,0.25);">
+            <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.1);">
               <span class="pulse-dot anim"></span>
               <div>
-                <div style="font-size:13px;font-weight:700;">Sala General del Equipo</div>
-                <div id="chat-count" style="font-size:10px;color:var(--muted2);">0 mensajes</div>
+                <div style="font-size:14px;font-weight:800; color:var(--text);">Sala General del Equipo</div>
+                <div id="chat-count" style="font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;">0 mensajes</div>
               </div>
             </div>
             <div class="msgs" id="chat-msgs"></div>
             <div class="chat-bar">
-              <input type="text" id="chat-inp" placeholder="Escribe al equipo…" onkeypress="if(event.key==='Enter')sendMsg()">
+              <input type="text" id="chat-inp" placeholder="Escribe un mensaje al equipo…" onkeypress="if(event.key==='Enter')sendMsg()">
               <button class="send-btn" onclick="sendMsg()">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
               </button>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- VISTA: MUSIC YT -->
       <div class="view" id="v-music">
         <div class="card" style="max-width: 650px; margin: 0 auto;">
           <div class="card-head">Buscador de YouTube</div>
           <div class="card-body">
-            
-            <div class="search-bar" style="margin-bottom: 20px;">
+            <div class="search-bar" style="margin-bottom: 24px;">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
               <input type="text" id="yt-search-input" placeholder="Buscar canciones, artistas, mixes..." onkeypress="if(event.key==='Enter')searchYouTube()">
               <button class="btn sm info-btn" onclick="searchYouTube()">Buscar</button>
             </div>
-
-            <div id="yt-player-wrapper" style="display: none; margin-bottom: 20px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--border);">
+            <div id="yt-player-wrapper" style="display: none; margin-bottom: 24px; border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
               <iframe id="yt-iframe" width="100%" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
-
-            <div id="yt-results-list" style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">
+            <div id="yt-results-list" style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="text-align:center; color:var(--muted); font-size:13px; font-weight:500; padding:24px;">
                 Busca una canción para empezar a escuchar.
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -738,18 +634,21 @@ select.inp { appearance: none; -webkit-appearance: none; background-image: url("
   </main>
 </div>
 
+<!-- COMPONENTE TOAST (ALERTAS) -->
 <div id="toast"><span id="toast-txt">Mensaje</span></div>
 
+<!-- SCRIPTS DE FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
 <script>
-// ── GLOBALS ──
+// ==========================================
+// A. VARIABLES GLOBALES Y CONFIGURACIÓN
+// ==========================================
 var db, storage;
 var CU = null, CUP = {}, histAll = [];
 
-// ── FIREBASE INIT ──
 const FB_CFG = {
   apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
   authDomain:"crm-telecom-db014.firebaseapp.com",
@@ -760,9 +659,7 @@ const FB_CFG = {
 };
 
 try {
-  if (!firebase.apps.length) {
-    firebase.initializeApp(FB_CFG);
-  }
+  if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
   db = firebase.firestore();
   storage = firebase.storage();
   console.log("✅ Firebase inicializado correctamente");
@@ -771,141 +668,17 @@ try {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // ── AUTO-LOGIN ──
   const saved = localStorage.getItem('i360_agent');
   if (saved) {
     document.getElementById('l-name').value = saved;
     doLogin();
   }
-
-  // ── CLOCK ──
-  updateClock();
-  setInterval(updateClock, 30000);
+  updateClock(); setInterval(updateClock, 30000);
 });
 
-// Grabadora básica
-var oldMR=null, oldChunks=[], oldIsOn=false, oldPaused=false, oldSec=0, oldTimer=null, oldBlob=null, oldDur='';
-
-// Llamadas
-var callInterval=null, callSeconds=0;
-var callAudioMR=null, callAudioChunks=[];
-var callIsOn=false, callPaused=false;
-var currentCallAudioBlob=null;
-var sysStreamGlobal=null, micStreamGlobal=null;
-var isMuted = false;
-
-// ── AUDIO DE MARCADO CELULAR REALISTA ──
-var audioCtxPhone = null;
-
-function getPhoneCtx() {
-  if (!audioCtxPhone) {
-    audioCtxPhone = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtxPhone.state === 'suspended') audioCtxPhone.resume();
-  return audioCtxPhone;
-}
-
-// Tonos DTMF reales
-var DTMF_FREQS = {
-  '1':[697,1209],'2':[697,1336],'3':[697,1477],
-  '4':[770,1209],'5':[770,1336],'6':[770,1477],
-  '7':[852,1209],'8':[852,1336],'9':[852,1477],
-  '*':[941,1209],'0':[941,1336],'#':[941,1477]
-};
-
-function playDTMF(key) {
-  const freqs = DTMF_FREQS[key];
-  if (!freqs) return;
-  try {
-    const ctx = getPhoneCtx();
-    const dur = 0.12;
-    const now = ctx.currentTime;
-    const gain = ctx.createGain();
-    gain.connect(ctx.destination);
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.08, now + 0.005);
-    gain.gain.setValueAtTime(0.08, now + dur - 0.02);
-    gain.gain.linearRampToValueAtTime(0, now + dur);
-
-    freqs.forEach(f => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = f;
-      osc.connect(gain);
-      osc.start(now);
-      osc.stop(now + dur);
-    });
-  } catch(e) {}
-}
-
-// Tono de llamada tipo celular
-var ringOscNodes = [], ringGain = null, ringInterval = null;
-
-function startRingTone() {
-  stopRingTone();
-  try {
-    const ctx = getPhoneCtx();
-    
-    function doRing() {
-      const g = ctx.createGain();
-      g.connect(ctx.destination);
-      const now = ctx.currentTime;
-      [0, 0.3].forEach(offset => {
-        const o1 = ctx.createOscillator();
-        const o2 = ctx.createOscillator();
-        o1.type = 'sine'; o1.frequency.value = 425; 
-        o2.type = 'sine'; o2.frequency.value = 480;
-        o1.connect(g); o2.connect(g);
-        g.gain.setValueAtTime(0, now + offset);
-        g.gain.linearRampToValueAtTime(0.12, now + offset + 0.02);
-        g.gain.setValueAtTime(0.12, now + offset + 0.38);
-        g.gain.linearRampToValueAtTime(0, now + offset + 0.42);
-        o1.start(now + offset); o1.stop(now + offset + 0.45);
-        o2.start(now + offset); o2.stop(now + offset + 0.45);
-      });
-    }
-    
-    doRing();
-    ringInterval = setInterval(doRing, 4000);
-  } catch(e) {}
-}
-
-function stopRingTone() {
-  if (ringInterval) { clearInterval(ringInterval); ringInterval = null; }
-}
-
-function playConnectTone() {
-  try {
-    const ctx = getPhoneCtx();
-    const gain = ctx.createGain();
-    gain.connect(ctx.destination);
-    const now = ctx.currentTime;
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.1, now + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-    const osc = ctx.createOscillator();
-    osc.type = 'sine'; osc.frequency.value = 880;
-    osc.connect(gain); osc.start(now); osc.stop(now + 0.15);
-  } catch(e) {}
-}
-
-function playHangupTone() {
-  try {
-    const ctx = getPhoneCtx();
-    const now = ctx.currentTime;
-    [0, 0.15, 0.30].forEach(offset => {
-      const g = ctx.createGain();
-      g.connect(ctx.destination);
-      g.gain.setValueAtTime(0.07, now + offset);
-      g.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.12);
-      const o = ctx.createOscillator();
-      o.type = 'sine'; o.frequency.value = 440;
-      o.connect(g); o.start(now + offset); o.stop(now + offset + 0.12);
-    });
-  } catch(e) {}
-}
-
-// ── RELOJ ──
+// ==========================================
+// B. FUNCIONES UTILITARIAS BÁSICAS
+// ==========================================
 function updateClock() {
   const now = new Date();
   const h = now.getHours().toString().padStart(2,'0');
@@ -920,39 +693,32 @@ function updateClock() {
   if(di && window.innerWidth >= 768) di.style.display = 'block';
 }
 
-// ── HELPERS ──
-function addNum(n) {
-  playDTMF(n);
-  document.getElementById('client-phone').value += n;
-}
-function delNum() {
-  const i = document.getElementById('client-phone');
-  i.value = i.value.slice(0,-1);
-}
-
 function getDateStr() {
   const d = new Date();
   return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
 }
+
+const fmtTime = s => `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
 
 function showToast(msg, icon='') {
   const t = document.getElementById('toast');
   document.getElementById('toast-txt').textContent = (icon ? icon + ' ' : '') + msg;
   t.classList.add('show');
   clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 function goto(viewId, element) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   const target = document.getElementById('v-' + viewId);
   if(target) target.classList.add('active');
+  
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if(element) element.classList.add('active');
   
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
-    recorder:  { t:'Grabadora', s:'Captura de audio' },
+    recorder:  { t:'Grabadora', s:'Captura de audio libre' },
     call:      { t:'Gestión de Llamadas', s:'Consola telefónica' },
     history:   { t:'Auditoría', s:'Historial de gestiones' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
@@ -966,18 +732,24 @@ function goto(viewId, element) {
   }
 }
 
-// ── LOGIN ──
+// ==========================================
+// C. AUTENTICACIÓN Y SESIÓN
+// ==========================================
 function doLogin() {
   const n = document.getElementById('l-name').value.trim();
   if(!n) return showToast('Ingresa tu nombre de agente','⚠️');
+  
   localStorage.setItem('i360_agent', n);
   CU = { uid: 'uid_' + n.replace(/\s+/g,'').toLowerCase() };
   CUP = { name: n, role: 'Agente BackOffice' };
+  
   document.getElementById('sb-name').textContent = CUP.name;
   document.getElementById('sb-av-letter').textContent = CUP.name.charAt(0).toUpperCase();
   document.getElementById('top-av-letter').textContent = CUP.name.charAt(0).toUpperCase();
+  
   document.getElementById('auth-screen').classList.add('out');
   document.getElementById('app').style.display = 'flex';
+  
   initListeners();
   updatePresence();
 }
@@ -989,9 +761,23 @@ function doLogout() {
   location.reload();
 }
 
-const fmtTime = s => `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+function updatePresence() {
+  try { 
+    if(CU && CUP) {
+      db.collection('presence').doc(CU.uid).set({
+        name: CUP.name, 
+        online: true, 
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      }, {merge: true}).catch(e => console.error("Error presencia:", e));
+    }
+  } catch(e) {}
+}
 
-// ── GRABADORA BÁSICA ──
+// ==========================================
+// D. GRABADORA DE AUDIO LIBRE
+// ==========================================
+var oldMR=null, oldChunks=[], oldIsOn=false, oldPaused=false, oldSec=0, oldTimer=null, oldBlob=null, oldDur='';
+
 async function startOldRec() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({audio:true});
@@ -1003,17 +789,20 @@ async function startOldRec() {
     setOldUI('recording');
   } catch(e) { showToast('No se pudo acceder al micrófono','❌'); }
 }
+
 function pauseOldRec() {
   if(!oldIsOn) return;
   if(oldPaused) { oldMR.resume(); oldPaused=false; oldTimer=setInterval(()=>{oldSec++;document.getElementById('old-time').textContent=fmtTime(oldSec);},1000); setOldUI('recording'); }
   else { oldMR.pause(); oldPaused=true; clearInterval(oldTimer); setOldUI('paused'); }
 }
+
 function stopOldRec() {
   if(!oldIsOn) return;
   oldMR.stop(); oldMR.stream.getTracks().forEach(t=>t.stop());
   clearInterval(oldTimer); oldDur=document.getElementById('old-time').textContent;
   oldIsOn=false; oldPaused=false; setOldUI('ready');
 }
+
 function setOldUI(st) {
   const s=document.getElementById('old-status'), w=document.getElementById('old-wave');
   const r=document.getElementById('old-btn-rec'), p=document.getElementById('old-btn-pause'), stop=document.getElementById('old-btn-stop');
@@ -1022,9 +811,10 @@ function setOldUI(st) {
   else if(st==='ready'){s.textContent='LISTO';s.className='rec-status';w.classList.remove('active');r.disabled=false;p.disabled=true;stop.disabled=true;}
   else{s.textContent='ESPERANDO';s.className='rec-status';w.classList.remove('active');r.disabled=false;p.disabled=true;stop.disabled=true;}
 }
+
 async function saveOldRec() {
   if(!oldBlob) return;
-  const title = document.getElementById('old-rec-title').value.trim() || 'Audio_'+Date.now();
+  const title = document.getElementById('old-rec-title').value.trim() || 'Audio_Manual_'+Date.now();
   const fname = `${title}.webm`;
   try {
     if(window.showSaveFilePicker) {
@@ -1034,19 +824,95 @@ async function saveOldRec() {
       const u = URL.createObjectURL(oldBlob); const a = document.createElement('a'); a.href=u; a.download=fname; a.click();
     }
     showToast('Guardado local. Subiendo a Firebase…','☁️');
+    
     const blob2 = oldBlob;
     document.getElementById('old-btn-save').disabled=true;
     document.getElementById('old-rec-title').value='';
     document.getElementById('old-time').textContent='00:00';
     oldBlob=null; setOldUI('idle');
+    
     const snap = await storage.ref(`audios_crm/${fname}`).put(blob2);
     const url = await snap.ref.getDownloadURL();
-    await db.collection('historial_llamadas').add({fecha:getDateStr(),nombre:title,tipo:'Grabadora',duracion:oldDur,agente:CUP.name,audioUrl:url,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    
+    await db.collection('historial_llamadas').add({
+      fecha:getDateStr(),
+      nombre:title,
+      tipo:'Grabadora', 
+      duracion:oldDur,
+      agente:CUP.name,
+      audioUrl:url,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    });
     showToast('Sincronizado en Firebase','✅');
   } catch(e){ console.error(e); }
 }
 
-// ── GESTIÓN DE LLAMADAS ──
+
+// ==========================================
+// E. CONSOLA DE LLAMADAS (FAKE DIAL & REC)
+// ==========================================
+var callInterval=null, callSeconds=0;
+var callAudioMR=null, callAudioChunks=[];
+var callIsOn=false, callPaused=false;
+var currentCallAudioBlob=null;
+var sysStreamGlobal=null, micStreamGlobal=null;
+var isMuted = false;
+
+var audioCtxPhone = null;
+function getPhoneCtx() {
+  if (!audioCtxPhone) audioCtxPhone = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtxPhone.state === 'suspended') audioCtxPhone.resume();
+  return audioCtxPhone;
+}
+
+var DTMF_FREQS = {
+  '1':[697,1209],'2':[697,1336],'3':[697,1477],
+  '4':[770,1209],'5':[770,1336],'6':[770,1477],
+  '7':[852,1209],'8':[852,1336],'9':[852,1477],
+  '*':[941,1209],'0':[941,1336],'#':[941,1477]
+};
+
+function playDTMF(key) {
+  const freqs = DTMF_FREQS[key]; if (!freqs) return;
+  try {
+    const ctx = getPhoneCtx(); const dur = 0.12; const now = ctx.currentTime;
+    const gain = ctx.createGain(); gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.08, now + 0.005);
+    gain.gain.setValueAtTime(0.08, now + dur - 0.02); gain.gain.linearRampToValueAtTime(0, now + dur);
+    freqs.forEach(f => {
+      const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = f;
+      osc.connect(gain); osc.start(now); osc.stop(now + dur);
+    });
+  } catch(e) {}
+}
+
+var ringInterval = null;
+function startRingTone() {
+  stopRingTone();
+  try {
+    const ctx = getPhoneCtx();
+    function doRing() {
+      const g = ctx.createGain(); g.connect(ctx.destination); const now = ctx.currentTime;
+      [0, 0.3].forEach(offset => {
+        const o1 = ctx.createOscillator(); const o2 = ctx.createOscillator();
+        o1.type = 'sine'; o1.frequency.value = 425; o2.type = 'sine'; o2.frequency.value = 480;
+        o1.connect(g); o2.connect(g);
+        g.gain.setValueAtTime(0, now + offset); g.gain.linearRampToValueAtTime(0.12, now + offset + 0.02);
+        g.gain.setValueAtTime(0.12, now + offset + 0.38); g.gain.linearRampToValueAtTime(0, now + offset + 0.42);
+        o1.start(now + offset); o1.stop(now + offset + 0.45); o2.start(now + offset); o2.stop(now + offset + 0.45);
+      });
+    }
+    doRing(); ringInterval = setInterval(doRing, 4000);
+  } catch(e) {}
+}
+
+function stopRingTone() { if (ringInterval) { clearInterval(ringInterval); ringInterval = null; } }
+function playConnectTone() { try{ const c=getPhoneCtx(), g=c.createGain(), n=c.currentTime; g.connect(c.destination); g.gain.setValueAtTime(0,n); g.gain.linearRampToValueAtTime(0.1,n+0.01); g.gain.exponentialRampToValueAtTime(0.001,n+0.15); const o=c.createOscillator(); o.type='sine'; o.frequency.value=880; o.connect(g); o.start(n); o.stop(n+0.15); }catch(e){} }
+function playHangupTone() { try{ const c=getPhoneCtx(), n=c.currentTime; [0,0.15,0.30].forEach(of=>{ const g=c.createGain(); g.connect(c.destination); g.gain.setValueAtTime(0.07,n+of); g.gain.exponentialRampToValueAtTime(0.001,n+of+0.12); const o=c.createOscillator(); o.type='sine'; o.frequency.value=440; o.connect(g); o.start(n+of); o.stop(n+of+0.12); }); }catch(e){} }
+
+function addNum(n) { playDTMF(n); document.getElementById('client-phone').value += n; }
+function delNum() { const i = document.getElementById('client-phone'); i.value = i.value.slice(0,-1); }
+
 async function getMixedAudioStream() {
   try { micStreamGlobal = await navigator.mediaDevices.getUserMedia({audio:true}); }
   catch(e) { showToast('Acceso al micrófono requerido','❌'); throw e; }
@@ -1081,7 +947,9 @@ function startMockCall() {
 
     document.getElementById('call-avatar-letter').textContent = '👤';
     document.getElementById('call-phone-display').textContent = phone;
-    document.getElementById('call-rec-name').value=`Llamada_${phone}`;
+    document.getElementById('call-rec-name').value = phone;
+    document.getElementById('call-type-select').value = "Venta";
+
     document.getElementById('rec-in-call-btn').classList.remove('recording-active');
     document.getElementById('rec-in-call-label').textContent='Grabar';
     document.getElementById('dl-during-call').style.opacity='0.4';
@@ -1145,6 +1013,7 @@ async function downloadDuringCall() {
   document.getElementById('rec-in-call-label').textContent='Grabar';
   document.getElementById('dl-during-call').style.opacity='0.4';
   document.getElementById('dl-during-call').style.pointerEvents='none';
+  
   setTimeout(async()=>{
     if(!callAudioChunks.length) return showToast('Sin audio grabado aún','⚠️');
     const name = document.getElementById('call-rec-name').value.trim() || 'Audio_llamada';
@@ -1174,6 +1043,8 @@ async function endCall() {
   if(sysStreamGlobal) sysStreamGlobal.getTracks().forEach(t=>t.stop());
 
   const nameInput = document.getElementById('call-rec-name').value.trim() || phone;
+  const tipificacion = document.getElementById('call-type-select').value;
+  
   const chunksA = [...callAudioChunks];
   const blobA = currentCallAudioBlob;
 
@@ -1183,10 +1054,13 @@ async function endCall() {
   
   if (!finalBlob) {
     showToast('Llamada finalizada (Sin grabación)','📞');
-    return; // Si no hay audio grabado, no se registra en la base de datos
+    await db.collection('historial_llamadas').add({
+      fecha:getDateStr(), nombre:nameInput, tipo:tipificacion, duracion:dur, agente:CUP.name, audioUrl:null, timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return; 
   }
 
-  showToast('Guardando grabación…','⏳');
+  showToast('Guardando grabación en la nube…','⏳');
 
   setTimeout(async()=>{
     let audioUrl = null;
@@ -1198,13 +1072,13 @@ async function endCall() {
       await db.collection('historial_llamadas').add({
         fecha:getDateStr(),
         nombre:nameInput,
-        tipo:'Grabación de Llamada',
+        tipo:tipificacion,
         duracion:dur,
         agente:CUP.name,
         audioUrl:audioUrl,
         timestamp:firebase.firestore.FieldValue.serverTimestamp()
       });
-      showToast('Grabación guardada en Firebase','✅');
+      showToast('Gestión guardada en Firebase','✅');
     } catch(e){ console.error(e); showToast('Error al guardar','❌'); }
   },400);
 }
@@ -1218,85 +1092,132 @@ function resetCallUI() {
   document.getElementById('call-start-btn').classList.add('ringing');
 }
 
-// ── FIREBASE LISTENERS ──
+
+// ==========================================
+// F. GESTIÓN DE AUDITORÍA (EDITAR / ELIMINAR)
+// ==========================================
+async function editRecord(id, oldName) {
+  const newName = prompt("Ingresa el nuevo nombre o número de referencia:", oldName);
+  if (newName && newName.trim() !== "" && newName !== oldName) {
+    try {
+      await db.collection('historial_llamadas').doc(id).update({ nombre: newName.trim() });
+      showToast('Nombre actualizado exitosamente', '✅');
+    } catch (e) {
+      console.error(e); showToast('Error al editar nombre', '❌');
+    }
+  }
+}
+
+async function deleteRecord(id, audioUrl) {
+  if (confirm("¿Estás seguro de que deseas eliminar permanentemente este registro?\nSe borrará también el audio de Storage.")) {
+    try {
+      await db.collection('historial_llamadas').doc(id).delete();
+      if (audioUrl && audioUrl !== 'null') {
+        try {
+          const audioRef = storage.refFromURL(audioUrl);
+          await audioRef.delete();
+        } catch (storageErr) {
+          console.warn("El audio ya no existía en Storage.");
+        }
+      }
+      showToast('Registro eliminado por completo', '🗑️');
+    } catch (e) {
+      console.error(e); showToast('Error al eliminar', '❌');
+    }
+  }
+}
+
+
+// ==========================================
+// G. LECTURA DE DATOS (FIREBASE LISTENERS)
+// ==========================================
 function initListeners() {
   console.log("⏳ Sincronizando datos con Firebase...");
 
-  // Chat general
+  // 1. Chat
   db.collection('chat_general').orderBy('ts').limitToLast(50).onSnapshot(snap => {
     const box = document.getElementById('chat-msgs'); box.innerHTML = ''; let c = 0;
     snap.forEach(doc => {
       c++; const m = doc.data(); const isMe = m.uid === CU.uid; 
       const isIA = m.tipo === 'ia'; 
       const cls = isIA ? 'in' : isMe ? 'out' : 'in';
-      const bubble_style = isIA ? 'background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.12);color:#86efac;' : '';
-      box.innerHTML += `<div class="msg ${cls}">${!isMe && !isIA ? `<span class="msg-meta">${m.author}</span>` : ''}<div class="bubble" style="${bubble_style}">${m.text}</div><span class="msg-meta">${isIA ? 'IA – ' : ''}${m.hora || ''}</span></div>`;
+      const styleIA = isIA ? 'background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); color:#34d399;' : '';
+      box.innerHTML += `<div class="msg ${cls}">${!isMe && !isIA ? `<span class="msg-meta">${m.author}</span>` : ''}<div class="bubble" style="${styleIA}">${m.text}</div><span class="msg-meta">${isIA ? 'IA – ' : ''}${m.hora || ''}</span></div>`;
     });
     box.scrollTop = box.scrollHeight;
     document.getElementById('chat-count').textContent = `${c} mensajes`;
     document.getElementById('stat-msgs').textContent = snap.size;
-  }, error => {
-    console.error("❌ Error leyendo Chat:", error);
-    showToast('Error de permisos en BD', '⚠️');
   });
 
-  // Feed
+  // 2. Feed (Muro)
   db.collection('social_feed').orderBy('ts','desc').limit(25).onSnapshot(snap => {
     const list = document.getElementById('feed-list'); list.innerHTML = '';
     document.getElementById('stat-posts').textContent = snap.size;
     if(snap.empty) { list.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px;">Muro vacío. ¡Sé el primero en publicar!</div>'; return; }
+    
     snap.forEach(doc => {
       const p = doc.data();
-      list.innerHTML += `<div class="card" style="margin-bottom:10px;border-radius:12px;background:rgba(255,255,255,0.02);"><div style="padding:14px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p3));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">${p.autor.charAt(0).toUpperCase()}</div><div><div style="font-size:13px;font-weight:600;">${p.autor}</div><div style="font-size:10px;color:var(--muted2);">${p.fecha}</div></div></div><div style="font-size:13px;line-height:1.6;color:var(--text);">${p.contenido}</div></div></div>`;
+      list.innerHTML += `<div class="card" style="margin-bottom:12px;border-radius:14px;background:var(--bg2);"><div style="padding:16px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p3));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">${p.autor.charAt(0).toUpperCase()}</div><div><div style="font-size:14px;font-weight:700;color:var(--text);">${p.autor}</div><div style="font-size:11px;color:var(--muted);font-weight:500;">${p.fecha}</div></div></div><div style="font-size:14px;line-height:1.6;color:var(--text);">${p.contenido}</div></div></div>`;
     });
-  }, error => console.error("❌ Error leyendo Feed:", error));
+  });
 
-  // Historial
-  db.collection('historial_llamadas').orderBy('timestamp','desc').limit(150).onSnapshot(snap => {
-    histAll = []; snap.forEach(doc => histAll.push(doc.data()));
+  // 3. Auditoría e Historial SIN LÍMITE DE REGISTROS COMO PEDISTE
+  db.collection('historial_llamadas').orderBy('timestamp','desc').onSnapshot(snap => {
+    histAll = []; 
+    snap.forEach(doc => {
+      let data = doc.data();
+      data.id = doc.id;
+      histAll.push(data);
+    });
+    
     document.getElementById('stat-total').textContent = snap.size;
     const hoyStr = new Date().toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'});
     document.getElementById('stat-hoy').textContent = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr)).length;
+    
     const dA = document.getElementById('dash-activity');
-    if(!histAll.length){ dA.innerHTML = '<div style="padding:18px;text-align:center;color:var(--muted);">Sin actividad aún</div>'; }
-    else { dA.innerHTML = histAll.slice(0,6).map(h => `<div style="display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.03);"><div style="width:5px;height:5px;background:var(--p);border-radius:50%;flex-shrink:0;"></div><div style="flex:1;min-width:0;"><p style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.nombre}</p><p style="font-size:10px;color:var(--muted);">${h.agente} · ${h.fecha}</p></div><span class="tag purple" style="font-size:10px;">${h.duracion}</span></div>`).join(''); }
+    if(!histAll.length){ dA.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-weight:500;">Sin actividad aún</div>'; }
+    else { dA.innerHTML = histAll.slice(0,6).map(h => `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);"><div style="width:6px;height:6px;background:var(--p);border-radius:50%;flex-shrink:0;"></div><div style="flex:1;min-width:0;"><p style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.nombre}</p><p style="font-size:11px;color:var(--muted);font-weight:500;">${h.agente} · ${h.fecha}</p></div><span class="tag purple" style="font-size:10px;">${h.duracion}</span></div>`).join(''); }
+    
     renderAuditoria(histAll);
-  }, error => console.error("❌ Error leyendo Historial:", error));
+  });
 
-  // Presencia
+  // 4. Presencia de Agentes
   db.collection('presence').onSnapshot(snap => {
     const c = document.getElementById('dash-agents'); c.innerHTML = '';
     snap.forEach(doc => {
       const u = doc.data();
-      c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;"><div style="display:flex;align-items:center;gap:7px;"><div style="width:24px;height:24px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div>${u.name||'?'}</div><span style="color:${u.online?'var(--success)':'var(--muted)'};font-weight:600;font-size:11px;">${u.online?'● Online':'● Offline'}</span></div>`;
+      c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div><span style="color:var(--text);">${u.name||'?'}</span></div><span style="color:${u.online?'var(--success)':'var(--muted2)'};font-weight:700;font-size:11px;">${u.online?'● Online':'● Offline'}</span></div>`;
     });
-    if(!snap.size) c.innerHTML = '<div style="color:var(--muted);font-size:12px;">Sin agentes registrados</div>';
-  }, error => console.error("❌ Error leyendo Presencia:", error));
-}
-
-function updatePresence() {
-  try { 
-    if(CU && CUP) {
-      db.collection('presence').doc(CU.uid).set({
-        name: CUP.name, 
-        online: true, 
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-      }, {merge: true}).catch(e => console.error("Error seteando presencia:", e));
-    }
-  } catch(e) { console.error("Error en updatePresence:", e); }
+    if(!snap.size) c.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Sin agentes registrados</div>';
+  });
 }
 
 function renderAuditoria(arr) {
   const tbody=document.getElementById('hist-body');
-  if(!arr.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">Sin registros</td></tr>'; return; }
-  const typeColor = t => t&&t.includes('Venta')?'green':t&&t.includes('Interesado')?'amber':t&&t.includes('Rechaza')?'red':'blue';
-  tbody.innerHTML=arr.map(h=>`<tr>
-    <td style="white-space:nowrap;">${h.fecha}</td>
-    <td><strong style="font-size:12px;">${h.nombre}</strong></td>
+  if(!arr.length){ tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Sin registros encontrados</td></tr>'; return; }
+  
+  const typeColor = t => {
+    if(!t) return 'blue';
+    if(t.includes('Venta')) return 'green';
+    if(t.includes('Interesado')) return 'amber';
+    if(t.includes('Rechaza')) return 'red';
+    if(t.includes('Buzón')) return 'purple';
+    return 'blue';
+  };
+  
+  tbody.innerHTML = arr.map(h => `<tr>
+    <td style="white-space:nowrap; color:var(--muted); font-size:12px;">${h.fecha}</td>
+    <td><strong style="font-size:13px; color:var(--text);">${h.nombre}</strong></td>
     <td><span class="tag ${typeColor(h.tipo)}">${h.tipo}</span></td>
     <td><span class="tag purple">${h.duracion}</span></td>
     <td><span class="tag blue">${h.agente}</span></td>
-    <td>${h.audioUrl?`<a href="${h.audioUrl}" target="_blank" class="btn-dl-mini">⬇ Audio</a>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}</td>
+    <td>${h.audioUrl?`<a href="${h.audioUrl}" target="_blank" class="btn-dl-mini">⬇ Audio</a>`:'<span style="color:var(--muted2);font-size:12px;font-weight:600;">Sin audio</span>'}</td>
+    <td>
+      <div style="display:flex; gap:6px;">
+        <button class="btn-dl-mini" style="background:rgba(14,165,233,0.15); color:var(--info); border-color:rgba(14,165,233,0.3); padding:6px 10px;" onclick="editRecord('${h.id}', '${h.nombre.replace(/'/g, "\\'")}')" title="Editar Referencia">✏️</button>
+        <button class="btn-dl-mini" style="background:rgba(239,68,68,0.15); color:var(--danger); border-color:rgba(239,68,68,0.3); padding:6px 10px;" onclick="deleteRecord('${h.id}', '${h.audioUrl || ''}')" title="Eliminar Registro">🗑️</button>
+      </div>
+    </td>
   </tr>`).join('');
 }
 
@@ -1310,8 +1231,8 @@ async function publishPost() {
   try { 
     await db.collection('social_feed').add({autor:CUP.name,uid:CU.uid,contenido:t,fecha:getDateStr(),ts:firebase.firestore.FieldValue.serverTimestamp()}); 
     document.getElementById('feed-text').value=''; 
-    showToast('Publicación enviada','✅'); 
-  } catch(e) { console.error("Error publicando feed:", e); showToast('Error al publicar', '❌'); }
+    showToast('Anuncio publicado','✅'); 
+  } catch(e) { console.error(e); showToast('Error al publicar', '❌'); }
 }
 
 async function sendMsg() {
@@ -1322,7 +1243,9 @@ async function sendMsg() {
   } catch(e) { console.error("Error enviando mensaje:", e); }
 }
 
-// ── BUSCADOR DE YOUTUBE ──
+// ==========================================
+// H. BUSCADOR YOUTUBE
+// ==========================================
 const YOUTUBE_API_KEY = 'AIzaSyDRptcuOZDyYAU3Tdp5Osrox238Z4l4zD8'; 
 
 async function searchYouTube() {
@@ -1330,7 +1253,7 @@ async function searchYouTube() {
   if (!query) return showToast('Escribe algo para buscar', '⚠️');
 
   const list = document.getElementById('yt-results-list');
-  list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px;">Buscando...</div>';
+  list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; font-weight:500; padding:24px;">Buscando...</div>';
 
   try {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
@@ -1338,40 +1261,38 @@ async function searchYouTube() {
     const data = await response.json();
 
     if (data.error) {
-      console.error(data.error);
-      list.innerHTML = '<div style="text-align:center; color:var(--danger); font-size:13px;">Error de API. Verifica tu API Key.</div>';
+      list.innerHTML = '<div style="text-align:center; color:var(--danger); font-size:13px; font-weight:600;">Error de API. Verifica tu API Key.</div>';
       return;
     }
 
     if (data.items && data.items.length > 0) {
       list.innerHTML = data.items.map(item => `
-        <div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r); cursor:pointer; transition:0.2s;" 
+        <div style="display:flex; align-items:center; gap:14px; padding:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r2); cursor:pointer; transition:0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.05);" 
              onclick="playYouTubeVideo('${item.id.videoId}')" 
-             onmouseover="this.style.background='rgba(124,107,255,0.1)'" 
-             onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+             onmouseover="this.style.background='rgba(255,255,255,0.03)'" 
+             onmouseout="this.style.background='var(--bg2)'">
           
-          <img src="${item.snippet.thumbnails.default.url}" style="width:100px; height:56px; border-radius:6px; object-fit:cover;">
+          <img src="${item.snippet.thumbnails.default.url}" style="width:110px; height:62px; border-radius:8px; object-fit:cover; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
           
           <div style="flex:1; min-width:0;">
-            <div style="font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            <div style="font-size:14px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               ${item.snippet.title}
             </div>
-            <div style="font-size:10px; color:var(--muted2); margin-top:3px;">
+            <div style="font-size:11px; color:var(--muted); font-weight:600; margin-top:4px;">
               ${item.snippet.channelTitle}
             </div>
           </div>
           
-          <div style="padding-right:10px; color:var(--p);">
-            <svg style="width:24px; height:24px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+          <div style="padding-right:12px; color:var(--p);">
+            <svg style="width:28px; height:28px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
           </div>
         </div>
       `).join('');
     } else {
-      list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px;">No se encontraron resultados</div>';
+      list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; font-weight:500;">No se encontraron resultados</div>';
     }
   } catch (error) {
-    console.error("Error buscando en YT:", error);
-    list.innerHTML = '<div style="text-align:center; color:var(--danger); font-size:13px;">Error de red al buscar.</div>';
+    list.innerHTML = '<div style="text-align:center; color:var(--danger); font-size:13px; font-weight:600;">Error de red al buscar.</div>';
   }
 }
 
