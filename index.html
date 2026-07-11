@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Interconexiones 360 – CRM</title>
+<title>Interconexiones 360 – Grabadora & CRM</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -16,33 +16,22 @@
    1. VARIABLES DE COLOR (TEMA OSCURO SUAVE)
    ========================================= */
 :root {
-  /* Fondos y Superficies (No deslumbrantes) */
-  --bg: #18191c;           /* Fondo general oscuro suave */
-  --bg2: #212228;          /* Tarjetas y contenedores */
-  --surface: #212228;      /* Menú lateral */
-  
-  /* Bordes */
-  --border: #32343e;       /* Borde sutil */
-  --border2: #424552;      /* Borde más marcado para inputs */
-  
-  /* Textos */
-  --text: #f1f2f5;         /* Texto principal claro */
-  --muted: #9ba1b0;        /* Texto secundario */
-  --muted2: #6c7182;       /* Texto terciario / placeholders */
-  
-  /* Colores Principales (Azul Profesional) */
-  --p: #3b82f6;            /* Azul principal */
-  --p2: #2563eb;           /* Azul hover */
-  --p3: #60a5fa;           /* Azul claro */
-  --p-glow: rgba(59, 130, 246, 0.2); /* Sombra azul */
-  
-  /* Colores de Estado (Ajustados para fondo oscuro) */
-  --success: #10b981;      /* Verde */
-  --danger: #ef4444;       /* Rojo */
-  --warning: #f59e0b;      /* Ámbar */
-  --info: #0ea5e9;         /* Celeste */
-  
-  /* Radios y Espaciados */
+  --bg: #18191c;
+  --bg2: #212228;
+  --surface: #212228;
+  --border: #32343e;
+  --border2: #424552;
+  --text: #f1f2f5;
+  --muted: #9ba1b0;
+  --muted2: #6c7182;
+  --p: #3b82f6;
+  --p2: #2563eb;
+  --p3: #60a5fa;
+  --p-glow: rgba(59, 130, 246, 0.2);
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #0ea5e9;
   --r: 10px;
   --r2: 14px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -56,7 +45,6 @@
 html { height: 100%; -webkit-text-size-adjust: 100%; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; height: 100%; overflow: hidden; display: flex; }
 
-/* Scrollbar moderno */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #4a4d5a; border-radius: 99px; }
@@ -66,29 +54,19 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
    3. PANTALLA DE LOGIN (AUTH)
    ========================================= */
 #auth-screen {
-  position: fixed; inset: 0; z-index: 200;
-  background: var(--bg);
+  position: fixed; inset: 0; z-index: 200; background: var(--bg);
   display: flex; align-items: center; justify-content: center; padding: 24px;
   transition: opacity 0.4s, visibility 0.4s;
 }
 #auth-screen.out { opacity: 0; visibility: hidden; pointer-events: none; }
-
 .auth-box {
-  width: 100%; max-width: 360px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 40px 28px 32px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+  width: 100%; max-width: 360px; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px 28px 32px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
 }
 .auth-glow {
-  width: 72px; height: 72px; border-radius: 20px;
-  background: linear-gradient(145deg, var(--p), var(--p3));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 20px; color: #fff;
-  margin: 0 auto 22px;
-  box-shadow: 0 8px 20px var(--p-glow);
+  width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(145deg, var(--p), var(--p3));
+  display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; color: #fff;
+  margin: 0 auto 22px; box-shadow: 0 8px 20px var(--p-glow);
 }
 .auth-box h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; color: var(--text); }
 .auth-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
@@ -97,22 +75,15 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
    4. COMPONENTES (INPUTS Y BOTONES)
    ========================================= */
 .inp {
-  width: 100%; padding: 13px 15px;
-  background: rgba(0,0,0,0.15);
-  border: 1px solid var(--border2);
-  border-radius: var(--r); color: var(--text); font-size: 14px;
-  outline: none; transition: .2s; font-family: inherit;
+  width: 100%; padding: 13px 15px; background: rgba(0,0,0,0.15); border: 1px solid var(--border2);
+  border-radius: var(--r); color: var(--text); font-size: 14px; outline: none; transition: .2s; font-family: inherit;
 }
 .inp:focus { border-color: var(--p); background: rgba(0,0,0,0.3); box-shadow: 0 0 0 3px var(--p-glow); }
 .inp::placeholder { color: var(--muted2); }
 
 .btn {
-  width: 100%; padding: 13px;
-  background: var(--p); color: #fff;
-  border: none; border-radius: var(--r);
-  font-weight: 700; font-size: 14px; font-family: inherit;
-  cursor: pointer; transition: .2s; touch-action: manipulation;
-  box-shadow: 0 4px 10px var(--p-glow);
+  width: 100%; padding: 13px; background: var(--p); color: #fff; border: none; border-radius: var(--r);
+  font-weight: 700; font-size: 14px; font-family: inherit; cursor: pointer; transition: .2s; box-shadow: 0 4px 10px var(--p-glow);
 }
 .btn:active { transform: scale(0.97); }
 .btn:hover { background: var(--p2); box-shadow: 0 6px 15px var(--p-glow); }
@@ -129,13 +100,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
    ========================================= */
 #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
 
-.sidebar {
-  width: 240px; min-width: 240px;
-  display: flex; flex-direction: column;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-}
+.sidebar { width: 240px; min-width: 240px; display: flex; flex-direction: column; background: var(--surface); border-right: 1px solid var(--border); box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
 .sb-header { padding: 18px 14px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
 .sb-logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--p), var(--p3)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; color: #fff; flex-shrink: 0; box-shadow: 0 2px 6px var(--p-glow); }
 .sb-brand { font-weight: 700; font-size: 14px; line-height: 1.2; }
@@ -149,7 +114,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 
 .sb-nav { flex: 1; padding: 6px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
 .nav-section { font-size: 10px; font-weight: 700; color: var(--muted2); letter-spacing: 1px; padding: 10px 8px 3px; text-transform: uppercase; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: var(--r); cursor: pointer; transition: .15s; font-size: 13px; font-weight: 600; color: var(--muted); touch-action: manipulation; user-select: none; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: var(--r); cursor: pointer; transition: .15s; font-size: 13px; font-weight: 600; color: var(--muted); user-select: none; }
 .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
 .nav-item.active { background: rgba(59, 130, 246, 0.1); color: var(--p); border-left: 3px solid var(--p); border-radius: 0 var(--r) var(--r) 0; padding-left: 8px;}
 .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
@@ -162,7 +127,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .page-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
 
 .content { flex: 1; overflow: hidden; position: relative; }
-.view { display: none; height: 100%; overflow-y: auto; padding: 24px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.view { display: none; height: 100%; overflow-y: auto; padding: 24px; scroll-behavior: smooth; }
 .view.active { display: block; animation: fadeIn .2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -180,7 +145,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .stat-value { font-size: 28px; font-weight: 900; line-height: 1; }
 
 /* =========================================
-   7. GRABADORA Y LLAMADAS
+   7. GRABADORA
    ========================================= */
 .rec-display { background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: var(--r2); padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .rec-status { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border2); }
@@ -196,56 +161,26 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 @keyframes wvAnim { from { height: 4px; } to { height: 24px; } }
 
 .rec-controls { display: flex; gap: 14px; justify-content: center; align-items: center; width: 100%; }
-.ctrl-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--border2); background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .15s; touch-action: manipulation; color: var(--text); }
+.ctrl-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--border2); background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .15s; color: var(--text); }
 .ctrl-btn:active { transform: scale(0.93); }
 .ctrl-btn:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
 .ctrl-btn svg { width: 22px; height: 22px; }
 .ctrl-btn.rec-btn { background: rgba(239,68,68,0.05); color: var(--danger); border-color: rgba(239,68,68,0.2); }
 .ctrl-btn.rec-btn:hover:not(:disabled) { background: var(--danger); color: #fff; }
 
-.dialpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 210px; margin: 0 auto 16px; }
-.dial-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 50%; width: 56px; height: 56px; font-size: 22px; font-weight: 700; display: flex; flex-direction:column; align-items: center; justify-content: center; cursor: pointer; transition: .12s; margin: 0 auto; color: var(--text); user-select: none; }
-.dial-btn:active { background: rgba(59, 130, 246, 0.1); transform: scale(0.92); border-color: var(--p); }
-.dial-btn .sub-label { font-size: 9px; display: block; color: var(--muted); font-weight: 600; letter-spacing: .5px; margin-top:-2px;}
-
-.dial-action-row { display: flex; gap: 20px; justify-content: center; margin-top: 20px; align-items: center; }
-.btn-round { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: .15s; border: none; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.btn-round-call { background: var(--success); }
-.btn-round-call:active { transform: scale(0.93); background: #059669; }
-.btn-round-del { background: rgba(255,255,255,0.05); border: 1px solid var(--border2); color: var(--muted); box-shadow:none; }
-.btn-round-del:active { background: rgba(239,68,68,0.1); color: var(--danger); border-color:var(--danger); }
-
-/* Llamada Activa */
-.call-contact-av { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--p), var(--p3)); display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; margin: 0 auto 16px; box-shadow: 0 4px 15px var(--p-glow); }
-#call-timer { font-size: 48px; font-weight: 900; text-align: center; font-variant-numeric: tabular-nums; color: var(--text); }
-#call-phone-display { text-align: center; font-size: 15px; font-weight:600; color: var(--muted); margin-top: 4px; margin-bottom: 20px; letter-spacing: 1px;}
-
-.in-call-actions { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 16px 0 24px 0; }
-.in-call-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); cursor: pointer; transition: .15s; font-size: 11px; color: var(--muted); font-weight: 600; }
-.in-call-btn:active { transform: scale(0.95); }
-.in-call-btn svg { width: 20px; height: 20px; }
-.in-call-btn.active { background: rgba(59, 130, 246, 0.1); color: var(--p); border-color: var(--p); }
-.in-call-btn.recording-active { background: rgba(239,68,68,0.1); color: var(--danger); border-color: rgba(239,68,68,0.3); }
-
-.end-call-btn { width: 64px; height: 64px; border-radius: 50%; background: var(--danger); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: .15s; border: none; color: #fff; box-shadow: 0 6px 15px rgba(239,68,68,0.3); margin: 0 auto 10px; }
-.end-call-btn:active { transform: scale(0.93); background: #dc2626; }
-
 /* =========================================
    8. TABLAS, ETIQUETAS Y AUDITORÍA
    ========================================= */
 .tag { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
 .tag.purple { background: rgba(147,51,234,0.15); color: #d8b4fe; border: 1px solid rgba(147,51,234,0.3); }
-.tag.green { background: rgba(22,163,74,0.15); color: #6ee7b7; border: 1px solid rgba(22,163,74,0.3); }
 .tag.blue { background: rgba(37,99,235,0.15); color: #93c5fd; border: 1px solid rgba(37,99,235,0.3); }
-.tag.amber { background: rgba(217,119,6,0.15); color: #fcd34d; border: 1px solid rgba(217,119,6,0.3); }
-.tag.red { background: rgba(220,38,38,0.15); color: #fca5a5; border: 1px solid rgba(220,38,38,0.3); }
 
 .search-bar { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.15); border: 1px solid var(--border2); border-radius: var(--r); padding: 0 16px; margin-bottom: 16px; }
 .search-bar svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
 .search-bar input { background: transparent; border: none; color: var(--text); padding: 12px 0; font-size: 14px; outline: none; flex: 1; font-family: inherit; }
 
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 0 0 var(--r2) var(--r2); background: var(--bg2); }
-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+.table-wrap { overflow-x: auto; border-radius: 0 0 var(--r2) var(--r2); background: var(--bg2); }
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
 th { background: rgba(0,0,0,0.2); padding: 14px 16px; text-align: left; font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
 td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; color: var(--text); }
 tr:hover td { background: rgba(255,255,255,0.03); }
@@ -278,15 +213,12 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 #toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: #f1f2f5; color: #18191c; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; transition: bottom .4s cubic-bezier(.34,1.56,.64,1); z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 #toast.show { bottom: calc(var(--safe-bottom) + 80px); }
 
-.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); margin-left: auto; flex-shrink: 0; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); margin-left: auto; flex-shrink: 0; }
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
 .pulse-dot.anim { animation: pulseDot 2s ease infinite; }
-@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-@keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 50% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); } }
-.ringing { animation: ringPulse 1.5s ease infinite; }
+.status-dot-offline { width: 8px; height: 8px; border-radius: 50%; background: var(--muted2); display: inline-block; }
 
-select.inp { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ba1b0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; cursor: pointer;}
-select.inp option { background: var(--bg2); color: var(--text); }
+@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 @media (max-width: 767px) {
   .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; height: calc(64px + var(--safe-bottom)); min-width: 0; border-right: none; border-top: 1px solid var(--border); z-index: 50; background: var(--surface); padding-bottom: var(--safe-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
@@ -304,7 +236,6 @@ select.inp option { background: var(--bg2); color: var(--text); }
   .stat-value { font-size: 24px; }
   .card { max-width: 100%; }
   .card-body { padding: 16px; }
-  .in-call-actions { grid-template-columns: repeat(3, 1fr); }
   #toast.show { bottom: calc(64px + var(--safe-bottom) + 16px); }
 }
 @media (min-width: 768px) and (max-width: 1024px) { .sidebar { width: 200px; min-width: 200px; } .stats-row { grid-template-columns: repeat(4, 1fr); } }
@@ -347,10 +278,6 @@ select.inp option { background: var(--bg2); color: var(--text); }
       <div class="nav-item active" onclick="goto('dashboard',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="1.5"></rect></svg>
         <span>Dashboard</span>
-      </div>
-      <div class="nav-item" onclick="goto('call',this)">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-        <span>Llamadas</span>
       </div>
       <div class="nav-item" onclick="goto('recorder',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
@@ -401,7 +328,7 @@ select.inp option { background: var(--bg2); color: var(--text); }
       <!-- VISTA: DASHBOARD -->
       <div class="view active" id="v-dashboard">
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Gestiones hoy</div><div class="stat-value" id="stat-hoy" style="color:var(--p)">0</div></div>
+          <div class="stat-card"><div class="stat-label">Grabaciones hoy</div><div class="stat-value" id="stat-hoy" style="color:var(--p)">0</div></div>
           <div class="stat-card"><div class="stat-label">Total histórico</div><div class="stat-value" id="stat-total" style="color:var(--info)">0</div></div>
           <div class="stat-card"><div class="stat-label">Posts en muro</div><div class="stat-value" id="stat-posts" style="color:var(--success)">0</div></div>
           <div class="stat-card"><div class="stat-label">Mensajes chat</div><div class="stat-value" id="stat-msgs" style="color:var(--warning)">0</div></div>
@@ -410,7 +337,7 @@ select.inp option { background: var(--bg2); color: var(--text); }
           <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Actividad reciente</div>
             <div id="dash-activity"><div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;font-weight:500;">Cargando…</div></div>
           </div>
-          <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Agentes en línea</div>
+          <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Agentes (Estado)</div>
             <div id="dash-agents" style="padding:16px;display:flex;flex-direction:column;gap:10px;"><div style="color:var(--muted);font-size:13px;font-weight:500;">Sincronizando…</div></div>
           </div>
         </div>
@@ -419,126 +346,34 @@ select.inp option { background: var(--bg2); color: var(--text); }
       <!-- VISTA: GRABADORA -->
       <div class="view" id="v-recorder">
         <div class="card">
-          <div class="card-head">Grabadora de Audio Libre</div>
+          <div class="card-head">Grabadora de Audio</div>
           <div class="card-body">
             <div class="rec-display">
-              <div class="rec-status" id="old-status">ESPERANDO</div>
-              <div class="rec-time" id="old-time">00:00</div>
-              <div class="waveform" id="old-wave">
+              <div class="rec-status" id="rec-status">ESPERANDO</div>
+              <div class="rec-time" id="rec-time">00:00</div>
+              <div class="waveform" id="rec-wave">
                 <div class="wv"></div><div class="wv"></div><div class="wv"></div>
                 <div class="wv"></div><div class="wv"></div><div class="wv"></div><div class="wv"></div>
               </div>
             </div>
             <div class="rec-controls" style="margin-top:24px">
-              <button class="ctrl-btn rec-btn" id="old-btn-rec" onclick="startOldRec()" title="Grabar">
+              <button class="ctrl-btn rec-btn" id="btn-rec-start" onclick="startRec()" title="Grabar">
                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
               </button>
-              <button class="ctrl-btn pause-btn" id="old-btn-pause" onclick="pauseOldRec()" disabled title="Pausar" style="color:var(--warning); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05);">
-                <svg id="old-pause-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+              <button class="ctrl-btn pause-btn" id="btn-rec-pause" onclick="pauseRec()" disabled title="Pausar" style="color:var(--warning); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05);">
+                <svg id="pause-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
               </button>
-              <button class="ctrl-btn" id="old-btn-stop" style="color:var(--p); border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);" onclick="stopOldRec()" disabled title="Detener">
+              <button class="ctrl-btn" id="btn-rec-stop" style="color:var(--p); border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);" onclick="stopRec()" disabled title="Detener">
                 <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
               </button>
             </div>
             <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;">
               <div>
-                <label class="field-label">Nombre del audio</label>
-                <input type="text" id="old-rec-title" class="inp" placeholder="Ej: Audio_Prueba_01">
+                <label class="field-label">Nombre del audio / Referencia</label>
+                <input type="text" id="rec-title" class="inp" placeholder="Ej: Audio_Prueba_01">
               </div>
-              <button class="btn" id="old-btn-save" onclick="saveOldRec()" disabled>Guardar audio</button>
+              <button class="btn" id="btn-rec-save" onclick="saveRec()" disabled>Guardar audio</button>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VISTA: LLAMADAS -->
-      <div class="view" id="v-call">
-        <div class="card">
-          <div class="card-head">Consola de Llamadas</div>
-          <div class="card-body">
-
-            <!-- Panel de Marcado -->
-            <div id="dial-panel">
-              <input type="tel" id="client-phone" class="inp"
-                placeholder="Número del cliente"
-                style="font-size:24px; font-weight:800; text-align:center; letter-spacing:3px; margin-bottom:20px; background:rgba(0,0,0,0.2); border:2px solid var(--border2);"
-                inputmode="numeric">
-              
-              <div class="dialpad">
-                <div class="dial-btn" onclick="addNum('1')"><span>1</span></div>
-                <div class="dial-btn" onclick="addNum('2')"><span>2</span><span class="sub-label">ABC</span></div>
-                <div class="dial-btn" onclick="addNum('3')"><span>3</span><span class="sub-label">DEF</span></div>
-                <div class="dial-btn" onclick="addNum('4')"><span>4</span><span class="sub-label">GHI</span></div>
-                <div class="dial-btn" onclick="addNum('5')"><span>5</span><span class="sub-label">JKL</span></div>
-                <div class="dial-btn" onclick="addNum('6')"><span>6</span><span class="sub-label">MNO</span></div>
-                <div class="dial-btn" onclick="addNum('7')"><span>7</span><span class="sub-label">PQRS</span></div>
-                <div class="dial-btn" onclick="addNum('8')"><span>8</span><span class="sub-label">TUV</span></div>
-                <div class="dial-btn" onclick="addNum('9')"><span>9</span><span class="sub-label">WXYZ</span></div>
-                <div class="dial-btn" onclick="addNum('*')">*</div>
-                <div class="dial-btn" onclick="addNum('0')"><span>0</span><span class="sub-label">+</span></div>
-                <div class="dial-btn" onclick="addNum('#')">#</div>
-              </div>
-
-              <div class="dial-action-row">
-                <button class="btn-round btn-round-del" onclick="delNum()" title="Borrar">
-                  <svg style="width:24px;height:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
-                </button>
-                <button class="btn-round btn-round-call ringing" id="call-start-btn"
-                  onclick="navigator.mediaDevices.getUserMedia({audio:true}).then(startMockCall).catch(()=>showToast('Se requiere permiso de micrófono','⚠️'))"
-                  title="Llamar">
-                  <svg style="width:28px;height:28px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Panel de Llamada Activa -->
-            <div id="active-call-panel" style="display:none;">
-              <div class="call-contact-av" id="call-avatar-letter">📞</div>
-              <div style="text-align:center;margin-bottom:8px;">
-                <div style="font-size:12px;font-weight:800;color:var(--success);letter-spacing:1px;">
-                  <span class="pulse-dot anim" style="margin-right:6px;"></span>LLAMADA EN CURSO
-                </div>
-              </div>
-              
-              <div id="call-timer">00:00</div>
-              <div id="call-phone-display"></div>
-
-              <div class="in-call-actions">
-                <div class="in-call-btn" id="mute-btn" onclick="toggleMute()">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                  <span>Silenciar</span>
-                </div>
-                <div class="in-call-btn" id="rec-in-call-btn" onclick="toggleCallRec()">
-                  <svg fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5"></circle></svg>
-                  <span id="rec-in-call-label">Grabar</span>
-                </div>
-                <div class="in-call-btn" onclick="downloadDuringCall()" id="dl-during-call" style="opacity:.4; pointer-events:none;">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                  <span>Descargar</span>
-                </div>
-              </div>
-
-              <!-- TIPIFICACIÓN DE LLAMADA -->
-              <div style="margin-bottom:12px; background:rgba(0,0,0,0.1); padding:12px; border-radius:var(--r); border:1px solid var(--border);">
-                <label class="field-label">Resultado / Tipificación</label>
-                <select id="call-type-select" class="inp" style="margin-bottom:10px; font-weight:600;">
-                  <option value="Venta">✅ Venta Cerrada</option>
-                  <option value="Interesado">⏳ Interesado / Seguimiento</option>
-                  <option value="Rechaza">❌ Rechaza / No Interesado</option>
-                  <option value="Buzón">📞 Buzón / No Contesta</option>
-                  <option value="Otros">⚙️ Soporte / Otros</option>
-                </select>
-                
-                <label class="field-label">Nombre del Cliente / Referencia</label>
-                <input type="text" id="call-rec-name" class="inp" placeholder="Nombre del cliente para el historial">
-              </div>
-
-              <button class="end-call-btn" onclick="endCall()" title="Finalizar llamada">
-                <svg style="width:30px;height:30px" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" transform="rotate(135 10 10) translate(-10 -10) translate(10 10)"></path></svg>
-              </button>
-              <div style="text-align:center;font-size:12px;color:var(--muted);font-weight:600;margin-top:-6px;">Finalizar y Guardar</div>
-            </div>
-
           </div>
         </div>
       </div>
@@ -548,22 +383,21 @@ select.inp option { background: var(--bg2); color: var(--text); }
         <div style="max-width:1000px;margin:0 auto;">
           <div class="search-bar">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
-            <input type="text" id="hist-search" placeholder="Filtrar por cliente, agente o tipificación..." oninput="filterHist()">
+            <input type="text" id="hist-search" placeholder="Filtrar por nombre o agente..." oninput="filterHist()">
           </div>
           <div class="card" style="max-width:100%;margin:0;border-radius:16px;">
             <div class="table-wrap">
               <table>
                 <thead><tr>
                   <th>Fecha</th>
-                  <th>Cliente/Ref.</th>
-                  <th>Tipificación</th>
+                  <th>Referencia/Nombre</th>
                   <th>Duración</th>
                   <th>Agente</th>
                   <th>Audio</th>
                   <th>Acciones</th>
                 </tr></thead>
                 <tbody id="hist-body">
-                  <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros…</td></tr>
+                  <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros…</td></tr>
                 </tbody>
               </table>
             </div>
@@ -676,6 +510,13 @@ document.addEventListener('DOMContentLoaded', function() {
   updateClock(); setInterval(updateClock, 30000);
 });
 
+// Seguro adicional por si cierran la pestaña de golpe
+window.addEventListener('beforeunload', () => {
+  if (CU) {
+    db.collection('presence').doc(CU.uid).update({online: false});
+  }
+});
+
 // ==========================================
 // B. FUNCIONES UTILITARIAS BÁSICAS
 // ==========================================
@@ -695,6 +536,7 @@ function updateClock() {
 
 function getDateStr() {
   const d = new Date();
+  // Formato: DD/MM HH:MM
   return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
 }
 
@@ -719,8 +561,7 @@ function goto(viewId, element) {
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
     recorder:  { t:'Grabadora', s:'Captura de audio libre' },
-    call:      { t:'Gestión de Llamadas', s:'Consola telefónica' },
-    history:   { t:'Auditoría', s:'Historial de gestiones' },
+    history:   { t:'Auditoría', s:'Historial de grabaciones' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
     chat:      { t:'Chat de Equipo', s:'Comunicación interna' },
     music:     { t:'Reproductor', s:'Música de fondo' }
@@ -754,9 +595,16 @@ function doLogin() {
   updatePresence();
 }
 
-function doLogout() {
-  try { if(CU) db.collection('presence').doc(CU.uid).update({online:false}); } catch(e){}
-  stopRingTone();
+async function doLogout() {
+  try { 
+    if(CU) {
+      // El await obliga al navegador a esperar a que Firebase actualice el estado a "offline"
+      await db.collection('presence').doc(CU.uid).update({online: false}); 
+    }
+  } catch(e) {
+    console.error("Error al desconectar:", e);
+  }
+  
   localStorage.removeItem('i360_agent');
   location.reload();
 }
@@ -774,62 +622,62 @@ function updatePresence() {
 }
 
 // ==========================================
-// D. GRABADORA DE AUDIO LIBRE
+// D. GRABADORA DE AUDIO
 // ==========================================
-var oldMR=null, oldChunks=[], oldIsOn=false, oldPaused=false, oldSec=0, oldTimer=null, oldBlob=null, oldDur='';
+var recMR=null, recChunks=[], recIsOn=false, recPaused=false, recSec=0, recTimer=null, recBlob=null, recDur='';
 
-async function startOldRec() {
+async function startRec() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-    oldMR = new MediaRecorder(stream); oldChunks = [];
-    oldMR.ondataavailable = e => oldChunks.push(e.data);
-    oldMR.onstop = () => { oldBlob = new Blob(oldChunks,{type:'audio/webm'}); document.getElementById('old-btn-save').disabled = false; };
-    oldMR.start(); oldIsOn=true; oldPaused=false; oldSec=0;
-    oldTimer = setInterval(()=>{ oldSec++; document.getElementById('old-time').textContent=fmtTime(oldSec); },1000);
-    setOldUI('recording');
+    recMR = new MediaRecorder(stream); recChunks = [];
+    recMR.ondataavailable = e => recChunks.push(e.data);
+    recMR.onstop = () => { recBlob = new Blob(recChunks,{type:'audio/webm'}); document.getElementById('btn-rec-save').disabled = false; };
+    recMR.start(); recIsOn=true; recPaused=false; recSec=0;
+    recTimer = setInterval(()=>{ recSec++; document.getElementById('rec-time').textContent=fmtTime(recSec); },1000);
+    setRecUI('recording');
   } catch(e) { showToast('No se pudo acceder al micrófono','❌'); }
 }
 
-function pauseOldRec() {
-  if(!oldIsOn) return;
-  if(oldPaused) { oldMR.resume(); oldPaused=false; oldTimer=setInterval(()=>{oldSec++;document.getElementById('old-time').textContent=fmtTime(oldSec);},1000); setOldUI('recording'); }
-  else { oldMR.pause(); oldPaused=true; clearInterval(oldTimer); setOldUI('paused'); }
+function pauseRec() {
+  if(!recIsOn) return;
+  if(recPaused) { recMR.resume(); recPaused=false; recTimer=setInterval(()=>{recSec++;document.getElementById('rec-time').textContent=fmtTime(recSec);},1000); setRecUI('recording'); }
+  else { recMR.pause(); recPaused=true; clearInterval(recTimer); setRecUI('paused'); }
 }
 
-function stopOldRec() {
-  if(!oldIsOn) return;
-  oldMR.stop(); oldMR.stream.getTracks().forEach(t=>t.stop());
-  clearInterval(oldTimer); oldDur=document.getElementById('old-time').textContent;
-  oldIsOn=false; oldPaused=false; setOldUI('ready');
+function stopRec() {
+  if(!recIsOn) return;
+  recMR.stop(); recMR.stream.getTracks().forEach(t=>t.stop());
+  clearInterval(recTimer); recDur=document.getElementById('rec-time').textContent;
+  recIsOn=false; recPaused=false; setRecUI('ready');
 }
 
-function setOldUI(st) {
-  const s=document.getElementById('old-status'), w=document.getElementById('old-wave');
-  const r=document.getElementById('old-btn-rec'), p=document.getElementById('old-btn-pause'), stop=document.getElementById('old-btn-stop');
+function setRecUI(st) {
+  const s=document.getElementById('rec-status'), w=document.getElementById('rec-wave');
+  const r=document.getElementById('btn-rec-start'), p=document.getElementById('btn-rec-pause'), stop=document.getElementById('btn-rec-stop');
   if(st==='recording'){s.textContent='GRABANDO';s.className='rec-status recording';w.classList.add('active');r.disabled=true;p.disabled=false;stop.disabled=false;}
   else if(st==='paused'){s.textContent='PAUSADO';s.className='rec-status paused';w.classList.remove('active');}
   else if(st==='ready'){s.textContent='LISTO';s.className='rec-status';w.classList.remove('active');r.disabled=false;p.disabled=true;stop.disabled=true;}
   else{s.textContent='ESPERANDO';s.className='rec-status';w.classList.remove('active');r.disabled=false;p.disabled=true;stop.disabled=true;}
 }
 
-async function saveOldRec() {
-  if(!oldBlob) return;
-  const title = document.getElementById('old-rec-title').value.trim() || 'Audio_Manual_'+Date.now();
+async function saveRec() {
+  if(!recBlob) return;
+  const title = document.getElementById('rec-title').value.trim() || 'Audio_Manual_'+Date.now();
   const fname = `${title}.webm`;
   try {
     if(window.showSaveFilePicker) {
       const h = await window.showSaveFilePicker({suggestedName:fname,types:[{description:'Audio',accept:{'audio/webm':['.webm']}}]});
-      const w = await h.createWritable(); await w.write(oldBlob); await w.close();
+      const w = await h.createWritable(); await w.write(recBlob); await w.close();
     } else {
-      const u = URL.createObjectURL(oldBlob); const a = document.createElement('a'); a.href=u; a.download=fname; a.click();
+      const u = URL.createObjectURL(recBlob); const a = document.createElement('a'); a.href=u; a.download=fname; a.click();
     }
     showToast('Guardado local. Subiendo a Firebase…','☁️');
     
-    const blob2 = oldBlob;
-    document.getElementById('old-btn-save').disabled=true;
-    document.getElementById('old-rec-title').value='';
-    document.getElementById('old-time').textContent='00:00';
-    oldBlob=null; setOldUI('idle');
+    const blob2 = recBlob;
+    document.getElementById('btn-rec-save').disabled=true;
+    document.getElementById('rec-title').value='';
+    document.getElementById('rec-time').textContent='00:00';
+    recBlob=null; setRecUI('idle');
     
     const snap = await storage.ref(`audios_crm/${fname}`).put(blob2);
     const url = await snap.ref.getDownloadURL();
@@ -837,267 +685,20 @@ async function saveOldRec() {
     await db.collection('historial_llamadas').add({
       fecha:getDateStr(),
       nombre:title,
-      tipo:'Grabadora', 
-      duracion:oldDur,
+      duracion:recDur,
       agente:CUP.name,
       audioUrl:url,
       timestamp:firebase.firestore.FieldValue.serverTimestamp()
     });
     showToast('Sincronizado en Firebase','✅');
-  } catch(e){ console.error(e); }
+  } catch(e){ console.error(e); showToast('Error al guardar','❌'); }
 }
-
 
 // ==========================================
-// E. CONSOLA DE LLAMADAS (FAKE DIAL & REC)
-// ==========================================
-var callInterval=null, callSeconds=0;
-var callAudioMR=null, callAudioChunks=[];
-var callIsOn=false, callPaused=false;
-var currentCallAudioBlob=null;
-var sysStreamGlobal=null, micStreamGlobal=null;
-var isMuted = false;
-
-var audioCtxPhone = null;
-function getPhoneCtx() {
-  if (!audioCtxPhone) audioCtxPhone = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtxPhone.state === 'suspended') audioCtxPhone.resume();
-  return audioCtxPhone;
-}
-
-var DTMF_FREQS = {
-  '1':[697,1209],'2':[697,1336],'3':[697,1477],
-  '4':[770,1209],'5':[770,1336],'6':[770,1477],
-  '7':[852,1209],'8':[852,1336],'9':[852,1477],
-  '*':[941,1209],'0':[941,1336],'#':[941,1477]
-};
-
-function playDTMF(key) {
-  const freqs = DTMF_FREQS[key]; if (!freqs) return;
-  try {
-    const ctx = getPhoneCtx(); const dur = 0.12; const now = ctx.currentTime;
-    const gain = ctx.createGain(); gain.connect(ctx.destination);
-    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.08, now + 0.005);
-    gain.gain.setValueAtTime(0.08, now + dur - 0.02); gain.gain.linearRampToValueAtTime(0, now + dur);
-    freqs.forEach(f => {
-      const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = f;
-      osc.connect(gain); osc.start(now); osc.stop(now + dur);
-    });
-  } catch(e) {}
-}
-
-var ringInterval = null;
-function startRingTone() {
-  stopRingTone();
-  try {
-    const ctx = getPhoneCtx();
-    function doRing() {
-      const g = ctx.createGain(); g.connect(ctx.destination); const now = ctx.currentTime;
-      [0, 0.3].forEach(offset => {
-        const o1 = ctx.createOscillator(); const o2 = ctx.createOscillator();
-        o1.type = 'sine'; o1.frequency.value = 425; o2.type = 'sine'; o2.frequency.value = 480;
-        o1.connect(g); o2.connect(g);
-        g.gain.setValueAtTime(0, now + offset); g.gain.linearRampToValueAtTime(0.12, now + offset + 0.02);
-        g.gain.setValueAtTime(0.12, now + offset + 0.38); g.gain.linearRampToValueAtTime(0, now + offset + 0.42);
-        o1.start(now + offset); o1.stop(now + offset + 0.45); o2.start(now + offset); o2.stop(now + offset + 0.45);
-      });
-    }
-    doRing(); ringInterval = setInterval(doRing, 4000);
-  } catch(e) {}
-}
-
-function stopRingTone() { if (ringInterval) { clearInterval(ringInterval); ringInterval = null; } }
-function playConnectTone() { try{ const c=getPhoneCtx(), g=c.createGain(), n=c.currentTime; g.connect(c.destination); g.gain.setValueAtTime(0,n); g.gain.linearRampToValueAtTime(0.1,n+0.01); g.gain.exponentialRampToValueAtTime(0.001,n+0.15); const o=c.createOscillator(); o.type='sine'; o.frequency.value=880; o.connect(g); o.start(n); o.stop(n+0.15); }catch(e){} }
-function playHangupTone() { try{ const c=getPhoneCtx(), n=c.currentTime; [0,0.15,0.30].forEach(of=>{ const g=c.createGain(); g.connect(c.destination); g.gain.setValueAtTime(0.07,n+of); g.gain.exponentialRampToValueAtTime(0.001,n+of+0.12); const o=c.createOscillator(); o.type='sine'; o.frequency.value=440; o.connect(g); o.start(n+of); o.stop(n+of+0.12); }); }catch(e){} }
-
-function addNum(n) { playDTMF(n); document.getElementById('client-phone').value += n; }
-function delNum() { const i = document.getElementById('client-phone'); i.value = i.value.slice(0,-1); }
-
-async function getMixedAudioStream() {
-  try { micStreamGlobal = await navigator.mediaDevices.getUserMedia({audio:true}); }
-  catch(e) { showToast('Acceso al micrófono requerido','❌'); throw e; }
-  let mixed = new MediaStream(micStreamGlobal.getAudioTracks());
-  try {
-    sysStreamGlobal = await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
-    sysStreamGlobal.getVideoTracks().forEach(t=>t.stop());
-    const ctx2 = new (window.AudioContext||window.webkitAudioContext)();
-    if(ctx2.state==='suspended') await ctx2.resume();
-    const dest = ctx2.createMediaStreamDestination();
-    ctx2.createMediaStreamSource(micStreamGlobal).connect(dest);
-    if(sysStreamGlobal.getAudioTracks().length>0) ctx2.createMediaStreamSource(sysStreamGlobal).connect(dest);
-    else showToast('Sin audio del PC. Solo se grabará el micrófono.','⚠️');
-    mixed = new MediaStream([dest.stream.getAudioTracks()[0]]);
-  } catch(e) { showToast('Solo micrófono (audio del PC cancelado)','⚠️'); }
-  return mixed;
-}
-
-function startMockCall() {
-  const phone = document.getElementById('client-phone').value.trim();
-  if(!phone) return showToast('Ingresa un número primero','⚠️');
-
-  startRingTone();
-  document.getElementById('call-start-btn').classList.remove('ringing');
-  
-  setTimeout(() => {
-    stopRingTone();
-    playConnectTone();
-
-    document.getElementById('dial-panel').style.display='none';
-    document.getElementById('active-call-panel').style.display='block';
-
-    document.getElementById('call-avatar-letter').textContent = '👤';
-    document.getElementById('call-phone-display').textContent = phone;
-    document.getElementById('call-rec-name').value = phone;
-    document.getElementById('call-type-select').value = "Venta";
-
-    document.getElementById('rec-in-call-btn').classList.remove('recording-active');
-    document.getElementById('rec-in-call-label').textContent='Grabar';
-    document.getElementById('dl-during-call').style.opacity='0.4';
-    document.getElementById('dl-during-call').style.pointerEvents='none';
-    document.getElementById('mute-btn').classList.remove('active');
-    isMuted=false;
-
-    callSeconds=0;
-    document.getElementById('call-timer').textContent='00:00';
-    if(callInterval) clearInterval(callInterval);
-    callInterval = setInterval(()=>{callSeconds++;document.getElementById('call-timer').textContent=fmtTime(callSeconds);},1000);
-  }, 2500);
-}
-
-function toggleMute() {
-  isMuted = !isMuted;
-  const btn = document.getElementById('mute-btn');
-  btn.classList.toggle('active', isMuted);
-  if(micStreamGlobal) micStreamGlobal.getAudioTracks().forEach(t=>t.enabled=!isMuted);
-  showToast(isMuted ? 'Micrófono silenciado' : 'Micrófono activo', isMuted ? '🔇' : '🎙️');
-}
-
-async function toggleCallRec() {
-  if(!callIsOn) {
-    showToast('Conectando canales de audio…','⏳');
-    try {
-      const stream = await getMixedAudioStream();
-      callAudioMR = new MediaRecorder(stream,{mimeType:'audio/webm'});
-      callAudioChunks=[];
-      callAudioMR.ondataavailable = e=>{ if(e.data.size>0) callAudioChunks.push(e.data); };
-      callAudioMR.start();
-      callIsOn=true; callPaused=false;
-      document.getElementById('rec-in-call-btn').classList.add('recording-active');
-      document.getElementById('rec-in-call-label').textContent='Grabando';
-      document.getElementById('dl-during-call').style.opacity='1';
-      document.getElementById('dl-during-call').style.pointerEvents='auto';
-      showToast('Grabando audio de la llamada','🔴');
-    } catch(e) { console.error(e); }
-  } else {
-    if(!callPaused) {
-      callAudioMR.pause(); callPaused=true;
-      document.getElementById('rec-in-call-btn').classList.remove('recording-active');
-      document.getElementById('rec-in-call-label').textContent='Pausado';
-      showToast('Grabación pausada','⏸️');
-    } else {
-      callAudioMR.resume(); callPaused=false;
-      document.getElementById('rec-in-call-btn').classList.add('recording-active');
-      document.getElementById('rec-in-call-label').textContent='Grabando';
-      showToast('Grabación reanudada','🔴');
-    }
-  }
-}
-
-async function downloadDuringCall() {
-  if(!callIsOn) return;
-  if(callAudioMR && callAudioMR.state!=='inactive') callAudioMR.stop();
-  if(micStreamGlobal) micStreamGlobal.getTracks().forEach(t=>t.stop());
-  if(sysStreamGlobal) sysStreamGlobal.getTracks().forEach(t=>t.stop());
-  callIsOn=false;
-  document.getElementById('rec-in-call-btn').classList.remove('recording-active');
-  document.getElementById('rec-in-call-label').textContent='Grabar';
-  document.getElementById('dl-during-call').style.opacity='0.4';
-  document.getElementById('dl-during-call').style.pointerEvents='none';
-  
-  setTimeout(async()=>{
-    if(!callAudioChunks.length) return showToast('Sin audio grabado aún','⚠️');
-    const name = document.getElementById('call-rec-name').value.trim() || 'Audio_llamada';
-    currentCallAudioBlob = new Blob(callAudioChunks,{type:'audio/webm'});
-    try {
-      if(window.showSaveFilePicker){
-        const h=await window.showSaveFilePicker({suggestedName:`${name}.webm`,types:[{description:'Audio',accept:{'audio/webm':['.webm']}}]});
-        const w=await h.createWritable(); await w.write(currentCallAudioBlob); await w.close();
-      } else {
-        const u=URL.createObjectURL(currentCallAudioBlob); const a=document.createElement('a'); a.href=u; a.download=`${name}.webm`; a.click();
-      }
-      showToast('Audio descargado','✅');
-    } catch(e){}
-  },300);
-}
-
-async function endCall() {
-  const phone = document.getElementById('client-phone').value.trim();
-  const dur = document.getElementById('call-timer').textContent;
-
-  playHangupTone();
-  clearInterval(callInterval);
-  stopRingTone();
-
-  if(callIsOn && callAudioMR && callAudioMR.state!=='inactive') callAudioMR.stop();
-  if(micStreamGlobal) micStreamGlobal.getTracks().forEach(t=>t.stop());
-  if(sysStreamGlobal) sysStreamGlobal.getTracks().forEach(t=>t.stop());
-
-  const nameInput = document.getElementById('call-rec-name').value.trim() || phone;
-  const tipificacion = document.getElementById('call-type-select').value;
-  
-  const chunksA = [...callAudioChunks];
-  const blobA = currentCallAudioBlob;
-
-  resetCallUI();
-
-  const finalBlob = blobA || (chunksA.length>0 ? new Blob(chunksA,{type:'audio/webm'}) : null);
-  
-  if (!finalBlob) {
-    showToast('Llamada finalizada (Sin grabación)','📞');
-    await db.collection('historial_llamadas').add({
-      fecha:getDateStr(), nombre:nameInput, tipo:tipificacion, duracion:dur, agente:CUP.name, audioUrl:null, timestamp:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    return; 
-  }
-
-  showToast('Guardando grabación en la nube…','⏳');
-
-  setTimeout(async()=>{
-    let audioUrl = null;
-    try {
-      const tsName=`${nameInput}_${Date.now()}.webm`;
-      const snap=await storage.ref(`audios_crm/${tsName}`).put(finalBlob);
-      audioUrl=await snap.ref.getDownloadURL();
-      
-      await db.collection('historial_llamadas').add({
-        fecha:getDateStr(),
-        nombre:nameInput,
-        tipo:tipificacion,
-        duracion:dur,
-        agente:CUP.name,
-        audioUrl:audioUrl,
-        timestamp:firebase.firestore.FieldValue.serverTimestamp()
-      });
-      showToast('Gestión guardada en Firebase','✅');
-    } catch(e){ console.error(e); showToast('Error al guardar','❌'); }
-  },400);
-}
-
-function resetCallUI() {
-  callIsOn=false; callPaused=false; currentCallAudioBlob=null; callAudioChunks=[];
-  document.getElementById('active-call-panel').style.display='none';
-  document.getElementById('dial-panel').style.display='block';
-  document.getElementById('client-phone').value='';
-  document.getElementById('call-rec-name').value='';
-  document.getElementById('call-start-btn').classList.add('ringing');
-}
-
-
-// ==========================================
-// F. GESTIÓN DE AUDITORÍA (EDITAR / ELIMINAR)
+// E. GESTIÓN DE AUDITORÍA (EDITAR / ELIMINAR)
 // ==========================================
 async function editRecord(id, oldName) {
-  const newName = prompt("Ingresa el nuevo nombre o número de referencia:", oldName);
+  const newName = prompt("Ingresa el nuevo nombre o referencia:", oldName);
   if (newName && newName.trim() !== "" && newName !== oldName) {
     try {
       await db.collection('historial_llamadas').doc(id).update({ nombre: newName.trim() });
@@ -1127,9 +728,8 @@ async function deleteRecord(id, audioUrl) {
   }
 }
 
-
 // ==========================================
-// G. LECTURA DE DATOS (FIREBASE LISTENERS)
+// F. LECTURA DE DATOS (FIREBASE LISTENERS)
 // ==========================================
 function initListeners() {
   console.log("⏳ Sincronizando datos con Firebase...");
@@ -1161,7 +761,7 @@ function initListeners() {
     });
   });
 
-  // 3. Auditoría e Historial SIN LÍMITE DE REGISTROS COMO PEDISTE
+  // 3. Auditoría (Grabaciones)
   db.collection('historial_llamadas').orderBy('timestamp','desc').onSnapshot(snap => {
     histAll = []; 
     snap.forEach(doc => {
@@ -1171,7 +771,12 @@ function initListeners() {
     });
     
     document.getElementById('stat-total').textContent = snap.size;
-    const hoyStr = new Date().toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'});
+    
+    // Cálculo de Grabaciones de hoy con formato exacto DD/MM
+    const dToday = new Date();
+    const hoyStr = `${dToday.getDate().toString().padStart(2,'0')}/${(dToday.getMonth()+1).toString().padStart(2,'0')}`;
+    
+    // Filtra el array usando solo el día/mes exacto para evitar errores
     document.getElementById('stat-hoy').textContent = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr)).length;
     
     const dA = document.getElementById('dash-activity');
@@ -1181,12 +786,30 @@ function initListeners() {
     renderAuditoria(histAll);
   });
 
-  // 4. Presencia de Agentes
+  // 4. Presencia de Agentes (Ordenados: Online primero, Offline después)
   db.collection('presence').onSnapshot(snap => {
     const c = document.getElementById('dash-agents'); c.innerHTML = '';
-    snap.forEach(doc => {
-      const u = doc.data();
-      c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div><span style="color:var(--text);">${u.name||'?'}</span></div><span style="color:${u.online?'var(--success)':'var(--muted2)'};font-weight:700;font-size:11px;">${u.online?'● Online':'● Offline'}</span></div>`;
+    let agents = [];
+    snap.forEach(doc => agents.push(doc.data()));
+    
+    // Ordenar agentes
+    agents.sort((a, b) => (b.online === a.online) ? 0 : b.online ? 1 : -1);
+
+    agents.forEach(u => {
+      const isOnline = u.online;
+      const statusIcon = isOnline ? '<span class="pulse-dot anim"></span>' : '<span class="status-dot-offline"></span>';
+      const statusText = isOnline ? 'Online' : 'Offline';
+      const statusColor = isOnline ? 'var(--success)' : 'var(--muted2)';
+
+      c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div>
+          <span style="color:var(--text);">${u.name||'?'}</span>
+        </div>
+        <span style="color:${statusColor};font-weight:700;font-size:11px; display:flex; align-items:center; gap:6px;">
+          ${statusIcon} ${statusText}
+        </span>
+      </div>`;
     });
     if(!snap.size) c.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Sin agentes registrados</div>';
   });
@@ -1194,21 +817,11 @@ function initListeners() {
 
 function renderAuditoria(arr) {
   const tbody=document.getElementById('hist-body');
-  if(!arr.length){ tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Sin registros encontrados</td></tr>'; return; }
-  
-  const typeColor = t => {
-    if(!t) return 'blue';
-    if(t.includes('Venta')) return 'green';
-    if(t.includes('Interesado')) return 'amber';
-    if(t.includes('Rechaza')) return 'red';
-    if(t.includes('Buzón')) return 'purple';
-    return 'blue';
-  };
+  if(!arr.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Sin registros encontrados</td></tr>'; return; }
   
   tbody.innerHTML = arr.map(h => `<tr>
     <td style="white-space:nowrap; color:var(--muted); font-size:12px;">${h.fecha}</td>
     <td><strong style="font-size:13px; color:var(--text);">${h.nombre}</strong></td>
-    <td><span class="tag ${typeColor(h.tipo)}">${h.tipo}</span></td>
     <td><span class="tag purple">${h.duracion}</span></td>
     <td><span class="tag blue">${h.agente}</span></td>
     <td>${h.audioUrl?`<a href="${h.audioUrl}" target="_blank" class="btn-dl-mini">⬇ Audio</a>`:'<span style="color:var(--muted2);font-size:12px;font-weight:600;">Sin audio</span>'}</td>
@@ -1223,7 +836,7 @@ function renderAuditoria(arr) {
 
 function filterHist() {
   const q=document.getElementById('hist-search').value.toLowerCase();
-  renderAuditoria(histAll.filter(h=>`${h.nombre} ${h.agente} ${h.tipo} ${h.fecha}`.toLowerCase().includes(q)));
+  renderAuditoria(histAll.filter(h=>`${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q)));
 }
 
 async function publishPost() {
@@ -1244,7 +857,7 @@ async function sendMsg() {
 }
 
 // ==========================================
-// H. BUSCADOR YOUTUBE
+// G. BUSCADOR YOUTUBE
 // ==========================================
 const YOUTUBE_API_KEY = 'AIzaSyDRptcuOZDyYAU3Tdp5Osrox238Z4l4zD8'; 
 
