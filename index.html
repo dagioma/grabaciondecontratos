@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -126,7 +126,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .page-title { font-size: 16px; font-weight: 800; color: var(--text); }
 .page-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-/* Botón Logout Móvil (Oculto por defecto) */
+/* Botón Logout Móvil */
 .mobile-logout-btn { display: none; background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s; }
 .mobile-logout-btn:active { background: rgba(239, 68, 68, 0.1); }
 .mobile-logout-btn svg { width: 20px; height: 20px; }
@@ -237,7 +237,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .main { height: calc(100vh - 64px - var(--safe-bottom)); }
   .view { padding: 16px; }
   .topbar { height: 56px; min-height: 56px; padding: 0 20px; padding-top: var(--safe-top); }
-  .mobile-logout-btn { display: block; } /* Mostrar botón en celular */
+  .mobile-logout-btn { display: block; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .stat-value { font-size: 24px; }
   .card { max-width: 100%; }
@@ -337,13 +337,27 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           <div class="stat-card"><div class="stat-label">Posts en muro</div><div class="stat-value" id="stat-posts" style="color:var(--success)">0</div></div>
           <div class="stat-card"><div class="stat-label">Mensajes chat</div><div class="stat-value" id="stat-msgs" style="color:var(--warning)">0</div></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px">
+          
           <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Actividad reciente</div>
             <div id="dash-activity"><div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;font-weight:500;">Cargando…</div></div>
           </div>
+          
+          <!-- NUEVA TARJETA: Gráfico Profesional Chart.js -->
+          <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+            <div class="card-head">Llamadas por Agente (Hoy)</div>
+            <div style="padding:16px; position:relative; height:200px; width:100%;">
+              <canvas id="agentsChart"></canvas>
+            </div>
+            <!-- Lista rápida debajo del gráfico -->
+            <div id="dash-agent-stats" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
           <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Agentes (Estado)</div>
             <div id="dash-agents" style="padding:16px;display:flex;flex-direction:column;gap:10px;"><div style="color:var(--muted);font-size:13px;font-weight:500;">Sincronizando…</div></div>
           </div>
+          
         </div>
       </div>
 
@@ -469,6 +483,8 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 <div id="toast"><span id="toast-txt">Mensaje</span></div>
 
+<!-- LIBRERÍA CHART.JS AÑADIDA AQUÍ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
@@ -479,6 +495,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 // ==========================================
 var db, storage;
 var CU = null, CUP = {}, histAll = [];
+var agentsChart = null; // Variable global para guardar nuestro gráfico
 
 const FB_CFG = {
   apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
@@ -595,7 +612,6 @@ function doLogin() {
 async function doLogout() {
   try { 
     if(CU) {
-      // El await obliga al navegador a esperar a que Firebase actualice el estado a "offline"
       await db.collection('presence').doc(CU.uid).update({online: false}); 
     }
   } catch(e) {
@@ -758,7 +774,7 @@ function initListeners() {
     });
   });
 
-  // 3. Auditoría (Grabaciones)
+  // 3. Auditoría (Grabaciones) e Integración con Chart.js
   db.collection('historial_llamadas').orderBy('timestamp','desc').onSnapshot(snap => {
     histAll = []; 
     snap.forEach(doc => {
@@ -773,8 +789,93 @@ function initListeners() {
     const dToday = new Date();
     const hoyStr = `${dToday.getDate().toString().padStart(2,'0')}/${(dToday.getMonth()+1).toString().padStart(2,'0')}`;
     
-    // Filtra el array usando solo el día/mes exacto para evitar errores
-    document.getElementById('stat-hoy').textContent = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr)).length;
+    // Filtra el array usando solo el día/mes exacto
+    const llamadasHoy = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr));
+    document.getElementById('stat-hoy').textContent = llamadasHoy.length;
+
+    // --- CÁLCULO DE PRODUCTIVIDAD Y CREACIÓN DEL GRÁFICO (Chart.js) ---
+    const agentCounts = {};
+    llamadasHoy.forEach(h => {
+      agentCounts[h.agente] = (agentCounts[h.agente] || 0) + 1;
+    });
+
+    const sortedAgents = Object.entries(agentCounts).sort((a,b) => b[1] - a[1]);
+    
+    const labels = sortedAgents.map(a => a[0]);
+    const dataCalls = sortedAgents.map(a => a[1]);
+
+    if (!agentsChart) {
+      // Crear el gráfico por primera vez
+      const ctx = document.getElementById('agentsChart').getContext('2d');
+      agentsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Llamadas de Hoy',
+            data: dataCalls,
+            backgroundColor: 'rgba(59, 130, 246, 0.85)', // var(--p) con transparencia
+            borderColor: '#3b82f6',
+            borderWidth: 1,
+            borderRadius: 6 // Bordes redondeados en las barras
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 800, // Animación suave
+            easing: 'easeOutQuart'
+          },
+          scales: {
+            y: { 
+              beginAtZero: true,
+              ticks: { stepSize: 1, color: '#9ba1b0', font: { size: 11 } },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            x: { 
+              ticks: { color: '#f1f2f5', font: { size: 12, weight: '600' } },
+              grid: { display: false }
+            }
+          },
+          plugins: {
+            legend: { display: false }, // Ocultar leyenda redundante
+            tooltip: {
+              backgroundColor: '#212228',
+              titleColor: '#f1f2f5',
+              bodyColor: '#9ba1b0',
+              borderColor: '#424552',
+              borderWidth: 1,
+              padding: 10
+            }
+          }
+        }
+      });
+    } else {
+      // Si ya existe, solo actualizamos los datos para que haga la animación de "subir" o "bajar"
+      agentsChart.data.labels = labels;
+      agentsChart.data.datasets[0].data = dataCalls;
+      agentsChart.update();
+    }
+
+    // Actualizamos también la lista debajo del gráfico
+    const statsContainer = document.getElementById('dash-agent-stats');
+    if (sortedAgents.length === 0) {
+      statsContainer.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;">Sin llamadas registradas hoy</div>';
+    } else {
+      statsContainer.innerHTML = sortedAgents.map(([agente, total]) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;font-weight:600;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--info),var(--p2));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;">
+              ${agente.charAt(0).toUpperCase()}
+            </div>
+            <span style="color:var(--text);">${agente}</span>
+          </div>
+          <span style="color:var(--p);font-weight:700;">${total}</span>
+        </div>
+      `).join('');
+    }
+    // -----------------------------------------------------------
     
     const dA = document.getElementById('dash-activity');
     if(!histAll.length){ dA.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-weight:500;">Sin actividad aún</div>'; }
@@ -783,13 +884,12 @@ function initListeners() {
     renderAuditoria(histAll);
   });
 
-  // 4. Presencia de Agentes (Ordenados: Online primero, Offline después)
+  // 4. Presencia de Agentes
   db.collection('presence').onSnapshot(snap => {
     const c = document.getElementById('dash-agents'); c.innerHTML = '';
     let agents = [];
     snap.forEach(doc => agents.push(doc.data()));
     
-    // Ordenar agentes
     agents.sort((a, b) => (b.online === a.online) ? 0 : b.online ? 1 : -1);
 
     agents.forEach(u => {
