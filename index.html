@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -140,7 +140,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
    6. TARJETAS Y ESTADÍSTICAS
    ========================================= */
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; margin: 0 auto 20px auto; max-width: 580px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-.card-head { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; text-align: center; background: rgba(0,0,0,0.1); }
+.card-head { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; text-align: left; background: rgba(0,0,0,0.1); }
 .card-body { padding: 20px; }
 .field-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; display: block; text-align: left; }
 
@@ -148,6 +148,19 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 .stat-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
 .stat-value { font-size: 28px; font-weight: 900; line-height: 1; }
+
+/* NUEVO: Contenedor específico para las 3 tarjetas superiores */
+.top-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Select moderno para filtros */
+.chart-select { background: rgba(0,0,0,0.2); border: 1px solid var(--border2); color: var(--text); border-radius: 6px; font-size: 11px; padding: 4px 8px; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; }
+.chart-select:focus { border-color: var(--p); }
+.chart-select option { background: var(--bg2); color: var(--text); }
 
 /* =========================================
    7. GRABADORA
@@ -225,7 +238,17 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+/* Media Queries */
+@media (max-width: 1024px) {
+  .top-cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .sidebar { width: 200px; min-width: 200px; } 
+  .stats-row { grid-template-columns: repeat(4, 1fr); } 
+}
+@media (min-width: 1025px) { 
+  .stats-row { grid-template-columns: repeat(4, 1fr); } 
+}
 @media (max-width: 767px) {
+  .top-cards-grid { grid-template-columns: 1fr; }
   .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; height: calc(64px + var(--safe-bottom)); min-width: 0; border-right: none; border-top: 1px solid var(--border); z-index: 50; background: var(--surface); padding-bottom: var(--safe-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
   .sb-header, .user-card, .sb-footer, .nav-section { display: none !important; }
   .sb-nav { flex-direction: row; justify-content: space-around; padding: 0; gap: 0; }
@@ -244,8 +267,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .card-body { padding: 16px; }
   #toast.show { bottom: calc(64px + var(--safe-bottom) + 16px); }
 }
-@media (min-width: 768px) and (max-width: 1024px) { .sidebar { width: 200px; min-width: 200px; } .stats-row { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 1025px) { .stats-row { grid-template-columns: repeat(4, 1fr); } }
 </style>
 </head>
 <body>
@@ -338,32 +359,58 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           <div class="stat-card"><div class="stat-label">Mensajes chat</div><div class="stat-value" id="stat-msgs" style="color:var(--warning)">0</div></div>
         </div>
         
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px">
+        <!-- CONTENEDOR GRID DE 3 COLUMNAS -->
+        <div class="top-cards-grid">
           
-          <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Actividad reciente</div>
-            <div id="dash-activity"><div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;font-weight:500;">Cargando…</div></div>
+          <!-- 1. ACTIVIDAD RECIENTE (Izquierda) -->
+          <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+            <div class="card-head" style="text-align:center;">Actividad reciente</div>
+            <div id="dash-activity" style="flex:1; overflow-y:auto;">
+              <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;font-weight:500;">Cargando…</div>
+            </div>
           </div>
           
-          <!-- NUEVA TARJETA: Gráfico Profesional Chart.js -->
+          <!-- 2. TARJETA 1: DIARIO SEPARADO (Medio) -->
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
-            <div class="card-head">Llamadas por Agente (Hoy)</div>
-            <div style="padding:16px; position:relative; height:200px; width:100%;">
-              <canvas id="agentsChart"></canvas>
+            <div class="card-head" style="text-align:center;">Llamadas por Agente (Hoy)</div>
+            <div style="padding:16px; position:relative; height:180px; width:100%;">
+              <canvas id="dailyChart"></canvas>
             </div>
-            <!-- Lista rápida debajo del gráfico -->
-            <div id="dash-agent-stats" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;"></div>
+            <!-- Lista rápida debajo del gráfico diario -->
+            <div id="dash-agent-stats-hoy" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
 
-          <div class="card" style="margin:0; width:100%; max-width:100%;"><div class="card-head">Agentes (Estado)</div>
-            <div id="dash-agents" style="padding:16px;display:flex;flex-direction:column;gap:10px;"><div style="color:var(--muted);font-size:13px;font-weight:500;">Sincronizando…</div></div>
+          <!-- 3. AGENTES CONECTADOS (Derecha) -->
+          <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+            <div class="card-head" style="text-align:center;">Agentes (Estado)</div>
+            <div id="dash-agents" style="padding:16px;display:flex;flex-direction:column;gap:10px; flex:1;">
+              <div style="color:var(--muted);font-size:13px;font-weight:500;">Sincronizando…</div>
+            </div>
           </div>
-          
+
+        </div> <!-- Fin de las 3 columnas -->
+
+        <!-- 4. TARJETA 2: EVOLUCIÓN (Abajo, libre ocupando todo el ancho 100%) -->
+        <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+          <div class="card-head" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Evolución de Llamadas</span>
+            <select id="trend-filter" class="chart-select" onchange="renderDashboardCharts()">
+              <option value="mes" selected>Mensual (Este mes)</option>
+              <option value="total">Total Histórico</option>
+            </select>
+          </div>
+          <div style="padding:16px; position:relative; height:240px; width:100%;">
+            <canvas id="trendChart"></canvas>
+          </div>
+          <!-- Lista rápida debajo del gráfico de evolución -->
+          <div id="dash-agent-stats-trend" style="padding:0 16px 16px; display:flex; flex-wrap:wrap; gap:16px; justify-content:center;"></div>
         </div>
+
       </div>
 
       <div class="view" id="v-recorder">
         <div class="card">
-          <div class="card-head">Grabadora de Audio</div>
+          <div class="card-head" style="text-align:center;">Grabadora de Audio</div>
           <div class="card-body">
             <div class="rec-display">
               <div class="rec-status" id="rec-status">ESPERANDO</div>
@@ -458,7 +505,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
       <div class="view" id="v-music">
         <div class="card" style="max-width: 650px; margin: 0 auto;">
-          <div class="card-head">Buscador de YouTube</div>
+          <div class="card-head" style="text-align:center;">Buscador de YouTube</div>
           <div class="card-body">
             <div class="search-bar" style="margin-bottom: 24px;">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
@@ -495,7 +542,10 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 // ==========================================
 var db, storage;
 var CU = null, CUP = {}, histAll = [];
-var agentsChart = null; // Variable global para guardar nuestro gráfico
+
+// Dos variables separadas para los gráficos
+var dailyChart = null; 
+var trendChart = null; 
 
 const FB_CFG = {
   apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
@@ -524,7 +574,6 @@ document.addEventListener('DOMContentLoaded', function() {
   updateClock(); setInterval(updateClock, 30000);
 });
 
-// Seguro adicional por si cierran la pestaña de golpe
 window.addEventListener('beforeunload', () => {
   if (CU) {
     db.collection('presence').doc(CU.uid).update({online: false});
@@ -550,7 +599,6 @@ function updateClock() {
 
 function getDateStr() {
   const d = new Date();
-  // Formato: DD/MM HH:MM
   return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
 }
 
@@ -611,13 +659,8 @@ function doLogin() {
 
 async function doLogout() {
   try { 
-    if(CU) {
-      await db.collection('presence').doc(CU.uid).update({online: false}); 
-    }
-  } catch(e) {
-    console.error("Error al desconectar:", e);
-  }
-  
+    if(CU) { await db.collection('presence').doc(CU.uid).update({online: false}); }
+  } catch(e) {}
   localStorage.removeItem('i360_agent');
   location.reload();
 }
@@ -626,10 +669,8 @@ function updatePresence() {
   try { 
     if(CU && CUP) {
       db.collection('presence').doc(CU.uid).set({
-        name: CUP.name, 
-        online: true, 
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-      }, {merge: true}).catch(e => console.error("Error presencia:", e));
+        name: CUP.name, online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      }, {merge: true});
     }
   } catch(e) {}
 }
@@ -708,52 +749,37 @@ async function saveRec() {
 }
 
 // ==========================================
-// E. GESTIÓN DE AUDITORÍA (EDITAR / ELIMINAR)
+// E. GESTIÓN DE AUDITORÍA
 // ==========================================
 async function editRecord(id, oldName) {
   const newName = prompt("Ingresa el nuevo nombre o referencia:", oldName);
   if (newName && newName.trim() !== "" && newName !== oldName) {
-    try {
-      await db.collection('historial_llamadas').doc(id).update({ nombre: newName.trim() });
-      showToast('Nombre actualizado exitosamente', '✅');
-    } catch (e) {
-      console.error(e); showToast('Error al editar nombre', '❌');
-    }
+    try { await db.collection('historial_llamadas').doc(id).update({ nombre: newName.trim() }); showToast('Actualizado', '✅'); } catch (e) { showToast('Error', '❌'); }
   }
 }
 
 async function deleteRecord(id, audioUrl) {
-  if (confirm("¿Estás seguro de que deseas eliminar permanentemente este registro?\nSe borrará también el audio de Storage.")) {
+  if (confirm("¿Estás seguro de que deseas eliminar permanentemente este registro?")) {
     try {
       await db.collection('historial_llamadas').doc(id).delete();
-      if (audioUrl && audioUrl !== 'null') {
-        try {
-          const audioRef = storage.refFromURL(audioUrl);
-          await audioRef.delete();
-        } catch (storageErr) {
-          console.warn("El audio ya no existía en Storage.");
-        }
-      }
-      showToast('Registro eliminado por completo', '🗑️');
-    } catch (e) {
-      console.error(e); showToast('Error al eliminar', '❌');
-    }
+      if (audioUrl && audioUrl !== 'null') { try { await storage.refFromURL(audioUrl).delete(); } catch(e){} }
+      showToast('Eliminado', '🗑️');
+    } catch (e) { showToast('Error', '❌'); }
   }
 }
 
 // ==========================================
-// F. LECTURA DE DATOS (FIREBASE LISTENERS)
+// F. LECTURA Y CONSTRUCCIÓN DE DASHBOARD (GRÁFICOS)
 // ==========================================
 function initListeners() {
-  console.log("⏳ Sincronizando datos con Firebase...");
+  console.log("⏳ Sincronizando datos...");
 
   // 1. Chat
   db.collection('chat_general').orderBy('ts').limitToLast(50).onSnapshot(snap => {
     const box = document.getElementById('chat-msgs'); box.innerHTML = ''; let c = 0;
     snap.forEach(doc => {
       c++; const m = doc.data(); const isMe = m.uid === CU.uid; 
-      const isIA = m.tipo === 'ia'; 
-      const cls = isIA ? 'in' : isMe ? 'out' : 'in';
+      const isIA = m.tipo === 'ia'; const cls = isIA ? 'in' : isMe ? 'out' : 'in';
       const styleIA = isIA ? 'background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); color:#34d399;' : '';
       box.innerHTML += `<div class="msg ${cls}">${!isMe && !isIA ? `<span class="msg-meta">${m.author}</span>` : ''}<div class="bubble" style="${styleIA}">${m.text}</div><span class="msg-meta">${isIA ? 'IA – ' : ''}${m.hora || ''}</span></div>`;
     });
@@ -762,155 +788,228 @@ function initListeners() {
     document.getElementById('stat-msgs').textContent = snap.size;
   });
 
-  // 2. Feed (Muro)
+  // 2. Feed
   db.collection('social_feed').orderBy('ts','desc').limit(25).onSnapshot(snap => {
     const list = document.getElementById('feed-list'); list.innerHTML = '';
     document.getElementById('stat-posts').textContent = snap.size;
-    if(snap.empty) { list.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px;">Muro vacío. ¡Sé el primero en publicar!</div>'; return; }
-    
+    if(snap.empty) { list.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px;">Muro vacío.</div>'; return; }
     snap.forEach(doc => {
       const p = doc.data();
       list.innerHTML += `<div class="card" style="margin-bottom:12px;border-radius:14px;background:var(--bg2);"><div style="padding:16px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p3));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">${p.autor.charAt(0).toUpperCase()}</div><div><div style="font-size:14px;font-weight:700;color:var(--text);">${p.autor}</div><div style="font-size:11px;color:var(--muted);font-weight:500;">${p.fecha}</div></div></div><div style="font-size:14px;line-height:1.6;color:var(--text);">${p.contenido}</div></div></div>`;
     });
   });
 
-  // 3. Auditoría (Grabaciones) e Integración con Chart.js
+  // 3. Auditoría & Llamadas (Gráficos)
   db.collection('historial_llamadas').orderBy('timestamp','desc').onSnapshot(snap => {
     histAll = []; 
-    snap.forEach(doc => {
-      let data = doc.data();
-      data.id = doc.id;
-      histAll.push(data);
-    });
+    snap.forEach(doc => { let data = doc.data(); data.id = doc.id; histAll.push(data); });
     
     document.getElementById('stat-total').textContent = snap.size;
     
-    // Cálculo de Grabaciones de hoy con formato exacto DD/MM
-    const dToday = new Date();
-    const hoyStr = `${dToday.getDate().toString().padStart(2,'0')}/${(dToday.getMonth()+1).toString().padStart(2,'0')}`;
-    
-    // Filtra el array usando solo el día/mes exacto
-    const llamadasHoy = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr));
-    document.getElementById('stat-hoy').textContent = llamadasHoy.length;
-
-    // --- CÁLCULO DE PRODUCTIVIDAD Y CREACIÓN DEL GRÁFICO (Chart.js) ---
-    const agentCounts = {};
-    llamadasHoy.forEach(h => {
-      agentCounts[h.agente] = (agentCounts[h.agente] || 0) + 1;
-    });
-
-    const sortedAgents = Object.entries(agentCounts).sort((a,b) => b[1] - a[1]);
-    
-    const labels = sortedAgents.map(a => a[0]);
-    const dataCalls = sortedAgents.map(a => a[1]);
-
-    if (!agentsChart) {
-      // Crear el gráfico por primera vez
-      const ctx = document.getElementById('agentsChart').getContext('2d');
-      agentsChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Llamadas de Hoy',
-            data: dataCalls,
-            backgroundColor: 'rgba(59, 130, 246, 0.85)', // var(--p) con transparencia
-            borderColor: '#3b82f6',
-            borderWidth: 1,
-            borderRadius: 6 // Bordes redondeados en las barras
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: {
-            duration: 800, // Animación suave
-            easing: 'easeOutQuart'
-          },
-          scales: {
-            y: { 
-              beginAtZero: true,
-              ticks: { stepSize: 1, color: '#9ba1b0', font: { size: 11 } },
-              grid: { color: 'rgba(255,255,255,0.05)' }
-            },
-            x: { 
-              ticks: { color: '#f1f2f5', font: { size: 12, weight: '600' } },
-              grid: { display: false }
-            }
-          },
-          plugins: {
-            legend: { display: false }, // Ocultar leyenda redundante
-            tooltip: {
-              backgroundColor: '#212228',
-              titleColor: '#f1f2f5',
-              bodyColor: '#9ba1b0',
-              borderColor: '#424552',
-              borderWidth: 1,
-              padding: 10
-            }
-          }
-        }
-      });
-    } else {
-      // Si ya existe, solo actualizamos los datos para que haga la animación de "subir" o "bajar"
-      agentsChart.data.labels = labels;
-      agentsChart.data.datasets[0].data = dataCalls;
-      agentsChart.update();
-    }
-
-    // Actualizamos también la lista debajo del gráfico
-    const statsContainer = document.getElementById('dash-agent-stats');
-    if (sortedAgents.length === 0) {
-      statsContainer.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;">Sin llamadas registradas hoy</div>';
-    } else {
-      statsContainer.innerHTML = sortedAgents.map(([agente, total]) => `
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;font-weight:600;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--info),var(--p2));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;">
-              ${agente.charAt(0).toUpperCase()}
-            </div>
-            <span style="color:var(--text);">${agente}</span>
-          </div>
-          <span style="color:var(--p);font-weight:700;">${total}</span>
-        </div>
-      `).join('');
-    }
-    // -----------------------------------------------------------
-    
+    // Lista de actividad reciente
     const dA = document.getElementById('dash-activity');
     if(!histAll.length){ dA.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-weight:500;">Sin actividad aún</div>'; }
     else { dA.innerHTML = histAll.slice(0,6).map(h => `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);"><div style="width:6px;height:6px;background:var(--p);border-radius:50%;flex-shrink:0;"></div><div style="flex:1;min-width:0;"><p style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.nombre}</p><p style="font-size:11px;color:var(--muted);font-weight:500;">${h.agente} · ${h.fecha}</p></div><span class="tag purple" style="font-size:10px;">${h.duracion}</span></div>`).join(''); }
     
     renderAuditoria(histAll);
+    
+    // Llamar a la función que renderiza ambos gráficos
+    renderDashboardCharts();
   });
 
-  // 4. Presencia de Agentes
+  // 4. Presencia
   db.collection('presence').onSnapshot(snap => {
     const c = document.getElementById('dash-agents'); c.innerHTML = '';
-    let agents = [];
-    snap.forEach(doc => agents.push(doc.data()));
-    
+    let agents = []; snap.forEach(doc => agents.push(doc.data()));
     agents.sort((a, b) => (b.online === a.online) ? 0 : b.online ? 1 : -1);
 
     agents.forEach(u => {
       const isOnline = u.online;
-      const statusIcon = isOnline ? '<span class="pulse-dot anim"></span>' : '<span class="status-dot-offline"></span>';
-      const statusText = isOnline ? 'Online' : 'Offline';
-      const statusColor = isOnline ? 'var(--success)' : 'var(--muted2)';
-
       c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;">
         <div style="display:flex;align-items:center;gap:10px;">
           <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div>
           <span style="color:var(--text);">${u.name||'?'}</span>
         </div>
-        <span style="color:${statusColor};font-weight:700;font-size:11px; display:flex; align-items:center; gap:6px;">
-          ${statusIcon} ${statusText}
+        <span style="color:${isOnline?'var(--success)':'var(--muted2)'};font-weight:700;font-size:11px; display:flex; align-items:center; gap:6px;">
+          ${isOnline?'<span class="pulse-dot anim"></span> Online':'<span class="status-dot-offline"></span> Offline'}
         </span>
       </div>`;
     });
     if(!snap.size) c.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Sin agentes registrados</div>';
   });
 }
+
+// ----------------------------------------------------
+// GENERACIÓN DE LOS DOS GRÁFICOS (Barras y Curvas)
+// ----------------------------------------------------
+function renderDashboardCharts() {
+  if (!histAll) return;
+
+  const dToday = new Date();
+  const hoyStr = `${dToday.getDate().toString().padStart(2,'0')}/${(dToday.getMonth()+1).toString().padStart(2,'0')}`;
+  const currMonthStr = (dToday.getMonth() + 1).toString().padStart(2, '0'); 
+  
+  // ==========================================
+  // GRÁFICO 1: DIARIO SEPARADO (Barras - Hoy)
+  // ==========================================
+  const llamadasHoy = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr));
+  document.getElementById('stat-hoy').textContent = llamadasHoy.length;
+
+  const agentCountsHoy = {};
+  llamadasHoy.forEach(h => { agentCountsHoy[h.agente] = (agentCountsHoy[h.agente] || 0) + 1; });
+  const sortedAgentsHoy = Object.entries(agentCountsHoy).sort((a,b) => b[1] - a[1]);
+  
+  const labelsHoy = sortedAgentsHoy.map(a => a[0]);
+  const dataHoy = sortedAgentsHoy.map(a => a[1]);
+
+  if (!dailyChart) {
+    const ctxD = document.getElementById('dailyChart').getContext('2d');
+    dailyChart = new Chart(ctxD, {
+      type: 'bar',
+      data: {
+        labels: labelsHoy,
+        datasets: [{ label: 'Hoy', data: dataHoy, backgroundColor: 'rgba(59, 130, 246, 0.85)', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 6 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, color: '#9ba1b0', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          x: { ticks: { color: '#f1f2f5', font: { size: 11, weight: '600' } }, grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { backgroundColor: '#212228', titleColor: '#f1f2f5', bodyColor: '#9ba1b0', borderColor: '#424552', borderWidth: 1 }
+        }
+      }
+    });
+  } else {
+    dailyChart.data.labels = labelsHoy;
+    dailyChart.data.datasets[0].data = dataHoy;
+    dailyChart.update();
+  }
+
+  // Lista debajo del gráfico diario
+  const listHoy = document.getElementById('dash-agent-stats-hoy');
+  if (sortedAgentsHoy.length === 0) { listHoy.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;">Sin llamadas hoy</div>'; }
+  else {
+    listHoy.innerHTML = sortedAgentsHoy.map(([agente, total]) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;font-weight:600;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--info),var(--p2));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;">${agente.charAt(0).toUpperCase()}</div>
+          <span style="color:var(--text);">${agente}</span>
+        </div>
+        <span style="color:var(--p);font-weight:700;">${total}</span>
+      </div>
+    `).join('');
+  }
+
+  // ==========================================
+  // GRÁFICO 2: EVOLUCIÓN (Líneas - Filtro)
+  // ==========================================
+  const filterType = document.getElementById('trend-filter').value;
+  let filteredHist = histAll;
+  
+  // Si elige "Mensual", filtramos para que solo pasen los que tengan el mes actual.
+  if (filterType === 'mes') {
+    filteredHist = histAll.filter(h => {
+      if(!h.fecha) return false;
+      const parts = h.fecha.split(' ')[0].split('/'); 
+      return parts.length > 1 && parts[1] === currMonthStr; 
+    });
+  }
+
+  const fechasSet = new Set();
+  const datosPorAgente = {};
+  const totalesPorAgente = {};
+
+  filteredHist.forEach(h => {
+    const dia = h.fecha.split(' ')[0]; // Extraer solo "DD/MM"
+    fechasSet.add(dia);
+
+    if (!datosPorAgente[h.agente]) { datosPorAgente[h.agente] = {}; totalesPorAgente[h.agente] = 0; }
+    if (!datosPorAgente[h.agente][dia]) datosPorAgente[h.agente][dia] = 0;
+
+    datosPorAgente[h.agente][dia]++;
+    totalesPorAgente[h.agente]++;
+  });
+
+  const labelsFechas = Array.from(fechasSet).sort((a, b) => {
+    const [diaA, mesA] = a.split('/').map(Number);
+    const [diaB, mesB] = b.split('/').map(Number);
+    return mesA !== mesB ? mesA - mesB : diaA - diaB;
+  });
+
+  const paletaColores = [
+    { border: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
+    { border: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+    { border: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+    { border: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+    { border: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' } 
+  ];
+
+  let colorIndex = 0;
+  const datasetsGrafico = Object.keys(datosPorAgente).map(agente => {
+    const color = paletaColores[colorIndex % paletaColores.length];
+    colorIndex++;
+    const dataLlamadas = labelsFechas.map(fecha => datosPorAgente[agente][fecha] || 0);
+
+    return {
+      label: agente, // Nombre en el tooltip
+      data: dataLlamadas,
+      borderColor: color.border, backgroundColor: color.bg, borderWidth: 2, tension: 0.4,
+      pointBackgroundColor: '#212228', pointBorderColor: color.border, pointBorderWidth: 2,
+      pointRadius: 4, pointHoverRadius: 6, fill: false
+    };
+  });
+
+  if (!trendChart) {
+    const ctxT = document.getElementById('trendChart').getContext('2d');
+    trendChart = new Chart(ctxT, {
+      type: 'line',
+      data: { labels: labelsFechas, datasets: datasetsGrafico },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false }, 
+          tooltip: { backgroundColor: '#212228', titleColor: '#f1f2f5', bodyColor: '#9ba1b0', borderColor: '#424552', borderWidth: 1 }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 5, color: '#9ba1b0', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)', borderDash: [5, 5] } },
+          x: { ticks: { color: '#f1f2f5', font: { size: 10 } }, grid: { display: false } }
+        }
+      }
+    });
+  } else {
+    trendChart.data.labels = labelsFechas;
+    trendChart.data.datasets = datasetsGrafico;
+    trendChart.update();
+  }
+
+  // Lista/Leyenda personalizada debajo del gráfico de evolución
+  const listTrend = document.getElementById('dash-agent-stats-trend');
+  const sortedAgentsTrend = Object.entries(totalesPorAgente).sort((a,b) => b[1] - a[1]);
+  
+  if (sortedAgentsTrend.length === 0) { listTrend.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;width:100%;">No hay datos en este periodo</div>'; }
+  else {
+    listTrend.innerHTML = sortedAgentsTrend.map(([agente, total], i) => {
+      // Re-ubicamos el color asignado a este agente
+      const agentDataset = datasetsGrafico.find(d => d.label === agente);
+      const dotColor = agentDataset ? agentDataset.borderColor : '#fff';
+      
+      return `
+      <div style="background:var(--bg2); border:1px solid var(--border); padding:8px 12px; border-radius:8px; display:flex; align-items:center; gap:10px; font-size:11px; font-weight:700;">
+        <div style="width:10px; height:10px; border-radius:3px; background:${dotColor};"></div>
+        <div style="display:flex; flex-direction:column;">
+          <span style="color:var(--text); text-transform:uppercase; font-size:10px;">${agente}</span>
+          <span style="color:var(--muted);">Totales: <span style="color:${dotColor}; font-size:12px;">${total}</span></span>
+        </div>
+      </div>
+    `}).join('');
+  }
+}
+
+// ----------------------------------------------------
 
 function renderAuditoria(arr) {
   const tbody=document.getElementById('hist-body');
@@ -950,7 +1049,7 @@ async function sendMsg() {
   const d = new Date(); const h = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
   try { 
     await db.collection('chat_general').add({uid:CU.uid,author:CUP.name,text:t,hora:h,tipo:'usuario',ts:firebase.firestore.FieldValue.serverTimestamp()}); 
-  } catch(e) { console.error("Error enviando mensaje:", e); }
+  } catch(e) {}
 }
 
 // ==========================================
@@ -1009,13 +1108,10 @@ async function searchYouTube() {
 function playYouTubeVideo(videoId) {
   const wrapper = document.getElementById('yt-player-wrapper');
   const iframe = document.getElementById('yt-iframe');
-  
   iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
   wrapper.style.display = 'block';
-  
   showToast('Reproduciendo video...', '🎵');
 }
-
 </script>
 </body>
 </html>
