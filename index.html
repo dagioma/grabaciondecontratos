@@ -150,7 +150,6 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .stat-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
 .stat-value { font-size: 28px; font-weight: 900; line-height: 1; }
 
-/* NUEVO: Contenedor específico para las 3 tarjetas superiores */
 .top-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -158,7 +157,6 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
   margin-bottom: 16px;
 }
 
-/* Select moderno para filtros */
 .chart-select { background: rgba(0,0,0,0.2); border: 1px solid var(--border2); color: var(--text); border-radius: 6px; font-size: 11px; padding: 4px 8px; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; }
 .chart-select:focus { border-color: var(--p); }
 .chart-select option { background: var(--bg2); color: var(--text); }
@@ -360,10 +358,8 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           <div class="stat-card"><div class="stat-label">Mensajes chat</div><div class="stat-value" id="stat-msgs" style="color:var(--warning)">0</div></div>
         </div>
         
-        <!-- CONTENEDOR GRID DE 3 COLUMNAS -->
         <div class="top-cards-grid">
           
-          <!-- 1. ACTIVIDAD RECIENTE (Izquierda) -->
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
             <div class="card-head" style="text-align:center;">Actividad reciente</div>
             <div id="dash-activity" style="flex:1; overflow-y:auto;">
@@ -371,17 +367,14 @@ tr:hover td { background: rgba(255,255,255,0.03); }
             </div>
           </div>
           
-          <!-- 2. TARJETA 1: DIARIO SEPARADO (Medio) -->
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
             <div class="card-head" style="text-align:center;">Llamadas por Agente (Hoy)</div>
             <div style="padding:16px; position:relative; height:180px; width:100%;">
               <canvas id="dailyChart"></canvas>
             </div>
-            <!-- Lista rápida debajo del gráfico diario -->
             <div id="dash-agent-stats-hoy" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
 
-          <!-- 3. AGENTES CONECTADOS (Derecha) -->
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
             <div class="card-head" style="text-align:center;">Agentes (Estado)</div>
             <div id="dash-agents" style="padding:16px;display:flex;flex-direction:column;gap:10px; flex:1;">
@@ -389,10 +382,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
             </div>
           </div>
 
-        </div> <!-- Fin de las 3 columnas -->
-
-        <!-- 4. TARJETA 2: EVOLUCIÓN (Abajo, libre ocupando todo el ancho 100%) -->
-        <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+        </div> <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
           <div class="card-head" style="display:flex; justify-content:space-between; align-items:center;">
             <span>Evolución de Llamadas</span>
             <select id="trend-filter" class="chart-select" onchange="renderDashboardCharts()">
@@ -403,7 +393,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           <div style="padding:16px; position:relative; height:240px; width:100%;">
             <canvas id="trendChart"></canvas>
           </div>
-          <!-- Lista rápida debajo del gráfico de evolución -->
           <div id="dash-agent-stats-trend" style="padding:0 16px 16px; display:flex; flex-wrap:wrap; gap:16px; justify-content:center;"></div>
         </div>
 
@@ -531,13 +520,14 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 <div id="toast"><span id="toast-txt">Mensaje</span></div>
 
-<!-- LIBRERÍA CHART.JS AÑADIDA AQUÍ -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
 <script>
+/* global firebase, Chart, MediaRecorder */
+
 // ==========================================
 // A. VARIABLES GLOBALES Y CONFIGURACIÓN
 // ==========================================
@@ -547,6 +537,10 @@ var CU = null, CUP = {}, histAll = [];
 // Dos variables separadas para los gráficos
 var dailyChart = null; 
 var trendChart = null; 
+
+// NUEVAS VARIABLES PARA EL LATIDO
+var heartbeatTimer = null; 
+var currentAgents = []; 
 
 const FB_CFG = {
   apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
@@ -573,12 +567,6 @@ document.addEventListener('DOMContentLoaded', function() {
     doLogin();
   }
   updateClock(); setInterval(updateClock, 30000);
-});
-
-window.addEventListener('beforeunload', () => {
-  if (CU) {
-    db.collection('presence').doc(CU.uid).update({online: false});
-  }
 });
 
 // ==========================================
@@ -658,22 +646,37 @@ function doLogin() {
   updatePresence();
 }
 
+function updatePresence() {
+  if(!CU || !CUP) return;
+
+  // Función que envía el "latido"
+  const sendHeartbeat = () => {
+    db.collection('presence').doc(CU.uid).set({
+      name: CUP.name,
+      online: true,
+      lastSeen: Date.now() // Guardamos el tiempo exacto en milisegundos localmente
+    }, {merge: true});
+  };
+
+  sendHeartbeat(); // Latido inicial al loguear
+  
+  // Limpiamos si había un latido anterior y creamos uno nuevo cada 30 segundos
+  if(heartbeatTimer) clearInterval(heartbeatTimer);
+  heartbeatTimer = setInterval(sendHeartbeat, 30000); 
+}
+
 async function doLogout() {
+  if(heartbeatTimer) clearInterval(heartbeatTimer); // Detenemos el latido
   try { 
-    if(CU) { await db.collection('presence').doc(CU.uid).update({online: false}); }
+    if(CU) { 
+      await db.collection('presence').doc(CU.uid).update({
+        online: false, 
+        lastSeen: Date.now()
+      }); 
+    }
   } catch(e) {}
   localStorage.removeItem('i360_agent');
   location.reload();
-}
-
-function updatePresence() {
-  try { 
-    if(CU && CUP) {
-      db.collection('presence').doc(CU.uid).set({
-        name: CUP.name, online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-      }, {merge: true});
-    }
-  } catch(e) {}
 }
 
 // ==========================================
@@ -818,26 +821,50 @@ function initListeners() {
     renderDashboardCharts();
   });
 
-  // 4. Presencia
+  // 4. Presencia (Latido y Sincronización Automática)
   db.collection('presence').onSnapshot(snap => {
-    const c = document.getElementById('dash-agents'); c.innerHTML = '';
-    let agents = []; snap.forEach(doc => agents.push(doc.data()));
-    agents.sort((a, b) => (b.online === a.online) ? 0 : b.online ? 1 : -1);
-
-    agents.forEach(u => {
-      const isOnline = u.online;
-      c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div>
-          <span style="color:var(--text);">${u.name||'?'}</span>
-        </div>
-        <span style="color:${isOnline?'var(--success)':'var(--muted2)'};font-weight:700;font-size:11px; display:flex; align-items:center; gap:6px;">
-          ${isOnline?'<span class="pulse-dot anim"></span> Online':'<span class="status-dot-offline"></span> Offline'}
-        </span>
-      </div>`;
-    });
-    if(!snap.size) c.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Sin agentes registrados</div>';
+    currentAgents = []; 
+    snap.forEach(doc => currentAgents.push(doc.data()));
+    renderPresenceUI(); 
   });
+
+  // Refrescar visualmente la lista cada 15 segundos. 
+  // Así, si alguien cierra la ventana y no hay actualizaciones en Firebase,
+  // el cliente se dará cuenta de que el tiempo se agotó y lo pondrá Offline.
+  setInterval(renderPresenceUI, 15000);
+}
+
+function renderPresenceUI() {
+  const c = document.getElementById('dash-agents'); 
+  if(!c) return;
+  c.innerHTML = '';
+  const now = Date.now();
+
+  // 1. Filtrar y procesar quién está realmente online
+  let processed = currentAgents.map(u => {
+    // Está online SI su estado es true Y su último latido fue hace menos de 60 segundos (60000 ms)
+    let isOnline = (u.online === true) && (now - (u.lastSeen || 0) < 60000);
+    return { ...u, isOnline };
+  });
+
+  // 2. Ordenar: primero los conectados
+  processed.sort((a, b) => (b.isOnline === a.isOnline) ? 0 : b.isOnline ? 1 : -1);
+
+  // 3. Imprimir en pantalla
+  processed.forEach(u => {
+    const isOnline = u.isOnline;
+    c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${u.name?u.name.charAt(0).toUpperCase():'?'}</div>
+        <span style="color:var(--text);">${u.name||'?'}</span>
+      </div>
+      <span style="color:${isOnline?'var(--success)':'var(--muted2)'};font-weight:700;font-size:11px; display:flex; align-items:center; gap:6px;">
+        ${isOnline?'<span class="pulse-dot anim"></span> Online':'<span class="status-dot-offline"></span> Offline'}
+      </span>
+    </div>`;
+  });
+  
+  if(!processed.length) c.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Sin agentes registrados</div>';
 }
 
 // ----------------------------------------------------
