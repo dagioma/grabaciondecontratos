@@ -301,14 +301,16 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="1.5"></rect></svg>
         <span>Dashboard</span>
       </div>
+      
       <div class="nav-item" onclick="goto('recorder',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
         <span>Grabadora</span>
       </div>
       <div class="nav-item" onclick="goto('history',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-        <span>Auditoría</span>
+        <span>Historial Local</span>
       </div>
+      
       <div class="nav-section">Comunidad</div>
       <div class="nav-item" onclick="goto('feed',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -323,6 +325,14 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
         <span>Música YT</span>
       </div>
+
+      <div class="nav-section">Supervisión</div>
+      <div class="nav-item" onclick="window.open('auditor.html', '_blank')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <span>Portal Auditoría</span>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px; margin-left: auto; opacity: 0.5;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      </div>
+
     </nav>
     <div class="sb-footer">
       <button class="btn danger" onclick="doLogout()" style="font-size:13px;padding:10px;">Cerrar sesión</button>
@@ -349,6 +359,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
     <div class="content">
 
+      <!-- VISTA 1: DASHBOARD -->
       <div class="view active" id="v-dashboard">
         <div class="stats-row">
           <div class="stat-card"><div class="stat-label">Grabaciones hoy</div><div class="stat-value" id="stat-hoy" style="color:var(--p)">0</div></div>
@@ -381,7 +392,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
             </div>
           </div>
 
-          <!-- NUEVA TARJETA: Metas Mensuales con Mejoras Profesionales -->
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
             <div class="card-head" style="text-align:center;">Metas Mensuales (150 Llamadas)</div>
             <div id="dash-metas" style="padding:16px;display:flex;flex-direction:column; gap:8px; flex:1; justify-content:center;">
@@ -404,9 +414,9 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           </div>
           <div id="dash-agent-stats-trend" style="padding:0 16px 16px; display:flex; flex-wrap:wrap; gap:16px; justify-content:center;"></div>
         </div>
-
       </div>
 
+      <!-- VISTA 2: GRABADORA -->
       <div class="view" id="v-recorder">
         <div class="card">
           <div class="card-head" style="text-align:center;">Grabadora de Audio</div>
@@ -441,11 +451,12 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
+      <!-- VISTA 3: HISTORIAL (AHORA SOLO MUESTRA DEL MES ACTUAL) -->
       <div class="view" id="v-history">
         <div style="max-width:1000px;margin:0 auto;">
           <div class="search-bar">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
-            <input type="text" id="hist-search" placeholder="Filtrar por nombre o agente..." oninput="filterHist()">
+            <input type="text" id="hist-search" placeholder="Filtrar audios del mes actual..." oninput="filterHist()">
           </div>
           <div class="card" style="max-width:100%;margin:0;border-radius:16px;">
             <div class="table-wrap">
@@ -459,7 +470,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
                   <th>Acciones</th>
                 </tr></thead>
                 <tbody id="hist-body">
-                  <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros…</td></tr>
+                  <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros del mes…</td></tr>
                 </tbody>
               </table>
             </div>
@@ -467,6 +478,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
+      <!-- VISTA 4: FEED -->
       <div class="view" id="v-feed">
         <div style="max-width:600px;margin:0 auto;">
           <div class="card" style="margin-bottom:20px;">
@@ -481,6 +493,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
+      <!-- VISTA 5: CHAT -->
       <div class="view" id="v-chat" style="padding:0;height:100%;">
         <div class="chat-layout">
           <div class="chat-room">
@@ -502,6 +515,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
+      <!-- VISTA 6: MÚSICA -->
       <div class="view" id="v-music">
         <div class="card" style="max-width: 650px; margin: 0 auto;">
           <div class="card-head" style="text-align:center;">Buscador de YouTube</div>
@@ -543,11 +557,8 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 var db, storage;
 var CU = null, CUP = {}, histAll = [];
 
-// Dos variables separadas para los gráficos
 var dailyChart = null; 
 var trendChart = null; 
-
-// NUEVAS VARIABLES PARA EL LATIDO
 var heartbeatTimer = null; 
 var currentAgents = []; 
 
@@ -621,7 +632,7 @@ function goto(viewId, element) {
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
     recorder:  { t:'Grabadora', s:'Captura de audio libre' },
-    history:   { t:'Auditoría', s:'Historial de grabaciones' },
+    history:   { t:'Historial Local', s:'Audios grabados del mes actual' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
     chat:      { t:'Chat de Equipo', s:'Comunicación interna' },
     music:     { t:'Reproductor', s:'Música de fondo' }
@@ -657,31 +668,23 @@ function doLogin() {
 
 function updatePresence() {
   if(!CU || !CUP) return;
-
-  // Función que envía el "latido"
   const sendHeartbeat = () => {
     db.collection('presence').doc(CU.uid).set({
       name: CUP.name,
       online: true,
-      lastSeen: Date.now() // Guardamos el tiempo exacto en milisegundos localmente
+      lastSeen: Date.now() 
     }, {merge: true});
   };
-
-  sendHeartbeat(); // Latido inicial al loguear
-  
-  // Limpiamos si había un latido anterior y creamos uno nuevo cada 30 segundos
+  sendHeartbeat(); 
   if(heartbeatTimer) clearInterval(heartbeatTimer);
   heartbeatTimer = setInterval(sendHeartbeat, 30000); 
 }
 
 async function doLogout() {
-  if(heartbeatTimer) clearInterval(heartbeatTimer); // Detenemos el latido
+  if(heartbeatTimer) clearInterval(heartbeatTimer); 
   try { 
     if(CU) { 
-      await db.collection('presence').doc(CU.uid).update({
-        online: false, 
-        lastSeen: Date.now()
-      }); 
+      await db.collection('presence').doc(CU.uid).update({ online: false, lastSeen: Date.now() }); 
     }
   } catch(e) {}
   localStorage.removeItem('i360_agent');
@@ -762,7 +765,7 @@ async function saveRec() {
 }
 
 // ==========================================
-// E. GESTIÓN DE AUDITORÍA
+// E. GESTIÓN DE AUDITORÍA (HISTORIAL LOCAL)
 // ==========================================
 async function editRecord(id, oldName) {
   const newName = prompt("Ingresa el nuevo nombre o referencia:", oldName);
@@ -782,7 +785,7 @@ async function deleteRecord(id, audioUrl) {
 }
 
 // ==========================================
-// F. LECTURA Y CONSTRUCCIÓN DE DASHBOARD (GRÁFICOS)
+// F. LECTURA Y CONSTRUCCIÓN DE DASHBOARD 
 // ==========================================
 function initListeners() {
   console.log("⏳ Sincronizando datos...");
@@ -824,20 +827,20 @@ function initListeners() {
     if(!histAll.length){ dA.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-weight:500;">Sin actividad aún</div>'; }
     else { dA.innerHTML = histAll.slice(0,6).map(h => `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);"><div style="width:6px;height:6px;background:var(--p);border-radius:50%;flex-shrink:0;"></div><div style="flex:1;min-width:0;"><p style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.nombre}</p><p style="font-size:11px;color:var(--muted);font-weight:500;">${h.agente} · ${h.fecha}</p></div><span class="tag purple" style="font-size:10px;">${h.duracion}</span></div>`).join(''); }
     
-    renderAuditoria(histAll);
+    // AQUÍ FILTRAMOS AUTOMÁTICAMENTE LA TABLA DE AUDITORÍA AL MES ACTUAL
+    filterHist();
     
-    // Llamar a la función que renderiza ambos gráficos
+    // Llamar a la función que renderiza los gráficos del Dashboard
     renderDashboardCharts();
   });
 
-  // 4. Presencia (Latido y Sincronización Automática)
+  // 4. Presencia 
   db.collection('presence').onSnapshot(snap => {
     currentAgents = []; 
     snap.forEach(doc => currentAgents.push(doc.data()));
     renderPresenceUI(); 
   });
 
-  // Refrescar visualmente la lista cada 15 segundos. 
   setInterval(renderPresenceUI, 15000);
 }
 
@@ -847,17 +850,13 @@ function renderPresenceUI() {
   c.innerHTML = '';
   const now = Date.now();
 
-  // 1. Filtrar y procesar quién está realmente online
   let processed = currentAgents.map(u => {
-    // Está online SI su estado es true Y su último latido fue hace menos de 60 segundos (60000 ms)
     let isOnline = (u.online === true) && (now - (u.lastSeen || 0) < 60000);
     return { ...u, isOnline };
   });
 
-  // 2. Ordenar: primero los conectados
   processed.sort((a, b) => (b.isOnline === a.isOnline) ? 0 : b.isOnline ? 1 : -1);
 
-  // 3. Imprimir en pantalla
   processed.forEach(u => {
     const isOnline = u.isOnline;
     c.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;">
@@ -890,7 +889,7 @@ function renderDashboardCharts() {
   const currMonthStr = (dToday.getMonth() + 1).toString().padStart(2, '0'); 
   
   // ==========================================
-  // GRÁFICO 1: DIARIO SEPARADO (Barras - Hoy)
+  // GRÁFICO 1: DIARIO SEPARADO 
   // ==========================================
   const llamadasHoy = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr));
   document.getElementById('stat-hoy').textContent = llamadasHoy.length;
@@ -946,7 +945,7 @@ function renderDashboardCharts() {
   }
 
   // ==========================================
-  // GRÁFICO 2: EVOLUCIÓN (Líneas - Filtro)
+  // GRÁFICO 2: EVOLUCIÓN
   // ==========================================
   const filterType = document.getElementById('trend-filter').value;
   let filteredHist = histAll;
@@ -1050,7 +1049,7 @@ function renderDashboardCharts() {
   }
 
   // ==========================================
-  // GRÁFICO 3: METAS MENSUALES (Progreso Premium)
+  // GRÁFICO 3: METAS MENSUALES (Premium UI)
   // ==========================================
   const metasContainer = document.getElementById('dash-metas');
   if (metasContainer) {
@@ -1085,14 +1084,9 @@ function renderDashboardCharts() {
       const actual = conteoMetas[t.key];
       const porcentaje = Math.min((actual / META_TOTAL) * 100, 100);
       
-      // 0 = Rojo, 30 = Naranja, 60 = Amarillo, 140 = Verde esmeralda (Success)
       const hue = (porcentaje / 100) * 140;
-      
-      // Creando colores dinámicos más elegantes para el gradiente interno de la barra
-      const colorStart = `hsl(${Math.max(0, hue - 15)}, 85%, 45%)`; // Color de inicio ligeramente más oscuro/atrás
-      const colorEnd = `hsl(${hue}, 90%, 55%)`; // Color vibrante brillante
-      
-      // Brillo emitido por la barra
+      const colorStart = `hsl(${Math.max(0, hue - 15)}, 85%, 45%)`; 
+      const colorEnd = `hsl(${hue}, 90%, 55%)`; 
       const glow = `hsla(${hue}, 90%, 55%, 0.3)`;
 
       htmlMetas += `
@@ -1102,15 +1096,9 @@ function renderDashboardCharts() {
             <span style="color:${colorEnd}; font-variant-numeric: tabular-nums;">${actual} / ${META_TOTAL}</span>
           </div>
           
-          <!-- Contenedor del fondo (Track) con sombra interna -->
           <div style="width:100%; height:14px; background:rgba(0,0,0,0.3); border-radius:10px; overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.03); position: relative;">
-            
-            <!-- Relleno de la barra (Fill) con gradiente, curva de transición y resplandor exterior -->
             <div style="width:${porcentaje}%; height:100%; background: linear-gradient(90deg, ${colorStart}, ${colorEnd}); box-shadow: 0 0 12px ${glow}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease; border-radius:10px; position: relative;">
-              
-              <!-- Efecto superior de Cristal (Glassmorphism highlight) para darle relieve -->
               <div style="position:absolute; top:0; left:0; right:0; height:50%; background: linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0)); border-radius: 10px 10px 0 0;"></div>
-              
             </div>
           </div>
         </div>
@@ -1122,10 +1110,24 @@ function renderDashboardCharts() {
 }
 
 // ----------------------------------------------------
+// TABLA DE AUDITORÍA (FILTRADA SOLO AL MES ACTUAL)
+// ----------------------------------------------------
+
+// Función auxiliar para obtener solo los audios del mes en curso
+function getAudiosDelMes() {
+  const dToday = new Date();
+  const currMonthStr = (dToday.getMonth() + 1).toString().padStart(2, '0'); 
+  
+  return histAll.filter(h => {
+    if(!h.fecha) return false;
+    const parts = h.fecha.split(' ')[0].split('/'); 
+    return parts.length > 1 && parts[1] === currMonthStr; 
+  });
+}
 
 function renderAuditoria(arr) {
   const tbody=document.getElementById('hist-body');
-  if(!arr.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Sin registros encontrados</td></tr>'; return; }
+  if(!arr.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);font-weight:500;">No hay audios guardados en este mes.</td></tr>'; return; }
   
   tbody.innerHTML = arr.map(h => `<tr>
     <td style="white-space:nowrap; color:var(--muted); font-size:12px;">${h.fecha}</td>
@@ -1142,10 +1144,19 @@ function renderAuditoria(arr) {
   </tr>`).join('');
 }
 
+// Aplicar el buscador SOLO sobre los audios del mes actual
 function filterHist() {
-  const q=document.getElementById('hist-search').value.toLowerCase();
-  renderAuditoria(histAll.filter(h=>`${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q)));
+  const q = document.getElementById('hist-search').value.toLowerCase();
+  const audiosDelMes = getAudiosDelMes();
+  
+  const audiosFiltrados = audiosDelMes.filter(h => 
+    `${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q)
+  );
+  
+  renderAuditoria(audiosFiltrados);
 }
+
+// ----------------------------------------------------
 
 async function publishPost() {
   const t = document.getElementById('feed-text').value.trim(); if(!t) return;
