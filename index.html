@@ -306,9 +306,10 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
         <span>Grabadora</span>
       </div>
+      <!-- NOMBRE CAMBIADO A "AUDIOS DEL MES" -->
       <div class="nav-item" onclick="goto('history',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-        <span>Historial Local</span>
+        <span>Audios del Mes</span>
       </div>
       
       <div class="nav-section">Comunidad</div>
@@ -393,7 +394,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           </div>
 
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
-            <div class="card-head" style="text-align:center;">Metas Mensuales (150 Llamadas)</div>
+            <div class="card-head" style="text-align:center;">Metas Mensuales de Llamadas</div>
             <div id="dash-metas" style="padding:16px;display:flex;flex-direction:column; gap:8px; flex:1; justify-content:center;">
               <div style="color:var(--muted);font-size:13px;font-weight:500;text-align:center;">Calculando metas...</div>
             </div>
@@ -451,7 +452,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA 3: HISTORIAL (AHORA SOLO MUESTRA DEL MES ACTUAL) -->
+      <!-- VISTA 3: HISTORIAL (SOLO MUESTRA DEL MES ACTUAL) -->
       <div class="view" id="v-history">
         <div style="max-width:1000px;margin:0 auto;">
           <div class="search-bar">
@@ -632,7 +633,7 @@ function goto(viewId, element) {
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
     recorder:  { t:'Grabadora', s:'Captura de audio libre' },
-    history:   { t:'Historial Local', s:'Audios grabados del mes actual' },
+    history:   { t:'Audios del Mes', s:'Audios grabados del mes actual' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
     chat:      { t:'Chat de Equipo', s:'Comunicación interna' },
     music:     { t:'Reproductor', s:'Música de fondo' }
@@ -1060,13 +1061,14 @@ function renderDashboardCharts() {
     });
 
     const targets = [
-      { key: 'MARIETTE', label: 'Mariette' },
-      { key: 'DANIELA CM', label: 'Daniela CM' },
-      { key: 'ALEJANDRO', label: 'Alejandro' },
-      { key: 'MARCO', label: 'Marco' }
+      { key: 'MARIETTE', label: 'Mariette', meta: 150 },
+      { key: 'DANIELA CM', label: 'Daniela CM', meta: 150 },
+      { key: 'ALEJANDRO', label: 'Alejandro', meta: 150 },
+      { key: 'MARCO', label: 'Marco', meta: 150 },
+      { key: 'FRANCO', label: 'Franco', meta: 40 }
     ];
     
-    const conteoMetas = { 'MARIETTE':0, 'DANIELA CM':0, 'ALEJANDRO':0, 'MARCO':0 };
+    const conteoMetas = { 'MARIETTE':0, 'DANIELA CM':0, 'ALEJANDRO':0, 'MARCO':0, 'FRANCO':0 };
 
     llamadasMesActual.forEach(h => {
       const ag = normalizeAgente(h.agente);
@@ -1077,12 +1079,12 @@ function renderDashboardCharts() {
       });
     });
 
-    const META_TOTAL = 150;
     let htmlMetas = '';
 
     targets.forEach(t => {
       const actual = conteoMetas[t.key];
-      const porcentaje = Math.min((actual / META_TOTAL) * 100, 100);
+      const metaPersonal = t.meta;
+      const porcentaje = Math.min((actual / metaPersonal) * 100, 100);
       
       const hue = (porcentaje / 100) * 140;
       const colorStart = `hsl(${Math.max(0, hue - 15)}, 85%, 45%)`; 
@@ -1093,7 +1095,7 @@ function renderDashboardCharts() {
         <div style="margin-bottom: 14px;">
           <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:700; letter-spacing:0.3px;">
             <span style="color:var(--text);">${t.label}</span>
-            <span style="color:${colorEnd}; font-variant-numeric: tabular-nums;">${actual} / ${META_TOTAL}</span>
+            <span style="color:${colorEnd}; font-variant-numeric: tabular-nums;">${actual} / ${metaPersonal}</span>
           </div>
           
           <div style="width:100%; height:14px; background:rgba(0,0,0,0.3); border-radius:10px; overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.03); position: relative;">
