@@ -1,1 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal de Auditoría - Audios Totales</title>
+<link rel="icon" href="https://media.licdn.com/dms/image/v2/D4E03AQHM3EFPcRHXcw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1685741851370?e=1785369600&v=beta&t=w63z70kcpD3oflacus3FyNYz_W9EIdeAX4sg0jV1do8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
+<style>
+/* VARIABLES Y ESTILOS BASE */
+:root {
+  --bg: #121317;
+  --surface: #1c1d22;
+  --surface-hover: #26272e;
+  --border: #2d2f36;
+  --text: #f1f2f5;
+  --muted: #8b92a5;
+  --p: #8b5cf6; /* Morado para diferenciarlo del CRM principal */
+  --p-glow: rgba(139, 92, 246, 0.2);
+  --info: #0ea5e9;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* NAVEGACIÓN SUPERIOR */
+.topbar { background: var(--surface); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; border-bottom: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 10; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo-box { background: linear-gradient(135deg, var(--p), #c4b5fd); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #fff; box-shadow: 0 4px 10px var(--p-glow); }
+.brand-text h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+.brand-text p { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+/* CONTENIDO PRINCIPAL */
+.layout { display: flex; flex: 1; overflow: hidden; padding: 24px; gap: 24px; }
+
+/* SECCIÓN IZQUIERDA (TABLA Y FILTROS) */
+.main-content { flex: 2; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
+.toolbar { padding: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: rgba(0,0,0,0.1); flex-wrap: wrap; }
+.inp { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 16px; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; flex: 1; transition: 0.2s; }
+.inp:focus { border-color: var(--p); box-shadow: 0 0 0 3px var(--p-glow); }
+.btn { background: var(--p); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn:hover { filter: brightness(1.1); box-shadow: 0 4px 12px var(--p-glow); }
+
+/* TABLA */
+.table-container { flex: 1; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th { background: var(--bg); padding: 16px 20px; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; position: sticky; top: 0; z-index: 2; border-bottom: 1px solid var(--border); }
+td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
+tr:hover td { background: var(--surface-hover); }
+
+/* REPRODUCTOR DE AUDIO COMPACTO */
+audio { height: 32px; width: 220px; outline: none; border-radius: 20px; }
+audio::-webkit-media-controls-panel { background-color: var(--bg); }
+audio::-webkit-media-controls-play-button, audio::-webkit-media-controls-mute-button { filter: invert(1); }
+audio::-webkit-media-controls-current-time-display, audio::-webkit-media-controls-time-remaining-display { color: #fff; }
+
+/* SECCIÓN DERECHA (ESTADÍSTICAS Y GRÁFICOS) */
+.side-panel { flex: 1; max-width: 350px; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
+.stat-icon { position: absolute; right: 20px; top: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-val { font-size: 36px; font-weight: 900; line-height: 1; color: var(--text); }
+.stat-sub { font-size: 12px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.chart-container { flex: 1; position: relative; min-height: 250px; margin-top: 16px; }
+
+.tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.1); }
+.tag.purple { color: #c4b5fd; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); }
+
+/* TOAST */
+#toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--p); color: #fff; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; transition: bottom 0.4s; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+#toast.show { bottom: 30px; }
+
+/* Custom Scrollbar for side panel */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #4a4d5a; border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo-box">A+</div>
+    <div class="brand-text">
+      <h1>Central de Audios</h1>
+      <p>Módulo de Auditoría y Calidad</p>
+    </div>
+  </div>
+  <div>
+    <button class="btn" onclick="exportarExcel()" style="background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3);">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+      Exportar Datos
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- PANEL IZQUIERDO: TABLA Y FILTROS -->
+  <main class="main-content">
+    
+    <!-- BARRA DE FILTROS -->
+    <div class="toolbar">
+      <input type="text" id="search-input" class="inp" placeholder="Buscar por referencia..." oninput="applyFilters()">
+      
+      <select id="agent-filter" class="inp" style="max-width: 180px;" onchange="applyFilters()">
+        <option value="ALL">Todos los Agentes</option>
+        <!-- Se llena por JS -->
+      </select>
+
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:var(--muted); font-weight:600;">Fecha:</span>
+        <input type="date" id="date-filter" class="inp" style="max-width: 140px; padding: 9px 12px; color-scheme: dark;" onchange="applyFilters()">
+        <button class="btn sm" onclick="clearDate()" style="background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); padding: 9px 12px;" title="Borrar fecha">✖</button>
+      </div>
+    </div>
+    
+    <!-- TABLA DE RESULTADOS -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha / Hora</th>
+            <th>Referencia</th>
+            <th>Duración</th>
+            <th>Agente</th>
+            <th>Reproductor Integrado</th>
+          </tr>
+        </thead>
+        <tbody id="audio-table-body">
+          <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted);">Conectando con la base de datos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- PANEL DERECHO: ANALÍTICAS EN TIEMPO REAL -->
+  <aside class="side-panel">
+    
+    <!-- TARJETA 1: TOTAL AUDIOS -->
+    <div class="stat-card">
+      <div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg></div>
+      <div class="stat-label">Audios Filtrados</div>
+      <div class="stat-val" id="val-total-audios">0</div>
+      <div class="stat-sub" id="sub-audios">En base a los filtros actuales</div>
+    </div>
+
+    <!-- TARJETA 2: TIEMPO TOTAL -->
+    <div class="stat-card">
+      <div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+      <div class="stat-label">Tiempo Total de Grabación</div>
+      <div class="stat-val" id="val-total-time" style="color: var(--p);">0h 0m</div>
+      <div class="stat-sub">Suma exacta de duraciones</div>
+    </div>
+
+    <!-- GRÁFICO DE AGENTES -->
+    <div class="chart-card">
+      <div class="stat-label" style="margin-bottom: 8px;">Participación por Agente</div>
+      <div style="font-size: 12px; color: var(--muted);">En base a los filtros seleccionados</div>
+      <div class="chart-container">
+        <canvas id="agentPieChart"></canvas>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<div id="toast">Acción completada</div>
+
+<script>
+// CONFIGURACIÓN DE FIREBASE
+const FB_CFG = {
+  apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
+  authDomain:"crm-telecom-db014.firebaseapp.com",
+  projectId:"crm-telecom-db014",
+  storageBucket:"crm-telecom-db014.firebasestorage.app",
+  messagingSenderId:"92366048720",
+  appId:"1:92366048720:web:f45c610cdb1ed6326d7dd5"
+};
+
+if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+const db = firebase.firestore();
+
+// VARIABLES GLOBALES
+let allAudios = [];
+let currentFilteredAudios = []; // Guarda el array filtrado actualmente
+let pieChartInstance = null;
+
+// MOSTRAR TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// LECTURA INICIAL Y EN TIEMPO REAL
+db.collection('historial_llamadas').orderBy('timestamp', 'desc').onSnapshot(snap => {
+  allAudios = [];
+  snap.forEach(doc => {
+    let data = doc.data();
+    data.id = doc.id;
+    allAudios.push(data);
+  });
+  
+  populateAgentFilter();
+  applyFilters(); // Activa el proceso de filtrado y dibujado automático
+});
+
+// LLENAR SELECTOR DE AGENTES 
+function populateAgentFilter() {
+  const filter = document.getElementById('agent-filter');
+  const currentVal = filter.value;
+  
+  let agents = [...new Set(allAudios.map(a => a.agente ? a.agente.trim().toUpperCase() : ''))].filter(Boolean);
+  
+  let html = `<option value="ALL">Todos los Agentes</option>`;
+  agents.forEach(ag => {
+    html += `<option value="${ag}">${ag}</option>`;
+  });
+  
+  filter.innerHTML = html;
+  if(agents.includes(currentVal)) filter.value = currentVal;
+}
+
+// ===============================================
+// MOTOR DE FILTRADO (Buscador + Agente + Fecha)
+// ===============================================
+function applyFilters() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const agentFilter = document.getElementById('agent-filter').value;
+  const dateVal = document.getElementById('date-filter').value; // Formato YYYY-MM-DD
+
+  // Convertimos la fecha YYYY-MM-DD del calendario a DD/MM de tu base de datos
+  let targetDateStr = "";
+  if(dateVal) {
+    const [year, month, day] = dateVal.split('-');
+    targetDateStr = `${day}/${month}`;
+  }
+
+  // Filtrado múltiple
+  currentFilteredAudios = allAudios.filter(h => {
+    const matchText = `${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q);
+    const matchAgent = agentFilter === 'ALL' || (h.agente && h.agente.toUpperCase() === agentFilter);
+    const matchDate = targetDateStr === "" || (h.fecha && h.fecha.startsWith(targetDateStr));
+    
+    return matchText && matchAgent && matchDate;
+  });
+
+  // Renderizamos la UI basándonos en el array filtrado
+  renderTableHTML(currentFilteredAudios);
+  updateAnalytics(currentFilteredAudios);
+}
+
+// BOTÓN LIMPIAR FECHA
+function clearDate() {
+  document.getElementById('date-filter').value = '';
+  applyFilters();
+}
+
+// DIBUJAR TABLA
+function renderTableHTML(dataArray) {
+  const tbody = document.getElementById('audio-table-body');
+
+  if (dataArray.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted); font-weight:600;">No hay resultados con estos filtros</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = dataArray.map(h => `
+    <tr>
+      <td style="color: var(--muted); font-size: 12px; white-space: nowrap;">${h.fecha}</td>
+      <td><strong style="color: var(--text);">${h.nombre}</strong></td>
+      <td><span class="tag purple">${h.duracion || '00:00'}</span></td>
+      <td><span class="tag">${h.agente}</span></td>
+      <td>
+        ${h.audioUrl && h.audioUrl !== 'null' 
+          ? `<audio controls src="${h.audioUrl}" preload="none"></audio>
+             <br><a href="${h.audioUrl}" target="_blank" style="font-size:10px; color:var(--info); text-decoration:none; margin-left: 10px; font-weight:600;">⏬ Descargar Original</a>` 
+          : '<span style="color:var(--danger); font-size:11px; font-weight:700;">Audio no disponible</span>'}
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ACTUALIZAR TARJETAS ESTADÍSTICAS Y GRÁFICO
+function updateAnalytics(dataArray) {
+  // 1. Total de Audios (Filtrados)
+  document.getElementById('val-total-audios').textContent = dataArray.length;
+
+  let totalSeconds = 0;
+  let agentCounts = {};
+
+  dataArray.forEach(a => {
+    // Conteo para gráfico
+    let ag = a.agente ? a.agente.trim().toUpperCase() : 'DESCONOCIDO';
+    agentCounts[ag] = (agentCounts[ag] || 0) + 1;
+
+    // Sumatoria de duraciones MM:SS
+    if (a.duracion && a.duracion.includes(':')) {
+      let parts = a.duracion.split(':');
+      if(parts.length === 2) {
+        totalSeconds += (parseInt(parts[0]) * 60) + parseInt(parts[1]);
+      }
+    }
+  });
+
+  // Mostrar total horas y minutos
+  let hours = Math.floor(totalSeconds / 3600);
+  let minutes = Math.floor((totalSeconds % 3600) / 60);
+  document.getElementById('val-total-time').textContent = `${hours}h ${minutes}m`;
+
+  // Renderizar pastel
+  renderPieChart(agentCounts);
+}
+
+// RENDERIZAR GRÁFICO DE TORTA
+function renderPieChart(agentCounts) {
+  const ctx = document.getElementById('agentPieChart').getContext('2d');
+  
+  const labels = Object.keys(agentCounts);
+  const data = Object.values(agentCounts);
+  
+  // Colores profesionales
+  const bgColors = [
+    'rgba(139, 92, 246, 0.8)', // Morado
+    'rgba(16, 185, 129, 0.8)', // Verde
+    'rgba(14, 165, 233, 0.8)', // Azul
+    'rgba(245, 158, 11, 0.8)', // Naranja
+    'rgba(239, 68, 68, 0.8)',  // Rojo
+    'rgba(107, 114, 128, 0.8)' // Gris
+  ];
+
+  if (pieChartInstance) pieChartInstance.destroy();
+
+  pieChartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: bgColors,
+        borderColor: '#1c1d22',
+        borderWidth: 2,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#f1f2f5', font: {size: 11, family: 'Inter'} } }
+      }
+    }
+  });
+}
+
+// EXPORTAR A CSV (SOLO DATOS FILTRADOS)
+function exportarExcel() {
+  if(currentFilteredAudios.length === 0) return showToast("No hay datos para exportar con esos filtros ⚠️");
+
+  let csvContent = "data:text/csv;charset=utf-8,";
+  csvContent += "FECHA,REFERENCIA,DURACION,AGENTE,LINK_AUDIO\n"; 
+
+  // Exportar el array que ya pasó por el filtro
+  currentFilteredAudios.forEach(row => {
+    let fecha = `"${row.fecha || ''}"`;
+    let nombre = `"${(row.nombre || '').replace(/"/g, '""')}"`; // Evita que comillas dentro del texto rompan el archivo
+    let duracion = `"${row.duracion || ''}"`;
+    let agente = `"${row.agente || ''}"`;
+    let link = `"${row.audioUrl || ''}"`;
+    
+    csvContent += `${fecha},${nombre},${duracion},${agente},${link}\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `Reporte_Calidad_${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showToast("Descarga de informe completada ✅");
+}
+</script>
+</body>
+</html>
