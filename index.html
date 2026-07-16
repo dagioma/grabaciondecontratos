@@ -152,7 +152,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 
 .top-cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 16px;
 }
@@ -238,12 +238,11 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* Media Queries */
-@media (max-width: 1024px) {
+@media (max-width: 1280px) {
   .top-cards-grid { grid-template-columns: repeat(2, 1fr); }
-  .sidebar { width: 200px; min-width: 200px; } 
-  .stats-row { grid-template-columns: repeat(4, 1fr); } 
 }
-@media (min-width: 1025px) { 
+@media (max-width: 1024px) {
+  .sidebar { width: 200px; min-width: 200px; } 
   .stats-row { grid-template-columns: repeat(4, 1fr); } 
 }
 @media (max-width: 767px) {
@@ -382,7 +381,17 @@ tr:hover td { background: rgba(255,255,255,0.03); }
             </div>
           </div>
 
-        </div> <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+          <!-- NUEVA TARJETA: Metas Mensuales con Mejoras Profesionales -->
+          <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
+            <div class="card-head" style="text-align:center;">Metas Mensuales (150 Llamadas)</div>
+            <div id="dash-metas" style="padding:16px;display:flex;flex-direction:column; gap:8px; flex:1; justify-content:center;">
+              <div style="color:var(--muted);font-size:13px;font-weight:500;text-align:center;">Calculando metas...</div>
+            </div>
+          </div>
+
+        </div> 
+        
+        <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
           <div class="card-head" style="display:flex; justify-content:space-between; align-items:center;">
             <span>Evolución de Llamadas</span>
             <select id="trend-filter" class="chart-select" onchange="renderDashboardCharts()">
@@ -829,8 +838,6 @@ function initListeners() {
   });
 
   // Refrescar visualmente la lista cada 15 segundos. 
-  // Así, si alguien cierra la ventana y no hay actualizaciones en Firebase,
-  // el cliente se dará cuenta de que el tiempo se agotó y lo pondrá Offline.
   setInterval(renderPresenceUI, 15000);
 }
 
@@ -868,12 +875,11 @@ function renderPresenceUI() {
 }
 
 // ----------------------------------------------------
-// GENERACIÓN DE LOS DOS GRÁFICOS (Barras y Curvas)
+// GENERACIÓN DE LOS GRÁFICOS Y METAS
 // ----------------------------------------------------
 function renderDashboardCharts() {
   if (!histAll) return;
 
-  // NUEVO: Función auxiliar para unificar los nombres (todo a mayúsculas sin espacios extra)
   const normalizeAgente = (name) => {
     if (!name) return 'DESCONOCIDO';
     return name.trim().toUpperCase();
@@ -891,7 +897,6 @@ function renderDashboardCharts() {
 
   const agentCountsHoy = {};
   llamadasHoy.forEach(h => { 
-    // APLICAMOS LA NORMALIZACIÓN AQUÍ
     const agenteNormalizado = normalizeAgente(h.agente);
     agentCountsHoy[agenteNormalizado] = (agentCountsHoy[agenteNormalizado] || 0) + 1; 
   });
@@ -926,7 +931,6 @@ function renderDashboardCharts() {
     dailyChart.update();
   }
 
-  // Lista debajo del gráfico diario
   const listHoy = document.getElementById('dash-agent-stats-hoy');
   if (sortedAgentsHoy.length === 0) { listHoy.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;">Sin llamadas hoy</div>'; }
   else {
@@ -960,10 +964,9 @@ function renderDashboardCharts() {
   const totalesPorAgente = {};
 
   filteredHist.forEach(h => {
-    const dia = h.fecha.split(' ')[0]; // Extraer solo "DD/MM"
+    const dia = h.fecha.split(' ')[0]; 
     fechasSet.add(dia);
 
-    // APLICAMOS LA NORMALIZACIÓN AQUÍ
     const agenteNormalizado = normalizeAgente(h.agente);
 
     if (!datosPorAgente[agenteNormalizado]) { datosPorAgente[agenteNormalizado] = {}; totalesPorAgente[agenteNormalizado] = 0; }
@@ -1026,7 +1029,6 @@ function renderDashboardCharts() {
     trendChart.update();
   }
 
-  // Lista/Leyenda personalizada debajo del gráfico de evolución
   const listTrend = document.getElementById('dash-agent-stats-trend');
   const sortedAgentsTrend = Object.entries(totalesPorAgente).sort((a,b) => b[1] - a[1]);
   
@@ -1045,6 +1047,77 @@ function renderDashboardCharts() {
         </div>
       </div>
     `}).join('');
+  }
+
+  // ==========================================
+  // GRÁFICO 3: METAS MENSUALES (Progreso Premium)
+  // ==========================================
+  const metasContainer = document.getElementById('dash-metas');
+  if (metasContainer) {
+    const llamadasMesActual = histAll.filter(h => {
+      if(!h.fecha) return false;
+      const parts = h.fecha.split(' ')[0].split('/'); 
+      return parts.length > 1 && parts[1] === currMonthStr; 
+    });
+
+    const targets = [
+      { key: 'MARIETTE', label: 'Mariette' },
+      { key: 'DANIELA CM', label: 'Daniela CM' },
+      { key: 'ALEJANDRO', label: 'Alejandro' },
+      { key: 'MARCO', label: 'Marco' }
+    ];
+    
+    const conteoMetas = { 'MARIETTE':0, 'DANIELA CM':0, 'ALEJANDRO':0, 'MARCO':0 };
+
+    llamadasMesActual.forEach(h => {
+      const ag = normalizeAgente(h.agente);
+      targets.forEach(t => {
+        if (ag.includes(t.key)) {
+          conteoMetas[t.key]++;
+        }
+      });
+    });
+
+    const META_TOTAL = 150;
+    let htmlMetas = '';
+
+    targets.forEach(t => {
+      const actual = conteoMetas[t.key];
+      const porcentaje = Math.min((actual / META_TOTAL) * 100, 100);
+      
+      // 0 = Rojo, 30 = Naranja, 60 = Amarillo, 140 = Verde esmeralda (Success)
+      const hue = (porcentaje / 100) * 140;
+      
+      // Creando colores dinámicos más elegantes para el gradiente interno de la barra
+      const colorStart = `hsl(${Math.max(0, hue - 15)}, 85%, 45%)`; // Color de inicio ligeramente más oscuro/atrás
+      const colorEnd = `hsl(${hue}, 90%, 55%)`; // Color vibrante brillante
+      
+      // Brillo emitido por la barra
+      const glow = `hsla(${hue}, 90%, 55%, 0.3)`;
+
+      htmlMetas += `
+        <div style="margin-bottom: 14px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:700; letter-spacing:0.3px;">
+            <span style="color:var(--text);">${t.label}</span>
+            <span style="color:${colorEnd}; font-variant-numeric: tabular-nums;">${actual} / ${META_TOTAL}</span>
+          </div>
+          
+          <!-- Contenedor del fondo (Track) con sombra interna -->
+          <div style="width:100%; height:14px; background:rgba(0,0,0,0.3); border-radius:10px; overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.03); position: relative;">
+            
+            <!-- Relleno de la barra (Fill) con gradiente, curva de transición y resplandor exterior -->
+            <div style="width:${porcentaje}%; height:100%; background: linear-gradient(90deg, ${colorStart}, ${colorEnd}); box-shadow: 0 0 12px ${glow}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease; border-radius:10px; position: relative;">
+              
+              <!-- Efecto superior de Cristal (Glassmorphism highlight) para darle relieve -->
+              <div style="position:absolute; top:0; left:0; right:0; height:50%; background: linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0)); border-radius: 10px 10px 0 0;"></div>
+              
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    metasContainer.innerHTML = htmlMetas;
   }
 }
 
