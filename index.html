@@ -873,6 +873,12 @@ function renderPresenceUI() {
 function renderDashboardCharts() {
   if (!histAll) return;
 
+  // NUEVO: Función auxiliar para unificar los nombres (todo a mayúsculas sin espacios extra)
+  const normalizeAgente = (name) => {
+    if (!name) return 'DESCONOCIDO';
+    return name.trim().toUpperCase();
+  };
+
   const dToday = new Date();
   const hoyStr = `${dToday.getDate().toString().padStart(2,'0')}/${(dToday.getMonth()+1).toString().padStart(2,'0')}`;
   const currMonthStr = (dToday.getMonth() + 1).toString().padStart(2, '0'); 
@@ -884,7 +890,11 @@ function renderDashboardCharts() {
   document.getElementById('stat-hoy').textContent = llamadasHoy.length;
 
   const agentCountsHoy = {};
-  llamadasHoy.forEach(h => { agentCountsHoy[h.agente] = (agentCountsHoy[h.agente] || 0) + 1; });
+  llamadasHoy.forEach(h => { 
+    // APLICAMOS LA NORMALIZACIÓN AQUÍ
+    const agenteNormalizado = normalizeAgente(h.agente);
+    agentCountsHoy[agenteNormalizado] = (agentCountsHoy[agenteNormalizado] || 0) + 1; 
+  });
   const sortedAgentsHoy = Object.entries(agentCountsHoy).sort((a,b) => b[1] - a[1]);
   
   const labelsHoy = sortedAgentsHoy.map(a => a[0]);
@@ -923,7 +933,7 @@ function renderDashboardCharts() {
     listHoy.innerHTML = sortedAgentsHoy.map(([agente, total]) => `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;font-weight:600;">
         <div style="display:flex;align-items:center;gap:8px;">
-          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--info),var(--p2));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;">${agente.charAt(0).toUpperCase()}</div>
+          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--info),var(--p2));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;">${agente.charAt(0)}</div>
           <span style="color:var(--text);">${agente}</span>
         </div>
         <span style="color:var(--p);font-weight:700;">${total}</span>
@@ -937,7 +947,6 @@ function renderDashboardCharts() {
   const filterType = document.getElementById('trend-filter').value;
   let filteredHist = histAll;
   
-  // Si elige "Mensual", filtramos para que solo pasen los que tengan el mes actual.
   if (filterType === 'mes') {
     filteredHist = histAll.filter(h => {
       if(!h.fecha) return false;
@@ -954,11 +963,14 @@ function renderDashboardCharts() {
     const dia = h.fecha.split(' ')[0]; // Extraer solo "DD/MM"
     fechasSet.add(dia);
 
-    if (!datosPorAgente[h.agente]) { datosPorAgente[h.agente] = {}; totalesPorAgente[h.agente] = 0; }
-    if (!datosPorAgente[h.agente][dia]) datosPorAgente[h.agente][dia] = 0;
+    // APLICAMOS LA NORMALIZACIÓN AQUÍ
+    const agenteNormalizado = normalizeAgente(h.agente);
 
-    datosPorAgente[h.agente][dia]++;
-    totalesPorAgente[h.agente]++;
+    if (!datosPorAgente[agenteNormalizado]) { datosPorAgente[agenteNormalizado] = {}; totalesPorAgente[agenteNormalizado] = 0; }
+    if (!datosPorAgente[agenteNormalizado][dia]) datosPorAgente[agenteNormalizado][dia] = 0;
+
+    datosPorAgente[agenteNormalizado][dia]++;
+    totalesPorAgente[agenteNormalizado]++;
   });
 
   const labelsFechas = Array.from(fechasSet).sort((a, b) => {
@@ -982,7 +994,7 @@ function renderDashboardCharts() {
     const dataLlamadas = labelsFechas.map(fecha => datosPorAgente[agente][fecha] || 0);
 
     return {
-      label: agente, // Nombre en el tooltip
+      label: agente, 
       data: dataLlamadas,
       borderColor: color.border, backgroundColor: color.bg, borderWidth: 2, tension: 0.4,
       pointBackgroundColor: '#212228', pointBorderColor: color.border, pointBorderWidth: 2,
@@ -1021,7 +1033,6 @@ function renderDashboardCharts() {
   if (sortedAgentsTrend.length === 0) { listTrend.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;width:100%;">No hay datos en este periodo</div>'; }
   else {
     listTrend.innerHTML = sortedAgentsTrend.map(([agente, total], i) => {
-      // Re-ubicamos el color asignado a este agente
       const agentDataset = datasetsGrafico.find(d => d.label === agente);
       const dotColor = agentDataset ? agentDataset.borderColor : '#fff';
       
