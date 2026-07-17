@@ -98,10 +98,10 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
     </div>
   </div>
   <div style="display: flex; gap: 12px;">
-    <!-- BOTÓN PARA DESCARGAR ZIP -->
-    <button class="btn" onclick="iniciarDescargaZip()" style="background: rgba(14, 165, 233, 0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.3);">
+    <!-- BOTÓN QUE AHORA ABRE EL MODAL DE OPCIONES -->
+    <button class="btn" onclick="abrirModalDescarga()" style="background: rgba(14, 165, 233, 0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.3);">
       <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-      Descargar ZIP (Por Fechas)
+      Descargar ZIP
     </button>
     <button class="btn" onclick="exportarExcel()" style="background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3);">
       Exportar Datos
@@ -165,7 +165,39 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
 
 <div id="toast">Acción completada</div>
 
-<!-- MODAL BARRA DE PROGRESO -->
+<!-- 1. MODAL: OPCIONES DE DESCARGA -->
+<div class="modal-overlay" id="downloadModal">
+  <div class="modal">
+    <h2>📦 Configurar Descarga ZIP</h2>
+    <p>Selecciona qué audios deseas incluir en el archivo ZIP:</p>
+    
+    <select id="dl-type" class="inp" style="width: 100%; margin-bottom: 16px; padding: 12px; font-weight: 600;" onchange="toggleDlRange()">
+      <option value="hoy">📅 Solo los audios de HOY</option>
+      <option value="mes">📆 Los audios de este MES</option>
+      <option value="rango">🗓️ Elegir un rango de fechas personalizado...</option>
+      <option value="todo">📚 Historial COMPLETO (Todos los tiempos)</option>
+      <option value="filtros">🔍 Según los filtros actuales de mi tabla</option>
+    </select>
+
+    <div id="dl-range-container" style="display: none; gap: 12px; margin-bottom: 16px;">
+      <div style="flex: 1;">
+        <label style="font-size:11px; color:var(--muted); font-weight:700;">DESDE (Inicio):</label>
+        <input type="date" id="dl-start" class="inp" style="width: 100%; color-scheme: dark; margin-top: 4px;">
+      </div>
+      <div style="flex: 1;">
+        <label style="font-size:11px; color:var(--muted); font-weight:700;">HASTA (Fin):</label>
+        <input type="date" id="dl-end" class="inp" style="width: 100%; color-scheme: dark; margin-top: 4px;">
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+      <button class="btn sm" onclick="cerrarModalDescarga()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border);">Cancelar</button>
+      <button class="btn sm" onclick="prepararYDescargarZip()" style="background: var(--p);">🚀 Iniciar Descarga</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. MODAL: BARRA DE PROGRESO -->
 <div class="modal-overlay" id="progressModal">
   <div class="modal" style="text-align: center;">
     <h2>Preparando Descarga ZIP</h2>
@@ -188,7 +220,7 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
   </div>
 </div>
 
-<!-- MODAL CORS (EN CASO DE ERROR) -->
+<!-- 3. MODAL: CORS (EN CASO DE ERROR DE PERMISOS) -->
 <div class="modal-overlay" id="corsModal">
   <div class="modal">
     <h2 style="color: var(--danger);">⚠️ Bloqueo de Seguridad (CORS)</h2>
@@ -223,8 +255,8 @@ let pieChartInstance = null;
 // ===============================================
 // VARIABLES DE CONTROL DE DESCARGA
 // ===============================================
-let estadoDescarga = 'detenida'; // Puede ser: 'corriendo', 'pausada', 'cancelada'
-let controladorAborto = null;    // Nos permite matar el fetch en curso
+let estadoDescarga = 'detenida'; 
+let controladorAborto = null;    
 
 function showToast(msg, duration = 3000) {
   const t = document.getElementById('toast');
@@ -330,7 +362,6 @@ function renderPieChart(agentCounts) {
   });
 }
 
-// EXPORTAR A CSV
 function exportarExcel() {
   if(currentFilteredAudios.length === 0) return showToast("No hay datos para exportar ⚠️");
   let csvContent = "data:text/csv;charset=utf-8,FECHA,REFERENCIA,DURACION,AGENTE,LINK_AUDIO\n"; 
@@ -344,6 +375,89 @@ function exportarExcel() {
   link.setAttribute("href", encodedUri);
   link.setAttribute("download", `Reporte_Calidad_${new Date().toISOString().split('T')[0]}.csv`);
   document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+
+// ==========================================
+// NUEVO SISTEMA DE MENÚ Y FILTRADO POR FECHAS
+// ==========================================
+
+function abrirModalDescarga() {
+  document.getElementById('downloadModal').style.display = 'flex';
+  toggleDlRange();
+}
+
+function cerrarModalDescarga() {
+  document.getElementById('downloadModal').style.display = 'none';
+}
+
+function toggleDlRange() {
+  const type = document.getElementById('dl-type').value;
+  const container = document.getElementById('dl-range-container');
+  if (type === 'rango') {
+    container.style.display = 'flex';
+  } else {
+    container.style.display = 'none';
+  }
+}
+
+// Convierte "DD/MM/YYYY" o "DD/MM" en un objeto Date de Javascript para hacer comparaciones precisas
+function parseAudioDate(fechaStr) {
+  if(!fechaStr) return new Date(0);
+  let clean = fechaStr.split(' ')[0].split('-')[0].trim(); // Extrae solo "24/07/2026" o "24/07"
+  let parts = clean.split('/');
+  
+  if (parts.length >= 2) {
+    let d = parseInt(parts[0], 10);
+    let m = parseInt(parts[1], 10) - 1; // Meses en JS son 0-11
+    let y = parts.length === 3 ? parseInt(parts[2], 10) : new Date().getFullYear();
+    return new Date(y, m, d);
+  }
+  return new Date(0);
+}
+
+function prepararYDescargarZip() {
+  const type = document.getElementById('dl-type').value;
+  let audiosToDownload = [];
+  const today = new Date();
+  
+  if (type === 'filtros') {
+    audiosToDownload = [...currentFilteredAudios];
+  } 
+  else if (type === 'todo') {
+    audiosToDownload = [...allAudios];
+  }
+  else if (type === 'hoy') {
+    const strHoy = String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0');
+    audiosToDownload = allAudios.filter(a => a.fecha && a.fecha.startsWith(strHoy));
+  }
+  else if (type === 'mes') {
+    audiosToDownload = allAudios.filter(a => {
+       let d = parseAudioDate(a.fecha);
+       return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+    });
+  }
+  else if (type === 'rango') {
+    const startVal = document.getElementById('dl-start').value;
+    const endVal = document.getElementById('dl-end').value;
+    if(!startVal || !endVal) {
+      return showToast("Selecciona ambas fechas para el rango ⚠️", 4000);
+    }
+    let startD = new Date(startVal + "T00:00:00");
+    let endD = new Date(endVal + "T23:59:59");
+    
+    audiosToDownload = allAudios.filter(a => {
+       let d = parseAudioDate(a.fecha);
+       return d >= startD && d <= endD;
+    });
+  }
+
+  if (audiosToDownload.length === 0) {
+    return showToast("No se encontraron audios para esta selección de fechas ⚠️", 4000);
+  }
+
+  cerrarModalDescarga();
+  iniciarDescargaZip(audiosToDownload); // Mandamos la lista configurada a la función de descarga
 }
 
 
@@ -385,11 +499,9 @@ function cancelarDescarga() {
 
 
 // ==========================================
-// FUNCIÓN PRINCIPAL DE DESCARGA ZIP
+// FUNCIÓN PRINCIPAL DE DESCARGA ZIP (RECIBE LA LISTA A DESCARGAR)
 // ==========================================
-async function iniciarDescargaZip() {
-  if (currentFilteredAudios.length === 0) return showToast("No hay audios para descargar ⚠️");
-  
+async function iniciarDescargaZip(listaAudios) {
   estadoDescarga = 'corriendo';
   controladorAborto = new AbortController(); 
 
@@ -417,14 +529,14 @@ async function iniciarDescargaZip() {
   let failedCount = 0;
   let corsError = false;
   
-  const totalFiles = currentFilteredAudios.length;
+  const totalFiles = listaAudios.length; // Usa la lista personalizada seleccionada en el menú
 
   for (let i = 0; i < totalFiles; i++) {
     if (estadoDescarga === 'cancelada') return;
     await esperarSiEstaPausado();
     if (estadoDescarga === 'cancelada') return;
 
-    const audio = currentFilteredAudios[i];
+    const audio = listaAudios[i];
     processedCount++;
 
     if (!audio.audioUrl || audio.audioUrl === 'null') {
@@ -433,10 +545,7 @@ async function iniciarDescargaZip() {
       try {
         let datePart = 'Sin_Fecha';
         if (audio.fecha) {
-          // CORRECCIÓN AQUÍ: 
-          // 1. Separamos por espacio para quitar la hora (ej. "24/07/2026 15:30" => "24/07/2026")
-          // 2. Separamos por guión por si el formato es "24/07/2026 - 15:30" => "24/07/2026"
-          // 3. Reemplazamos barras por guiones bajos para que sea válido en Windows => "24_07_2026"
+          // Extrae "DD_MM_YYYY" puro, sin importar la hora
           datePart = audio.fecha.split(' ')[0].split('-')[0].trim().replace(/\//g, '_'); 
         }
         
