@@ -3,30 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal de Auditoría - Audios Totales</title>
+<title>Portal de Auditoría - Descarga ZIP</title>
 <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpjTuQ0WY-BJBbU8d7nzrJQgtHBnCwHbXHdlURE5X2oIggBInYeaulrvA0&s=10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- Librería JSZip para generar el archivo ZIP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
-/* VARIABLES Y ESTILOS BASE */
 :root {
-  --bg: #121317;
-  --surface: #1c1d22;
-  --surface-hover: #26272e;
-  --border: #2d2f36;
-  --text: #f1f2f5;
-  --muted: #8b92a5;
-  --p: #8b5cf6; /* Morado para diferenciarlo del CRM principal */
-  --p-glow: rgba(139, 92, 246, 0.2);
-  --info: #0ea5e9;
-  --success: #10b981;
-  --danger: #ef4444;
+  --bg: #121317; --surface: #1c1d22; --surface-hover: #26272e;
+  --border: #2d2f36; --text: #f1f2f5; --muted: #8b92a5;
+  --p: #8b5cf6; --p-glow: rgba(139, 92, 246, 0.2);
+  --info: #0ea5e9; --success: #10b981; --danger: #ef4444;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
@@ -39,14 +32,13 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 
 /* CONTENIDO PRINCIPAL */
 .layout { display: flex; flex: 1; overflow: hidden; padding: 24px; gap: 24px; }
-
-/* SECCIÓN IZQUIERDA (TABLA Y FILTROS) */
 .main-content { flex: 2; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
 .toolbar { padding: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: rgba(0,0,0,0.1); flex-wrap: wrap; }
 .inp { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 16px; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; flex: 1; transition: 0.2s; }
 .inp:focus { border-color: var(--p); box-shadow: 0 0 0 3px var(--p-glow); }
 .btn { background: var(--p); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .btn:hover { filter: brightness(1.1); box-shadow: 0 4px 12px var(--p-glow); }
+.btn.sm { padding: 8px 16px; font-size: 12px; }
 
 /* TABLA */
 .table-container { flex: 1; overflow-y: auto; }
@@ -55,31 +47,41 @@ th { background: var(--bg); padding: 16px 20px; font-size: 11px; font-weight: 70
 td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
 tr:hover td { background: var(--surface-hover); }
 
-/* REPRODUCTOR DE AUDIO COMPACTO */
+/* REPRODUCTOR */
 audio { height: 32px; width: 220px; outline: none; border-radius: 20px; }
 audio::-webkit-media-controls-panel { background-color: var(--bg); }
 audio::-webkit-media-controls-play-button, audio::-webkit-media-controls-mute-button { filter: invert(1); }
 audio::-webkit-media-controls-current-time-display, audio::-webkit-media-controls-time-remaining-display { color: #fff; }
 
-/* SECCIÓN DERECHA (ESTADÍSTICAS Y GRÁFICOS) */
+/* SECCIÓN DERECHA */
 .side-panel { flex: 1; max-width: 350px; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; }
 .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
 .stat-icon { position: absolute; right: 20px; top: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
 .stat-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 .stat-val { font-size: 36px; font-weight: 900; line-height: 1; color: var(--text); }
 .stat-sub { font-size: 12px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 4px; }
-
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; flex: 1; display: flex; flex-direction: column; }
 .chart-container { flex: 1; position: relative; min-height: 250px; margin-top: 16px; }
 
 .tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.1); }
 .tag.purple { color: #c4b5fd; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); }
 
-/* TOAST */
+/* TOAST / ALERTA */
 #toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--p); color: #fff; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; transition: bottom 0.4s; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 #toast.show { bottom: 30px; }
 
-/* Custom Scrollbar for side panel */
+/* MODALES GLOBALES */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; }
+.modal { background: var(--surface); padding: 32px; border-radius: 16px; width: 90%; max-width: 500px; border: 1px solid var(--border); }
+.modal h2 { margin-bottom: 16px; font-size: 20px; }
+.modal p { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.code-block { background: var(--bg); padding: 12px; border-radius: 8px; font-family: monospace; color: var(--text); font-size: 12px; margin-bottom: 12px; word-break: break-all; }
+
+/* BARRA DE PROGRESO */
+.progress-container { background: var(--bg); border-radius: 10px; width: 100%; height: 24px; overflow: hidden; border: 1px solid var(--border); position: relative; margin-top: 20px; }
+.progress-fill { background: linear-gradient(90deg, var(--info), var(--p)); width: 0%; height: 100%; transition: width 0.3s ease; box-shadow: 0 0 10px var(--p-glow); }
+.progress-text { position: absolute; width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #4a4d5a; border-radius: 99px; }
@@ -95,35 +97,32 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
       <p>Módulo de Auditoría y Calidad</p>
     </div>
   </div>
-  <div>
+  <div style="display: flex; gap: 12px;">
+    <!-- BOTÓN PARA DESCARGAR ZIP -->
+    <button class="btn" onclick="iniciarDescargaZip()" style="background: rgba(14, 165, 233, 0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.3);">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      Descargar ZIP (Por Fechas)
+    </button>
     <button class="btn" onclick="exportarExcel()" style="background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3);">
-      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
       Exportar Datos
     </button>
   </div>
 </header>
 
 <div class="layout">
-  <!-- PANEL IZQUIERDO: TABLA Y FILTROS -->
   <main class="main-content">
-    
-    <!-- BARRA DE FILTROS -->
     <div class="toolbar">
       <input type="text" id="search-input" class="inp" placeholder="Buscar por referencia..." oninput="applyFilters()">
-      
       <select id="agent-filter" class="inp" style="max-width: 180px;" onchange="applyFilters()">
         <option value="ALL">Todos los Agentes</option>
-        <!-- Se llena por JS -->
       </select>
-
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="font-size:12px; color:var(--muted); font-weight:600;">Fecha:</span>
         <input type="date" id="date-filter" class="inp" style="max-width: 140px; padding: 9px 12px; color-scheme: dark;" onchange="applyFilters()">
-        <button class="btn sm" onclick="clearDate()" style="background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); padding: 9px 12px;" title="Borrar fecha">✖</button>
+        <button class="btn sm" onclick="clearDate()" style="background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); padding: 9px 12px;">✖</button>
       </div>
     </div>
     
-    <!-- TABLA DE RESULTADOS -->
     <div class="table-container">
       <table>
         <thead>
@@ -142,38 +141,66 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
     </div>
   </main>
 
-  <!-- PANEL DERECHO: ANALÍTICAS EN TIEMPO REAL -->
   <aside class="side-panel">
-    
-    <!-- TARJETA 1: TOTAL AUDIOS -->
     <div class="stat-card">
       <div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg></div>
       <div class="stat-label">Audios Filtrados</div>
       <div class="stat-val" id="val-total-audios">0</div>
       <div class="stat-sub" id="sub-audios">En base a los filtros actuales</div>
     </div>
-
-    <!-- TARJETA 2: TIEMPO TOTAL -->
     <div class="stat-card">
       <div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
       <div class="stat-label">Tiempo Total de Grabación</div>
       <div class="stat-val" id="val-total-time" style="color: var(--p);">0h 0m</div>
       <div class="stat-sub">Suma exacta de duraciones</div>
     </div>
-
-    <!-- GRÁFICO DE AGENTES -->
     <div class="chart-card">
       <div class="stat-label" style="margin-bottom: 8px;">Participación por Agente</div>
-      <div style="font-size: 12px; color: var(--muted);">En base a los filtros seleccionados</div>
       <div class="chart-container">
         <canvas id="agentPieChart"></canvas>
       </div>
     </div>
-
   </aside>
 </div>
 
 <div id="toast">Acción completada</div>
+
+<!-- MODAL BARRA DE PROGRESO -->
+<div class="modal-overlay" id="progressModal">
+  <div class="modal" style="text-align: center;">
+    <h2>Preparando Descarga ZIP</h2>
+    <p id="progress-status">Leyendo archivos desde la base de datos, por favor no cierres la ventana...</p>
+    
+    <div class="progress-container">
+      <div class="progress-fill" id="progress-bar-fill"></div>
+      <div class="progress-text" id="progress-percent">0%</div>
+    </div>
+
+    <!-- CONTROLES DE DESCARGA -->
+    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
+      <button id="btn-pause-resume" class="btn sm" onclick="togglePausaDescarga()" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border);">
+        ⏸ Pausar
+      </button>
+      <button id="btn-cancel" class="btn sm" onclick="cancelarDescarga()" style="background: var(--danger);">
+        ✖ Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CORS (EN CASO DE ERROR) -->
+<div class="modal-overlay" id="corsModal">
+  <div class="modal">
+    <h2 style="color: var(--danger);">⚠️ Bloqueo de Seguridad (CORS)</h2>
+    <p>Tu base de datos Firebase está bloqueando la descarga del archivo ZIP por seguridad. El código está bien, pero Firebase no permite empaquetar archivos sin tu permiso.</p>
+    <p>Para solucionarlo de por vida, abre la consola <strong>Cloud Shell</strong> en Google Cloud y ejecuta estos dos comandos:</p>
+    <div class="code-block">echo '[{"origin": ["*"],"method": ["GET"],"maxAgeSeconds": 3600}]' > cors.json</div>
+    <div class="code-block">gsutil cors set cors.json gs://crm-telecom-db014.firebasestorage.app</div>
+    <div style="text-align: right; margin-top: 20px;">
+      <button class="btn" onclick="document.getElementById('corsModal').style.display='none'">Entendido</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // CONFIGURACIÓN DE FIREBASE
@@ -189,20 +216,23 @@ const FB_CFG = {
 if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
 const db = firebase.firestore();
 
-// VARIABLES GLOBALES
 let allAudios = [];
-let currentFilteredAudios = []; // Guarda el array filtrado actualmente
+let currentFilteredAudios = []; 
 let pieChartInstance = null;
 
-// MOSTRAR TOAST
-function showToast(msg) {
+// ===============================================
+// VARIABLES DE CONTROL DE DESCARGA
+// ===============================================
+let estadoDescarga = 'detenida'; // Puede ser: 'corriendo', 'pausada', 'cancelada'
+let controladorAborto = null;    // Nos permite matar el fetch en curso
+
+function showToast(msg, duration = 3000) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), duration);
 }
 
-// LECTURA INICIAL Y EN TIEMPO REAL
 db.collection('historial_llamadas').orderBy('timestamp', 'desc').onSnapshot(snap => {
   allAudios = [];
   snap.forEach(doc => {
@@ -210,71 +240,53 @@ db.collection('historial_llamadas').orderBy('timestamp', 'desc').onSnapshot(snap
     data.id = doc.id;
     allAudios.push(data);
   });
-  
   populateAgentFilter();
-  applyFilters(); // Activa el proceso de filtrado y dibujado automático
+  applyFilters(); 
 });
 
-// LLENAR SELECTOR DE AGENTES 
 function populateAgentFilter() {
   const filter = document.getElementById('agent-filter');
   const currentVal = filter.value;
-  
   let agents = [...new Set(allAudios.map(a => a.agente ? a.agente.trim().toUpperCase() : ''))].filter(Boolean);
-  
   let html = `<option value="ALL">Todos los Agentes</option>`;
-  agents.forEach(ag => {
-    html += `<option value="${ag}">${ag}</option>`;
-  });
-  
+  agents.forEach(ag => { html += `<option value="${ag}">${ag}</option>`; });
   filter.innerHTML = html;
   if(agents.includes(currentVal)) filter.value = currentVal;
 }
 
-// ===============================================
-// MOTOR DE FILTRADO (Buscador + Agente + Fecha)
-// ===============================================
 function applyFilters() {
   const q = document.getElementById('search-input').value.toLowerCase();
   const agentFilter = document.getElementById('agent-filter').value;
-  const dateVal = document.getElementById('date-filter').value; // Formato YYYY-MM-DD
+  const dateVal = document.getElementById('date-filter').value;
 
-  // Convertimos la fecha YYYY-MM-DD del calendario a DD/MM de tu base de datos
   let targetDateStr = "";
   if(dateVal) {
     const [year, month, day] = dateVal.split('-');
     targetDateStr = `${day}/${month}`;
   }
 
-  // Filtrado múltiple
   currentFilteredAudios = allAudios.filter(h => {
     const matchText = `${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q);
     const matchAgent = agentFilter === 'ALL' || (h.agente && h.agente.toUpperCase() === agentFilter);
     const matchDate = targetDateStr === "" || (h.fecha && h.fecha.startsWith(targetDateStr));
-    
     return matchText && matchAgent && matchDate;
   });
 
-  // Renderizamos la UI basándonos en el array filtrado
   renderTableHTML(currentFilteredAudios);
   updateAnalytics(currentFilteredAudios);
 }
 
-// BOTÓN LIMPIAR FECHA
 function clearDate() {
   document.getElementById('date-filter').value = '';
   applyFilters();
 }
 
-// DIBUJAR TABLA
 function renderTableHTML(dataArray) {
   const tbody = document.getElementById('audio-table-body');
-
   if (dataArray.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted); font-weight:600;">No hay resultados con estos filtros</td></tr>';
     return;
   }
-
   tbody.innerHTML = dataArray.map(h => `
     <tr>
       <td style="color: var(--muted); font-size: 12px; white-space: nowrap;">${h.fecha}</td>
@@ -283,114 +295,229 @@ function renderTableHTML(dataArray) {
       <td><span class="tag">${h.agente}</span></td>
       <td>
         ${h.audioUrl && h.audioUrl !== 'null' 
-          ? `<audio controls src="${h.audioUrl}" preload="none"></audio>
-             <br><a href="${h.audioUrl}" target="_blank" style="font-size:10px; color:var(--info); text-decoration:none; margin-left: 10px; font-weight:600;">⏬ Descargar Original</a>` 
+          ? `<audio controls src="${h.audioUrl}" preload="none"></audio>` 
           : '<span style="color:var(--danger); font-size:11px; font-weight:700;">Audio no disponible</span>'}
       </td>
     </tr>
   `).join('');
 }
 
-// ACTUALIZAR TARJETAS ESTADÍSTICAS Y GRÁFICO
 function updateAnalytics(dataArray) {
-  // 1. Total de Audios (Filtrados)
   document.getElementById('val-total-audios').textContent = dataArray.length;
-
-  let totalSeconds = 0;
-  let agentCounts = {};
-
+  let totalSeconds = 0; let agentCounts = {};
   dataArray.forEach(a => {
-    // Conteo para gráfico
     let ag = a.agente ? a.agente.trim().toUpperCase() : 'DESCONOCIDO';
     agentCounts[ag] = (agentCounts[ag] || 0) + 1;
-
-    // Sumatoria de duraciones MM:SS
     if (a.duracion && a.duracion.includes(':')) {
       let parts = a.duracion.split(':');
-      if(parts.length === 2) {
-        totalSeconds += (parseInt(parts[0]) * 60) + parseInt(parts[1]);
-      }
+      if(parts.length === 2) totalSeconds += (parseInt(parts[0]) * 60) + parseInt(parts[1]);
     }
   });
-
-  // Mostrar total horas y minutos
   let hours = Math.floor(totalSeconds / 3600);
   let minutes = Math.floor((totalSeconds % 3600) / 60);
   document.getElementById('val-total-time').textContent = `${hours}h ${minutes}m`;
-
-  // Renderizar pastel
   renderPieChart(agentCounts);
 }
 
-// RENDERIZAR GRÁFICO DE TORTA
 function renderPieChart(agentCounts) {
   const ctx = document.getElementById('agentPieChart').getContext('2d');
-  
-  const labels = Object.keys(agentCounts);
-  const data = Object.values(agentCounts);
-  
-  // Colores profesionales
-  const bgColors = [
-    'rgba(139, 92, 246, 0.8)', // Morado
-    'rgba(16, 185, 129, 0.8)', // Verde
-    'rgba(14, 165, 233, 0.8)', // Azul
-    'rgba(245, 158, 11, 0.8)', // Naranja
-    'rgba(239, 68, 68, 0.8)',  // Rojo
-    'rgba(107, 114, 128, 0.8)' // Gris
-  ];
-
+  const labels = Object.keys(agentCounts); const data = Object.values(agentCounts);
+  const bgColors = ['rgba(139,92,246,0.8)', 'rgba(16,185,129,0.8)', 'rgba(14,165,233,0.8)', 'rgba(245,158,11,0.8)', 'rgba(239,68,68,0.8)', 'rgba(107,114,128,0.8)'];
   if (pieChartInstance) pieChartInstance.destroy();
-
   pieChartInstance = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: data,
-        backgroundColor: bgColors,
-        borderColor: '#1c1d22',
-        borderWidth: 2,
-        hoverOffset: 4
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '70%',
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#f1f2f5', font: {size: 11, family: 'Inter'} } }
-      }
-    }
+    type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: bgColors, borderColor: '#1c1d22', borderWidth: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#f1f2f5', font: {size: 11, family: 'Inter'} } } } }
   });
 }
 
-// EXPORTAR A CSV (SOLO DATOS FILTRADOS)
+// EXPORTAR A CSV
 function exportarExcel() {
-  if(currentFilteredAudios.length === 0) return showToast("No hay datos para exportar con esos filtros ⚠️");
-
-  let csvContent = "data:text/csv;charset=utf-8,";
-  csvContent += "FECHA,REFERENCIA,DURACION,AGENTE,LINK_AUDIO\n"; 
-
-  // Exportar el array que ya pasó por el filtro
+  if(currentFilteredAudios.length === 0) return showToast("No hay datos para exportar ⚠️");
+  let csvContent = "data:text/csv;charset=utf-8,FECHA,REFERENCIA,DURACION,AGENTE,LINK_AUDIO\n"; 
   currentFilteredAudios.forEach(row => {
-    let fecha = `"${row.fecha || ''}"`;
-    let nombre = `"${(row.nombre || '').replace(/"/g, '""')}"`; // Evita que comillas dentro del texto rompan el archivo
-    let duracion = `"${row.duracion || ''}"`;
-    let agente = `"${row.agente || ''}"`;
-    let link = `"${row.audioUrl || ''}"`;
-    
+    let fecha = `"${row.fecha || ''}"`; let nombre = `"${(row.nombre || '').replace(/"/g, '""')}"`;
+    let duracion = `"${row.duracion || ''}"`; let agente = `"${row.agente || ''}"`; let link = `"${row.audioUrl || ''}"`;
     csvContent += `${fecha},${nombre},${duracion},${agente},${link}\n`;
   });
-
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
   link.setAttribute("download", `Reporte_Calidad_${new Date().toISOString().split('T')[0]}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+
+// ==========================================
+// FUNCIONES DE CONTROL (PAUSA / CANCELAR)
+// ==========================================
+
+async function esperarSiEstaPausado() {
+  while (estadoDescarga === 'pausada') {
+    await new Promise(resolve => setTimeout(resolve, 250)); 
+  }
+}
+
+function togglePausaDescarga() {
+  const btn = document.getElementById('btn-pause-resume');
+  const status = document.getElementById('progress-status');
+
+  if (estadoDescarga === 'corriendo') {
+    estadoDescarga = 'pausada';
+    btn.innerHTML = '▶ Reanudar';
+    btn.style.color = 'var(--success)';
+    btn.style.borderColor = 'rgba(16,185,129,0.3)';
+    status.innerHTML = '<span style="color:var(--p)">Descarga en pausa... ☕</span>';
+  } else if (estadoDescarga === 'pausada') {
+    estadoDescarga = 'corriendo';
+    btn.innerHTML = '⏸ Pausar';
+    btn.style.color = 'var(--text)';
+    btn.style.borderColor = 'var(--border)';
+    status.innerText = 'Leyendo archivos desde la base de datos...';
+  }
+}
+
+function cancelarDescarga() {
+  estadoDescarga = 'cancelada';
+  if (controladorAborto) controladorAborto.abort(); 
+  document.getElementById('progressModal').style.display = 'none';
+  showToast("Descarga cancelada correctamente 🛑", 4000);
+}
+
+
+// ==========================================
+// FUNCIÓN PRINCIPAL DE DESCARGA ZIP
+// ==========================================
+async function iniciarDescargaZip() {
+  if (currentFilteredAudios.length === 0) return showToast("No hay audios para descargar ⚠️");
   
-  showToast("Descarga de informe completada ✅");
+  estadoDescarga = 'corriendo';
+  controladorAborto = new AbortController(); 
+
+  const modal = document.getElementById('progressModal');
+  const barFill = document.getElementById('progress-bar-fill');
+  const percentText = document.getElementById('progress-percent');
+  const statusText = document.getElementById('progress-status');
+  const btnPausa = document.getElementById('btn-pause-resume');
+  const btnCancel = document.getElementById('btn-cancel');
+  
+  barFill.style.width = '0%';
+  percentText.innerText = '0%';
+  statusText.innerText = "Descargando archivos al navegador...";
+  
+  btnPausa.innerHTML = '⏸ Pausar';
+  btnPausa.style.color = 'var(--text)';
+  btnPausa.style.borderColor = 'var(--border)';
+  btnPausa.style.display = 'inline-block'; 
+  btnCancel.style.display = 'inline-block'; 
+  modal.style.display = 'flex';
+  
+  const zip = new JSZip();
+  let processedCount = 0;
+  let downloadedCount = 0;
+  let failedCount = 0;
+  let corsError = false;
+  
+  const totalFiles = currentFilteredAudios.length;
+
+  for (let i = 0; i < totalFiles; i++) {
+    if (estadoDescarga === 'cancelada') return;
+    await esperarSiEstaPausado();
+    if (estadoDescarga === 'cancelada') return;
+
+    const audio = currentFilteredAudios[i];
+    processedCount++;
+
+    if (!audio.audioUrl || audio.audioUrl === 'null') {
+      failedCount++;
+    } else {
+      try {
+        let datePart = 'Sin_Fecha';
+        if (audio.fecha) {
+          // CORRECCIÓN AQUÍ: 
+          // 1. Separamos por espacio para quitar la hora (ej. "24/07/2026 15:30" => "24/07/2026")
+          // 2. Separamos por guión por si el formato es "24/07/2026 - 15:30" => "24/07/2026"
+          // 3. Reemplazamos barras por guiones bajos para que sea válido en Windows => "24_07_2026"
+          datePart = audio.fecha.split(' ')[0].split('-')[0].trim().replace(/\//g, '_'); 
+        }
+        
+        let folderName = `audios_${datePart}`; 
+
+        let cleanName = (audio.nombre || 'Audio').replace(/[^a-zA-Z0-9_-]/g, '_');
+        let cleanAgent = (audio.agente || 'Agente').replace(/[^a-zA-Z0-9_-]/g, '_');
+        
+        let ext = '.mp3';
+        if (audio.audioUrl.toLowerCase().includes('.webm')) ext = '.webm';
+        else if (audio.audioUrl.toLowerCase().includes('.wav')) ext = '.wav';
+        else if (audio.audioUrl.toLowerCase().includes('.ogg')) ext = '.ogg';
+        else if (audio.audioUrl.toLowerCase().includes('.m4a')) ext = '.m4a';
+
+        let fileName = `${cleanName}_${cleanAgent}${ext}`;
+
+        let response;
+        try {
+           response = await fetch(audio.audioUrl, { 
+             mode: 'cors',
+             signal: controladorAborto.signal
+           });
+        } catch(e) {
+           if (e.name === 'AbortError') return; 
+           throw new Error("CORS_BLOCK");
+        }
+        
+        if (!response.ok) throw new Error("CORS_BLOCK");
+        const blob = await response.blob();
+
+        zip.folder(folderName).file(fileName, blob);
+        downloadedCount++;
+
+      } catch (error) {
+        if(error.message === "CORS_BLOCK") {
+           corsError = true;
+           break; 
+        }
+        failedCount++;
+      }
+    }
+
+    let dlPercent = Math.floor((processedCount / totalFiles) * 80);
+    barFill.style.width = dlPercent + '%';
+    percentText.innerText = dlPercent + '%';
+  }
+
+  if (estadoDescarga === 'cancelada') return;
+
+  if (corsError || downloadedCount === 0) {
+    modal.style.display = 'none'; 
+    document.getElementById('corsModal').style.display = 'flex'; 
+    return;
+  }
+
+  btnPausa.style.display = 'none'; 
+  statusText.innerText = "¡Casi listo! Comprimiendo el archivo ZIP... 📦";
+
+  zip.generateAsync({ type: "blob" }, function updateCallback(metadata) {
+      if (estadoDescarga === 'cancelada') return; 
+
+      let finalPercent = Math.floor(80 + (metadata.percent * 0.2));
+      barFill.style.width = finalPercent + '%';
+      percentText.innerText = finalPercent + '%';
+  }).then(function(content) {
+    
+    if (estadoDescarga === 'cancelada') return;
+    
+    modal.style.display = 'none'; 
+    
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = `Respaldos_Audios_${new Date().toISOString().split('T')[0]}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    let finalMsg = `Archivo ZIP descargado ✅ (${downloadedCount} audios agrupados por fecha)`;
+    if (failedCount > 0) finalMsg += ` | ${failedCount} incompletos`;
+    showToast(finalMsg, 5000);
+  });
 }
 </script>
 </body>
