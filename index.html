@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Interconexiones 360 – Grabadora & CRM</title>
-<link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpjTuQ0WY-BJBbU8d7nzrJQgtHBnCwHbXHdlURE5X2oIggBInYeaulrvA0&s=10">
+<link rel="icon" href="https://media.licdn.com/dms/image/v2/D4E03AQHM3EFPcRHXcw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1685741851370?e=1785369600&v=beta&t=w63z70kcpD3oflacus3FyNYz_W9EIdeAX4sg0jV1do8">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -306,7 +306,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
         <span>Grabadora</span>
       </div>
-      <!-- NOMBRE CAMBIADO A "AUDIOS DEL MES" -->
+      
       <div class="nav-item" onclick="goto('history',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
         <span>Audios del Mes</span>
@@ -1050,7 +1050,7 @@ function renderDashboardCharts() {
   }
 
   // ==========================================
-  // GRÁFICO 3: METAS MENSUALES (Premium UI)
+  // GRÁFICO 3: METAS MENSUALES (Premium UI - Rangos Valorant)
   // ==========================================
   const metasContainer = document.getElementById('dash-metas');
   if (metasContainer) {
@@ -1061,11 +1061,11 @@ function renderDashboardCharts() {
     });
 
     const targets = [
-      { key: 'MARIETTE', label: 'Mariette', meta: 150 },
-      { key: 'DANIELA CM', label: 'Daniela CM', meta: 150 },
-      { key: 'ALEJANDRO', label: 'Alejandro', meta: 150 },
-      { key: 'MARCO', label: 'Marco', meta: 150 },
-      { key: 'FRANCO', label: 'Franco', meta: 40 }
+      { key: 'MARIETTE', label: 'Mariette', meta: 230 },
+      { key: 'DANIELA CM', label: 'Daniela CM', meta: 230 },
+      { key: 'ALEJANDRO', label: 'Alejandro', meta: 230 },
+      { key: 'MARCO', label: 'Marco', meta: 230 },
+      { key: 'FRANCO', label: 'Franco', meta: 50 } // Meta de Franco ajustada a 50
     ];
     
     const conteoMetas = { 'MARIETTE':0, 'DANIELA CM':0, 'ALEJANDRO':0, 'MARCO':0, 'FRANCO':0 };
@@ -1079,28 +1079,67 @@ function renderDashboardCharts() {
       });
     });
 
+    // Función para obtener el Rango de Valorant con soporte dinámico de umbrales
+    const getRankInfo = (calls, key) => {
+      let thresholds = { radiante: 230, inmortal: 200, ascendente: 170, diamante: 150, platino: 120, oro: 90, plata: 70, bronce: 50, hierro: 20 };
+      
+      // Umbrales específicos para Franco
+      if (key === 'FRANCO') {
+        thresholds = { radiante: 50, inmortal: 40, ascendente: 35, diamante: 30, platino: 25, oro: 20, plata: 15, bronce: 10, hierro: 5 };
+      }
+
+      if (calls >= thresholds.radiante) return { name: 'Radiante', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/27.png', color: '#ffea9c' };
+      if (calls >= thresholds.inmortal) return { name: 'Inmortal', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/26.png', color: '#c74d56' };
+      if (calls >= thresholds.ascendente) return { name: 'Ascendente', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/23.png', color: '#66b88b' };
+      if (calls >= thresholds.diamante) return { name: 'Diamante', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/20.png', color: '#b489c4' };
+      if (calls >= thresholds.platino) return { name: 'Platino', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/17.png', color: '#5299a9' };
+      if (calls >= thresholds.oro)  return { name: 'Oro', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/14.png', color: '#f2ca5a' };
+      if (calls >= thresholds.plata)  return { name: 'Plata', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/11.png', color: '#cfd5d8' };
+      if (calls >= thresholds.bronce)  return { name: 'Bronce', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/8.png', color: '#a57155' };
+      if (calls >= thresholds.hierro)  return { name: 'Hierro', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/5.png', color: '#838383' };
+      
+      return { name: 'Sin Rango', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/0.png', color: '#5c5c5c' };
+    };
+
     let htmlMetas = '';
+
+    targets.sort((a,b) => conteoMetas[b.key] - conteoMetas[a.key]);
 
     targets.forEach(t => {
       const actual = conteoMetas[t.key];
       const metaPersonal = t.meta;
       const porcentaje = Math.min((actual / metaPersonal) * 100, 100);
       
+      const rank = getRankInfo(actual, t.key); // Pasamos t.key para identificar si es Franco
+      
+      // Colores dinámicos de la barra de progreso
       const hue = (porcentaje / 100) * 140;
       const colorStart = `hsl(${Math.max(0, hue - 15)}, 85%, 45%)`; 
       const colorEnd = `hsl(${hue}, 90%, 55%)`; 
       const glow = `hsla(${hue}, 90%, 55%, 0.3)`;
 
       htmlMetas += `
-        <div style="margin-bottom: 14px;">
-          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:700; letter-spacing:0.3px;">
-            <span style="color:var(--text);">${t.label}</span>
-            <span style="color:${colorEnd}; font-variant-numeric: tabular-nums;">${actual} / ${metaPersonal}</span>
+        <div style="margin-bottom: 12px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            
+            <div style="display:flex; align-items:center; gap:12px;">
+              <img src="${rank.img}" alt="${rank.name}" style="width:38px; height:38px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); object-fit: contain;">
+              <div>
+                <div style="color:var(--text); font-size:13px; font-weight:800;">${t.label}</div>
+                <div style="color:${rank.color}; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;">${rank.name}</div>
+              </div>
+            </div>
+            
+            <div style="text-align:right;">
+              <span style="color:${colorEnd}; font-variant-numeric: tabular-nums; font-size:16px; font-weight:900;">${actual}</span> 
+              <span style="font-size:11px; color:var(--muted); font-weight:600;">/ ${metaPersonal}</span>
+            </div>
+
           </div>
           
-          <div style="width:100%; height:14px; background:rgba(0,0,0,0.3); border-radius:10px; overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.03); position: relative;">
+          <div style="width:100%; height:12px; background:rgba(0,0,0,0.4); border-radius:10px; overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); position: relative;">
             <div style="width:${porcentaje}%; height:100%; background: linear-gradient(90deg, ${colorStart}, ${colorEnd}); box-shadow: 0 0 12px ${glow}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease; border-radius:10px; position: relative;">
-              <div style="position:absolute; top:0; left:0; right:0; height:50%; background: linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0)); border-radius: 10px 10px 0 0;"></div>
+              <div style="position:absolute; top:0; left:0; right:0; height:50%; background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0)); border-radius: 10px 10px 0 0;"></div>
             </div>
           </div>
         </div>
