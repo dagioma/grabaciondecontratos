@@ -33,6 +33,7 @@
   --danger: #ef4444;
   --warning: #f59e0b;
   --info: #0ea5e9;
+  --wsp: #25D366;
   --r: 10px;
   --r2: 14px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -81,6 +82,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 }
 .inp:focus { border-color: var(--p); background: rgba(0,0,0,0.3); box-shadow: 0 0 0 3px var(--p-glow); }
 .inp::placeholder { color: var(--muted2); }
+select.inp { appearance: auto; cursor: pointer; }
+select.inp option { background: var(--bg2); color: var(--text); }
 
 .btn {
   width: 100%; padding: 13px; background: var(--p); color: #fff; border: none; border-radius: var(--r);
@@ -92,6 +95,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 
 .btn.danger { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); box-shadow: none; }
 .btn.danger:hover { background: var(--danger); color: #fff; }
+.btn.success { background: var(--wsp); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); color: #fff; border:none; }
+.btn.success:hover { background: #20BA59; box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4); }
 .btn.sm { width: auto; padding: 9px 18px; font-size: 13px; }
 .btn.info-btn { background: rgba(14,165,233,0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.2); box-shadow:none; }
 .btn.info-btn:hover { background: var(--info); color: #fff; }
@@ -162,7 +167,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .chart-select option { background: var(--bg2); color: var(--text); }
 
 /* =========================================
-   7. GRABADORA
+   7. GRABADORA Y WSP
    ========================================= */
 .rec-display { background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: var(--r2); padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .rec-status { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border2); }
@@ -184,6 +189,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .ctrl-btn svg { width: 22px; height: 22px; }
 .ctrl-btn.rec-btn { background: rgba(239,68,68,0.05); color: var(--danger); border-color: rgba(239,68,68,0.2); }
 .ctrl-btn.rec-btn:hover:not(:disabled) { background: var(--danger); color: #fff; }
+
+.input-grid-wsp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
 
 /* =========================================
    8. TABLAS, ETIQUETAS Y AUDITORÍA
@@ -235,8 +242,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 .pulse-dot.anim { animation: pulseDot 2s ease infinite; }
 .status-dot-offline { width: 8px; height: 8px; border-radius: 50%; background: var(--muted2); display: inline-block; }
 
-@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
 /* Media Queries */
 @media (max-width: 1280px) {
   .top-cards-grid { grid-template-columns: repeat(2, 1fr); }
@@ -247,10 +252,10 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 }
 @media (max-width: 767px) {
   .top-cards-grid { grid-template-columns: 1fr; }
-  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; height: calc(64px + var(--safe-bottom)); min-width: 0; border-right: none; border-top: 1px solid var(--border); z-index: 50; background: var(--surface); padding-bottom: var(--safe-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; height: calc(64px + var(--safe-bottom)); min-width: 0; border-right: none; border-top: 1px solid var(--border); z-index: 50; background: var(--surface); padding-bottom: var(--safe-bottom); box-shadow: 0 -2px 10px rgba(0,0,0,0.2); overflow-x: auto;}
   .sb-header, .user-card, .sb-footer, .nav-section { display: none !important; }
-  .sb-nav { flex-direction: row; justify-content: space-around; padding: 0; gap: 0; }
-  .nav-item { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 10px; border-radius: 12px; min-width: 55px; justify-content: center; }
+  .sb-nav { flex-direction: row; justify-content: flex-start; padding: 0; gap: 0; overflow-x: auto; white-space: nowrap; }
+  .nav-item { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 10px; border-radius: 12px; min-width: 65px; justify-content: center; }
   .nav-item.active { background: transparent; color: var(--p); border-left: none; border-top: 3px solid var(--p); border-radius: 0; padding-top: 7px; }
   .nav-item svg { width: 22px; height: 22px; }
   .notif-dot { display: none; }
@@ -305,6 +310,12 @@ tr:hover td { background: rgba(255,255,255,0.03); }
       <div class="nav-item" onclick="goto('recorder',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
         <span>Grabadora</span>
+      </div>
+
+      <!-- SECCIÓN MENSAJE WSP -->
+      <div class="nav-item" onclick="goto('wsp',this)">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span>Mensaje WSP</span>
       </div>
       
       <div class="nav-item" onclick="goto('history',this)">
@@ -448,6 +459,74 @@ tr:hover td { background: rgba(255,255,255,0.03); }
               </div>
               <button class="btn" id="btn-rec-save" onclick="saveRec()" disabled>Guardar audio</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA NUEVA: MENSAJE WSP POST-GRABACIÓN -->
+      <div class="view" id="v-wsp">
+        <div class="card" style="max-width: 750px; margin: 0 auto;">
+          <div class="card-head" style="text-align:center;">Generador Mensaje de WhatsApp (Post-Grabación)</div>
+          <div class="card-body">
+            
+            <div class="input-grid-wsp">
+              <div>
+                <label class="field-label">Nombre del Cliente</label>
+                <input type="text" id="wsp-cliente" class="inp" placeholder="Ej. Juan Pérez">
+              </div>
+              <div>
+                <label class="field-label">Nombre del Asesor (Autocompletado)</label>
+                <input type="text" id="wsp-asesor" class="inp" placeholder="Ej. Carlos">
+              </div>
+              <div>
+                <label class="field-label">Fecha y Hora de Instalación</label>
+                <input type="text" id="wsp-fecha" class="inp" placeholder="Ej. 15 de Agosto, 10:00 AM">
+              </div>
+              <div>
+                <label class="field-label">Número de Celular (Coordinación y WSP)</label>
+                <input type="text" id="wsp-celular" class="inp" placeholder="Ej. 999 999 999">
+              </div>
+            </div>
+
+            <div style="margin-bottom:12px;">
+              <label class="field-label">Correo Registrado (Llegarán credenciales o recibos)</label>
+              <input type="email" id="wsp-correo" class="inp" placeholder="correo@ejemplo.com">
+            </div>
+
+            <div style="margin-bottom:20px;">
+              <label class="field-label">Plan WOW Seleccionado</label>
+              <select id="wsp-plan" class="inp" style="margin-bottom: 12px;">
+                <option value="300_solo">300 Mbps (Promo 500 Mbps) Solo Internet - S/ 74.90</option>
+                <option value="300_dgo" selected>300 Mbps (Promo 500 Mbps) + DGO TV - S/ 79.90</option>
+                <option value="500_dgo">500 Mbps (Promo 1000 Mbps) + DGO TV - S/ 84.90</option>
+                <option value="1000_l1max">1000 Mbps + DGO TV + L1 MAX - S/ 94.90</option>
+                <option value="1000_fam">1000 Mbps + DGO FAMILIA + L1 MAX + Prime - S/ 99.90</option>
+                <option value="1000_full">1000 Mbps + DGO FULL + L1 MAX + Prime - S/ 148.90</option>
+              </select>
+
+              <div style="display:flex; align-items:center; gap:10px; padding: 10px; background: rgba(0,0,0,0.15); border: 1px solid var(--border2); border-radius: 8px;">
+                <input type="checkbox" id="wsp-duo" style="width:18px; height:18px; cursor:pointer; accent-color: var(--p);">
+                <label for="wsp-duo" class="field-label" style="margin:0; cursor:pointer; font-size: 13px; color: var(--text);">
+                  Agregar Dúo Telefonía Fija (+ S/ 10 = 1000 minutos a nivel nacional)
+                </label>
+              </div>
+            </div>
+
+            <button class="btn" style="background:var(--p2);" onclick="generarMensajeWsp()">Visualizar Mensaje Abajo</button>
+
+            <div style="margin-top:24px; border-top: 1px solid var(--border); padding-top:20px;">
+              <label class="field-label">Vista Previa del Mensaje</label>
+              <textarea id="wsp-resultado" class="inp" style="min-height: 280px; resize: none; line-height: 1.5; background: rgba(0,0,0,0.25);" readonly placeholder="El mensaje generado aparecerá aquí..."></textarea>
+              
+              <div style="display:flex; justify-content:flex-end; gap: 10px; margin-top:16px;">
+                <button class="btn sm" onclick="copiarWsp()" style="background:var(--bg2); border:1px solid var(--border2); color:var(--text);">📋 Copiar</button>
+                <button class="btn sm success" onclick="enviarWspDirecto()" style="display:flex; align-items:center; gap:6px;">
+                  <svg style="width:16px; height:16px" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                  Enviar directo a WhatsApp
+                </button>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -633,6 +712,7 @@ function goto(viewId, element) {
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
     recorder:  { t:'Grabadora', s:'Captura de audio libre' },
+    wsp:       { t:'Mensaje WhatsApp', s:'Generador post-grabación' },
     history:   { t:'Audios del Mes', s:'Audios grabados del mes actual' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
     chat:      { t:'Chat de Equipo', s:'Comunicación interna' },
@@ -659,6 +739,9 @@ function doLogin() {
   document.getElementById('sb-name').textContent = CUP.name;
   document.getElementById('sb-av-letter').textContent = CUP.name.charAt(0).toUpperCase();
   document.getElementById('top-av-letter').textContent = CUP.name.charAt(0).toUpperCase();
+  
+  // Prellenar nombre en el generador de WSP
+  document.getElementById('wsp-asesor').value = CUP.name;
   
   document.getElementById('auth-screen').classList.add('out');
   document.getElementById('app').style.display = 'flex';
@@ -763,6 +846,105 @@ async function saveRec() {
     });
     showToast('Sincronizado en Firebase','✅');
   } catch(e){ console.error(e); showToast('Error al guardar','❌'); }
+}
+
+// ==========================================
+// D2. GENERADOR Y ENVÍO DE WSP (ACTUALIZADO)
+// ==========================================
+const planesWowData = {
+  "300_solo": { base: "300 Mbps", promo: "500 Mbps", tiempoPromoVel: "6 meses", precioPromo: 74.90, precioRegular: 84.90, incluyeDGO: false, beneficios: "" },
+  "300_dgo": { base: "300 Mbps", promo: "500 Mbps", tiempoPromoVel: "6 meses", precioPromo: 79.90, precioRegular: 84.90, incluyeDGO: true, beneficios: "DGO TV (Incl. +30 canales)" },
+  "500_dgo": { base: "500 Mbps", promo: "1000 Mbps", tiempoPromoVel: "12 meses", precioPromo: 84.90, precioRegular: 89.90, incluyeDGO: true, beneficios: "DGO TV (Incl. +30 canales)" },
+  "1000_l1max": { base: "1000 Mbps", promo: "1000 Mbps", tiempoPromoVel: "", precioPromo: 94.90, precioRegular: 104.90, incluyeDGO: true, beneficios: "DGO TV (Incl. +32 canales) + L1 MAX" },
+  "1000_fam": { base: "1000 Mbps", promo: "1000 Mbps", tiempoPromoVel: "", precioPromo: 99.90, precioRegular: 104.90, incluyeDGO: true, beneficios: "DGO Familia (Incl. +33 canales) + L1 MAX + DSPORTS + Prime Video" },
+  "1000_full": { base: "1000 Mbps", promo: "1000 Mbps", tiempoPromoVel: "", precioPromo: 148.90, precioRegular: 158.90, incluyeDGO: true, beneficios: "DGO Full (Incl. +100 canales) + L1 MAX + DSPORTS + Prime Video" }
+};
+
+function generarMensajeWsp() {
+  const cliente = document.getElementById("wsp-cliente").value.trim() || "[Nombre del cliente]";
+  
+  let asesor = document.getElementById("wsp-asesor").value.trim();
+  if(!asesor && CUP && CUP.name) asesor = CUP.name;
+  if(!asesor) asesor = "[Nombre del asesor]";
+  
+  const fechaHora = document.getElementById("wsp-fecha").value.trim() || "[fecha y hora]";
+  const correo = document.getElementById("wsp-correo").value.trim() || "[correo registrado]";
+  const celular = document.getElementById("wsp-celular").value.trim() || "[número de celular]";
+  
+  const idPlan = document.getElementById("wsp-plan").value;
+  const plan = planesWowData[idPlan];
+  const tieneDuo = document.getElementById("wsp-duo").checked;
+
+  let precioPromoFinal = plan.precioPromo;
+  let precioRegularFinal = plan.precioRegular;
+
+  if (tieneDuo) {
+    precioPromoFinal = (parseFloat(precioPromoFinal) + 10).toFixed(2);
+    precioRegularFinal = (parseFloat(precioRegularFinal) + 10).toFixed(2);
+  } else {
+    precioPromoFinal = parseFloat(precioPromoFinal).toFixed(2);
+    precioRegularFinal = parseFloat(precioRegularFinal).toFixed(2);
+  }
+
+  // Texto condicional de la velocidad
+  let promoVelocidadTexto = (plan.base !== plan.promo) 
+    ? `— como bienvenida, disfruta ${plan.promo} sin costo extra durante tus primeros ${plan.tiempoPromoVel}` 
+    : `— disfruta de la máxima velocidad de 1000 Mbps desde el primer día`;
+
+  // Construir lógicamente el apartado de beneficios (DGO / DUO / SOLO INTERNET)
+  let textoBeneficios = "";
+  if (plan.incluyeDGO) {
+    textoBeneficios += `\n📩 Tu plan incluye ${plan.beneficios} — las credenciales llegarán al correo ${correo}`;
+  } else {
+    textoBeneficios += `\n📩 Tus recibos y código de cliente llegarán al correo ${correo}`;
+  }
+  
+  if (tieneDuo) {
+    textoBeneficios += `\n📞 Tu plan incluye Telefonía Fija Dúo (1000 minutos a nivel nacional)`;
+  }
+
+  const mensaje = `Hola ${cliente}! 👋 Soy ${asesor} de WOW Perú - Interconexión 360. Ya quedó registrada tu contratación, aquí tienes el resumen: \n\n📶 Plan: ${plan.base} ${promoVelocidadTexto} \n💰 Monto: S/ ${precioPromoFinal} pagando antes del día 3 de cada mes (primeros 6 meses). Después, tu tarifa regular es S/ ${precioRegularFinal} \n📅 Instalación: ${fechaHora} — el horario puede variar un poco según la ruta de nuestros técnicos \n🪪 El titular del servicio debe estar presente con su DNI; si no puede, debe dejar una carta poder para autorizar la instalación ${textoBeneficios}\n📱 Nuestro técnico te llamará al ${celular} para coordinar la visita \n \nCualquier duda, escríbenos por acá. ¡Gracias por elegir WOW! 🙌`;
+
+  document.getElementById("wsp-resultado").value = mensaje;
+  showToast("Vista previa generada", "✅");
+}
+
+function copiarWsp() {
+  const txt = document.getElementById("wsp-resultado");
+  if(!txt.value) return showToast("Primero debes generar el mensaje", "⚠️");
+  
+  txt.select();
+  document.execCommand("copy");
+  
+  if(window.getSelection) { window.getSelection().removeAllRanges(); }
+  showToast("Copiado al portapapeles", "📋");
+}
+
+function enviarWspDirecto() {
+  const celular = document.getElementById("wsp-celular").value.trim();
+  const mensaje = document.getElementById("wsp-resultado").value.trim();
+  
+  if (!mensaje) {
+    showToast("Primero genera el mensaje haciendo clic en el botón azul", "⚠️");
+    return;
+  }
+  if (!celular || celular.length < 9) {
+    showToast("Ingresa un número de celular válido para enviar", "⚠️");
+    return;
+  }
+  
+  // Limpiar espacios en el número
+  let numLimpio = celular.replace(/\s+/g, '');
+  
+  // Si el número es de Perú (9 dígitos y empieza con 9), agregar código de país
+  if (numLimpio.length === 9 && numLimpio.startsWith('9')) {
+    numLimpio = "51" + numLimpio;
+  }
+
+  // API oficial para abrir chat con texto prellenado
+  const url = `https://api.whatsapp.com/send?phone=${numLimpio}&text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+  showToast("Abriendo WhatsApp...", "💬");
 }
 
 // ==========================================
@@ -1060,12 +1242,13 @@ function renderDashboardCharts() {
       return parts.length > 1 && parts[1] === currMonthStr; 
     });
 
+    // Nuevas metas ajustadas
     const targets = [
-      { key: 'MARIETTE', label: 'Mariette', meta: 230 },
-      { key: 'DANIELA CM', label: 'Daniela CM', meta: 230 },
-      { key: 'ALEJANDRO', label: 'Alejandro', meta: 230 },
-      { key: 'MARCO', label: 'Marco', meta: 230 },
-      { key: 'FRANCO', label: 'Franco', meta: 50 } // Meta de Franco ajustada a 50
+      { key: 'MARCO', label: 'Marco', meta: 250 },
+      { key: 'MARIETTE', label: 'Mariette', meta: 170 },
+      { key: 'DANIELA CM', label: 'Daniela CM', meta: 170 },
+      { key: 'ALEJANDRO', label: 'Alejandro', meta: 170 },
+      { key: 'FRANCO', label: 'Franco', meta: 55 }
     ];
     
     const conteoMetas = { 'MARIETTE':0, 'DANIELA CM':0, 'ALEJANDRO':0, 'MARCO':0, 'FRANCO':0 };
@@ -1079,14 +1262,20 @@ function renderDashboardCharts() {
       });
     });
 
-    // Función para obtener el Rango de Valorant con soporte dinámico de umbrales
-    const getRankInfo = (calls, key) => {
-      let thresholds = { radiante: 230, inmortal: 200, ascendente: 170, diamante: 150, platino: 120, oro: 90, plata: 70, bronce: 50, hierro: 20 };
-      
-      // Umbrales específicos para Franco
-      if (key === 'FRANCO') {
-        thresholds = { radiante: 50, inmortal: 40, ascendente: 35, diamante: 30, platino: 25, oro: 20, plata: 15, bronce: 10, hierro: 5 };
-      }
+    // Función para obtener el Rango escalando dinámicamente según la META
+    const getRankInfo = (calls, meta) => {
+      // Divide la meta de cada agente en porcentajes para crear los umbrales
+      const thresholds = { 
+        radiante: Math.floor(meta * 1.00),   // 100% de la meta
+        inmortal: Math.floor(meta * 0.85),   // 85% de la meta
+        ascendente: Math.floor(meta * 0.75), // 75% de la meta
+        diamante: Math.floor(meta * 0.60),   // 60% de la meta
+        platino: Math.floor(meta * 0.50),    // 50% de la meta
+        oro: Math.floor(meta * 0.40),        // 40% de la meta
+        plata: Math.floor(meta * 0.30),      // 30% de la meta
+        bronce: Math.floor(meta * 0.20),     // 20% de la meta
+        hierro: Math.floor(meta * 0.10)      // 10% de la meta
+      };
 
       if (calls >= thresholds.radiante) return { name: 'Radiante', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/27.png', color: '#ffea9c' };
       if (calls >= thresholds.inmortal) return { name: 'Inmortal', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/26.png', color: '#c74d56' };
@@ -1110,7 +1299,8 @@ function renderDashboardCharts() {
       const metaPersonal = t.meta;
       const porcentaje = Math.min((actual / metaPersonal) * 100, 100);
       
-      const rank = getRankInfo(actual, t.key); // Pasamos t.key para identificar si es Franco
+      // Ahora le pasamos t.meta en lugar de t.key para que calcule solo su proporción
+      const rank = getRankInfo(actual, t.meta); 
       
       // Colores dinámicos de la barra de progreso
       const hue = (porcentaje / 100) * 140;
