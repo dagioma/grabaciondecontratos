@@ -134,7 +134,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 .page-title { font-size: 16px; font-weight: 800; color: var(--text); }
 .page-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-/* Botón Logout Móvil */
 .mobile-logout-btn { display: none; background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s; }
 .mobile-logout-btn:active { background: rgba(239, 68, 68, 0.1); }
 .mobile-logout-btn svg { width: 20px; height: 20px; }
@@ -255,7 +254,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 @media (max-width: 767px) {
   .top-cards-grid { grid-template-columns: 1fr; }
   
-  /* Ajuste para que la barra inferior no tape el contenido */
   .sidebar { 
     position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; 
     height: calc(64px + var(--safe-bottom)); 
@@ -274,7 +272,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   #app { flex-direction: column; }
   .main { height: calc(100vh - 64px - var(--safe-bottom)); }
   
-  /* IMPORTANTE: Añadimos padding inferior a las vistas en móvil para que el scroll llegue hasta abajo */
   .view { padding: 16px; padding-bottom: calc(80px + var(--safe-bottom)); }
   
   .topbar { height: 56px; min-height: 56px; padding: 0 20px; padding-top: var(--safe-top); }
@@ -285,7 +282,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .card-body { padding: 16px; }
   #toast.show { bottom: calc(64px + var(--safe-bottom) + 16px); }
   
-  /* Ajuste específico para el chat en móviles */
   #v-chat { padding: 0; padding-bottom: calc(64px + var(--safe-bottom)); }
 }
 </style>
@@ -297,10 +293,24 @@ tr:hover td { background: rgba(255,255,255,0.03); }
     <div class="auth-glow">360</div>
     <h1>Interconexiones 360</h1>
     <p class="sub">Plataforma Back Office Operativa</p>
-    <div style="margin-bottom:16px;">
-      <input type="text" class="inp" id="l-name" placeholder="Tu nombre de agente" autocomplete="off" onkeypress="if(event.key==='Enter')doLogin()" style="text-align:center; font-weight:600;">
-    </div>
-    <button class="btn" onclick="doLogin()">Ingresar al sistema</button>
+    
+    <!-- Usamos form para que el navegador ofrezca guardar la contraseña nativamente -->
+    <form onsubmit="event.preventDefault(); doLogin();">
+      <div style="margin-bottom:12px;">
+        <input type="text" class="inp" id="l-user" name="username" placeholder="Usuario (Ej. Marco)" autocomplete="username" style="text-align:center; font-weight:600;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <input type="password" class="inp" id="l-password" name="password" placeholder="Contraseña" autocomplete="current-password" style="text-align:center; font-weight:600;">
+      </div>
+      
+      <div style="margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <input type="checkbox" id="chk-remember" style="accent-color:var(--p); width:16px; height:16px; cursor:pointer;">
+        <label for="chk-remember" style="font-size:13px; color:var(--text); cursor:pointer;">Recordar credenciales</label>
+      </div>
+
+      <button type="submit" class="btn" id="btn-login">Ingresar al sistema</button>
+    </form>
+    
     <p style="font-size:12px; color:var(--muted2); margin-top:20px; font-weight:500;">Acceso exclusivo para operadores</p>
   </div>
 </div>
@@ -330,7 +340,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         <span>Grabadora</span>
       </div>
 
-      <!-- SECCIÓN MENSAJE WSP -->
       <div class="nav-item" onclick="goto('wsp',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
         <span>Mensaje WSP</span>
@@ -388,7 +397,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
     </header>
 
     <div class="content">
-
       <!-- VISTA 1: DASHBOARD -->
       <div class="view active" id="v-dashboard">
         <div class="stats-row">
@@ -399,7 +407,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
         
         <div class="top-cards-grid">
-          
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
             <div class="card-head" style="text-align:center;">Actividad reciente</div>
             <div id="dash-activity" style="flex:1; overflow-y:auto;">
@@ -428,7 +435,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
               <div style="color:var(--muted);font-size:13px;font-weight:500;text-align:center;">Calculando metas...</div>
             </div>
           </div>
-
         </div> 
         
         <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
@@ -497,13 +503,11 @@ tr:hover td { background: rgba(255,255,255,0.03); }
                 <input type="text" id="wsp-asesor" class="inp" placeholder="Ej. Carlos">
               </div>
               
-              <!-- NUEVO: SELECTOR DE FECHA CON CALENDARIO -->
               <div>
                 <label class="field-label">Fecha de Instalación</label>
                 <input type="date" id="wsp-fecha" class="inp">
               </div>
               
-              <!-- NUEVO: SELECTOR DE HORARIO DESPLEGABLE -->
               <div>
                 <label class="field-label">Rango de Hora</label>
                 <select id="wsp-hora" class="inp">
@@ -552,7 +556,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
               <label class="field-label">Vista Previa del Mensaje</label>
               <textarea id="wsp-resultado" class="inp" style="min-height: 280px; resize: none; line-height: 1.5; background: rgba(0,0,0,0.25);" readonly placeholder="El mensaje generado aparecerá aquí..."></textarea>
               
-              <!-- BOTONES ACTUALIZADOS CON OPCIÓN DE LIMPIAR -->
               <div style="display:flex; justify-content:flex-end; flex-wrap:wrap; gap: 10px; margin-top:16px;">
                 <button class="btn sm danger" onclick="limpiarWsp()" style="margin-right:auto; flex-grow: 1;" title="Limpiar los campos ingresados">🧹 Limpiar</button>
                 <button class="btn sm" onclick="copiarWsp()" style="background:var(--bg2); border:1px solid var(--border2); color:var(--text); flex-grow: 1;">📋 Copiar</button>
@@ -661,6 +664,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
@@ -670,7 +674,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 // ==========================================
 // A. VARIABLES GLOBALES Y CONFIGURACIÓN
 // ==========================================
-var db, storage;
+var db, storage, auth;
 var CU = null, CUP = {}, histAll = [];
 
 var dailyChart = null; 
@@ -691,17 +695,22 @@ try {
   if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
   db = firebase.firestore();
   storage = firebase.storage();
+  auth = firebase.auth();
   console.log("✅ Firebase inicializado correctamente");
 } catch(e) {
   console.error('❌ Error crítico al inicializar Firebase:', e);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  const saved = localStorage.getItem('i360_agent');
-  if (saved) {
-    document.getElementById('l-name').value = saved;
-    doLogin();
+  // Autocompletar si el usuario eligió "Recordar"
+  const sUser = localStorage.getItem('i360_saved_user');
+  const sPass = localStorage.getItem('i360_saved_pass');
+  if (sUser && sPass) {
+    document.getElementById('l-user').value = sUser;
+    document.getElementById('l-password').value = sPass;
+    document.getElementById('chk-remember').checked = true;
   }
+  
   updateClock(); setInterval(updateClock, 30000);
 });
 
@@ -764,26 +773,65 @@ function goto(viewId, element) {
 // ==========================================
 // C. AUTENTICACIÓN Y SESIÓN
 // ==========================================
-function doLogin() {
-  const n = document.getElementById('l-name').value.trim();
-  if(!n) return showToast('Ingresa tu nombre de agente','⚠️');
+
+// Escuchador global de inicio de sesión real
+auth.onAuthStateChanged(user => {
+  if (user) {
+    CU = { uid: user.uid };
+    // Extraemos el nombre antes del @360.com y ponemos la primera letra en mayúscula
+    let rawName = user.email.split('@')[0];
+    let capName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    
+    CUP = { name: capName, role: 'Agente BackOffice' };
+    
+    document.getElementById('sb-name').textContent = CUP.name;
+    document.getElementById('sb-av-letter').textContent = CUP.name.charAt(0);
+    document.getElementById('top-av-letter').textContent = CUP.name.charAt(0);
+    document.getElementById('wsp-asesor').value = CUP.name;
+    
+    document.getElementById('auth-screen').classList.add('out');
+    document.getElementById('app').style.display = 'flex';
+    
+    initListeners();
+    updatePresence();
+  } else {
+    document.getElementById('auth-screen').classList.remove('out');
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+async function doLogin() {
+  const rawUser = document.getElementById('l-user').value.trim();
+  const pass = document.getElementById('l-password').value.trim();
+  const chk = document.getElementById('chk-remember').checked;
+  const btn = document.getElementById('btn-login');
+
+  if(!rawUser || !pass) return showToast('Ingresa credenciales','⚠️');
   
-  localStorage.setItem('i360_agent', n);
-  CU = { uid: 'uid_' + n.replace(/\s+/g,'').toLowerCase() };
-  CUP = { name: n, role: 'Agente BackOffice' };
-  
-  document.getElementById('sb-name').textContent = CUP.name;
-  document.getElementById('sb-av-letter').textContent = CUP.name.charAt(0).toUpperCase();
-  document.getElementById('top-av-letter').textContent = CUP.name.charAt(0).toUpperCase();
-  
-  // Prellenar nombre en el generador de WSP
-  document.getElementById('wsp-asesor').value = CUP.name;
-  
-  document.getElementById('auth-screen').classList.add('out');
-  document.getElementById('app').style.display = 'flex';
-  
-  initListeners();
-  updatePresence();
+  btn.disabled = true;
+  btn.textContent = "Verificando...";
+
+  // Si seleccionó "Recordar", guardamos en LocalStorage
+  if (chk) {
+    localStorage.setItem('i360_saved_user', rawUser);
+    localStorage.setItem('i360_saved_pass', pass);
+  } else {
+    localStorage.removeItem('i360_saved_user');
+    localStorage.removeItem('i360_saved_pass');
+  }
+
+  // Convertimos a minúsculas y agregamos el dominio fantasma
+  const emailFormat = rawUser.toLowerCase() + "@360.com";
+
+  try {
+    await auth.signInWithEmailAndPassword(emailFormat, pass);
+    // Si es exitoso, auth.onAuthStateChanged toma el control
+  } catch (error) {
+    console.error(error);
+    showToast('Usuario o contraseña incorrectos', '❌');
+    btn.disabled = false;
+    btn.textContent = "Ingresar al sistema";
+  }
 }
 
 function updatePresence() {
@@ -806,9 +854,9 @@ async function doLogout() {
     if(CU) { 
       await db.collection('presence').doc(CU.uid).update({ online: false, lastSeen: Date.now() }); 
     }
-  } catch(e) {}
-  localStorage.removeItem('i360_agent');
-  location.reload();
+    await auth.signOut(); // Cierra la sesión en el servidor
+    location.reload();
+  } catch(e) { console.error(e); }
 }
 
 // ==========================================
@@ -885,7 +933,7 @@ async function saveRec() {
 }
 
 // ==========================================
-// D2. GENERADOR Y ENVÍO DE WSP (ACTUALIZADO)
+// D2. GENERADOR Y ENVÍO DE WSP 
 // ==========================================
 const planesWowData = {
   "300_solo": { base: "300 Mbps", promo: "500 Mbps", tiempoPromoVel: "6 meses", precioPromo: 74.90, precioRegular: 84.90, incluyeDGO: false, beneficios: "" },
@@ -936,12 +984,10 @@ function generarMensajeWsp() {
     precioRegularFinal = parseFloat(precioRegularFinal).toFixed(2);
   }
 
-  // Texto condicional de la velocidad
   let promoVelocidadTexto = (plan.base !== plan.promo) 
     ? `— como bienvenida, disfruta ${plan.promo} sin costo extra durante tus primeros ${plan.tiempoPromoVel}` 
     : `— disfruta de la máxima velocidad de 1000 Mbps desde el primer día`;
 
-  // Construir lógicamente el apartado de beneficios (DGO / DUO / SOLO INTERNET)
   let textoBeneficios = "";
   if (plan.incluyeDGO) {
     textoBeneficios += `\n📩 Tu plan incluye ${plan.beneficios} — las credenciales llegarán al correo ${correo}`;
@@ -983,21 +1029,16 @@ function enviarWspDirecto() {
     return;
   }
   
-  // Limpiar espacios en el número
   let numLimpio = celular.replace(/\s+/g, '');
-  
-  // Si el número es de Perú (9 dígitos y empieza con 9), agregar código de país
   if (numLimpio.length === 9 && numLimpio.startsWith('9')) {
     numLimpio = "51" + numLimpio;
   }
 
-  // API oficial para abrir chat con texto prellenado
   const url = `https://api.whatsapp.com/send?phone=${numLimpio}&text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
   showToast("Abriendo WhatsApp...", "💬");
 }
 
-// NUEVO: Función para limpiar todos los campos
 function limpiarWsp() {
   document.getElementById("wsp-cliente").value = "";
   document.getElementById("wsp-fecha").value = "";
@@ -1008,13 +1049,11 @@ function limpiarWsp() {
   document.getElementById("wsp-duo").checked = false;
   document.getElementById("wsp-resultado").value = "";
   
-  // Vuelve a colocar el nombre del asesor si existe una sesión activa
   if (CUP && CUP.name) {
     document.getElementById("wsp-asesor").value = CUP.name;
   } else {
     document.getElementById("wsp-asesor").value = "";
   }
-  
   showToast("Campos limpiados", "🧹");
 }
 
@@ -1081,10 +1120,7 @@ function initListeners() {
     if(!histAll.length){ dA.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-weight:500;">Sin actividad aún</div>'; }
     else { dA.innerHTML = histAll.slice(0,6).map(h => `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);"><div style="width:6px;height:6px;background:var(--p);border-radius:50%;flex-shrink:0;"></div><div style="flex:1;min-width:0;"><p style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.nombre}</p><p style="font-size:11px;color:var(--muted);font-weight:500;">${h.agente} · ${h.fecha}</p></div><span class="tag purple" style="font-size:10px;">${h.duracion}</span></div>`).join(''); }
     
-    // AQUÍ FILTRAMOS AUTOMÁTICAMENTE LA TABLA DE AUDITORÍA AL MES ACTUAL
     filterHist();
-    
-    // Llamar a la función que renderiza los gráficos del Dashboard
     renderDashboardCharts();
   });
 
@@ -1127,9 +1163,6 @@ function renderPresenceUI() {
   if(!processed.length) c.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Sin agentes registrados</div>';
 }
 
-// ----------------------------------------------------
-// GENERACIÓN DE LOS GRÁFICOS Y METAS
-// ----------------------------------------------------
 function renderDashboardCharts() {
   if (!histAll) return;
 
@@ -1142,9 +1175,6 @@ function renderDashboardCharts() {
   const hoyStr = `${dToday.getDate().toString().padStart(2,'0')}/${(dToday.getMonth()+1).toString().padStart(2,'0')}`;
   const currMonthStr = (dToday.getMonth() + 1).toString().padStart(2, '0'); 
   
-  // ==========================================
-  // GRÁFICO 1: DIARIO SEPARADO 
-  // ==========================================
   const llamadasHoy = histAll.filter(h => h.fecha && h.fecha.startsWith(hoyStr));
   document.getElementById('stat-hoy').textContent = llamadasHoy.length;
 
@@ -1198,9 +1228,6 @@ function renderDashboardCharts() {
     `).join('');
   }
 
-  // ==========================================
-  // GRÁFICO 2: EVOLUCIÓN
-  // ==========================================
   const filterType = document.getElementById('trend-filter').value;
   let filteredHist = histAll;
   
@@ -1219,7 +1246,6 @@ function renderDashboardCharts() {
   filteredHist.forEach(h => {
     const dia = h.fecha.split(' ')[0]; 
     fechasSet.add(dia);
-
     const agenteNormalizado = normalizeAgente(h.agente);
 
     if (!datosPorAgente[agenteNormalizado]) { datosPorAgente[agenteNormalizado] = {}; totalesPorAgente[agenteNormalizado] = 0; }
@@ -1302,9 +1328,6 @@ function renderDashboardCharts() {
     `}).join('');
   }
 
-  // ==========================================
-  // GRÁFICO 3: METAS MENSUALES (Premium UI - Rangos Valorant)
-  // ==========================================
   const metasContainer = document.getElementById('dash-metas');
   if (metasContainer) {
     const llamadasMesActual = histAll.filter(h => {
@@ -1313,7 +1336,6 @@ function renderDashboardCharts() {
       return parts.length > 1 && parts[1] === currMonthStr; 
     });
 
-    // Nuevas metas ajustadas
     const targets = [
       { key: 'MARCO', label: 'Marco', meta: 250 },
       { key: 'MARIETTE', label: 'Mariette', meta: 170 },
@@ -1333,19 +1355,17 @@ function renderDashboardCharts() {
       });
     });
 
-    // Función para obtener el Rango escalando dinámicamente según la META
     const getRankInfo = (calls, meta) => {
-      // Divide la meta de cada agente en porcentajes para crear los umbrales
       const thresholds = { 
-        radiante: Math.floor(meta * 1.00),   // 100% de la meta
-        inmortal: Math.floor(meta * 0.85),   // 85% de la meta
-        ascendente: Math.floor(meta * 0.75), // 75% de la meta
-        diamante: Math.floor(meta * 0.60),   // 60% de la meta
-        platino: Math.floor(meta * 0.50),    // 50% de la meta
-        oro: Math.floor(meta * 0.40),        // 40% de la meta
-        plata: Math.floor(meta * 0.30),      // 30% de la meta
-        bronce: Math.floor(meta * 0.20),     // 20% de la meta
-        hierro: Math.floor(meta * 0.10)      // 10% de la meta
+        radiante: Math.floor(meta * 1.00),
+        inmortal: Math.floor(meta * 0.85),
+        ascendente: Math.floor(meta * 0.75),
+        diamante: Math.floor(meta * 0.60),
+        platino: Math.floor(meta * 0.50),
+        oro: Math.floor(meta * 0.40),
+        plata: Math.floor(meta * 0.30),
+        bronce: Math.floor(meta * 0.20),
+        hierro: Math.floor(meta * 0.10)
       };
 
       if (calls >= thresholds.radiante) return { name: 'Radiante', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/27.png', color: '#ffea9c' };
@@ -1362,18 +1382,14 @@ function renderDashboardCharts() {
     };
 
     let htmlMetas = '';
-
     targets.sort((a,b) => conteoMetas[b.key] - conteoMetas[a.key]);
 
     targets.forEach(t => {
       const actual = conteoMetas[t.key];
       const metaPersonal = t.meta;
       const porcentaje = Math.min((actual / metaPersonal) * 100, 100);
-      
-      // Ahora le pasamos t.meta en lugar de t.key para que calcule solo su proporción
       const rank = getRankInfo(actual, t.meta); 
       
-      // Colores dinámicos de la barra de progreso
       const hue = (porcentaje / 100) * 140;
       const colorStart = `hsl(${Math.max(0, hue - 15)}, 85%, 45%)`; 
       const colorEnd = `hsl(${hue}, 90%, 55%)`; 
@@ -1382,7 +1398,6 @@ function renderDashboardCharts() {
       htmlMetas += `
         <div style="margin-bottom: 12px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            
             <div style="display:flex; align-items:center; gap:12px;">
               <img src="${rank.img}" alt="${rank.name}" style="width:38px; height:38px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); object-fit: contain;">
               <div>
@@ -1390,14 +1405,11 @@ function renderDashboardCharts() {
                 <div style="color:${rank.color}; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;">${rank.name}</div>
               </div>
             </div>
-            
             <div style="text-align:right;">
               <span style="color:${colorEnd}; font-variant-numeric: tabular-nums; font-size:16px; font-weight:900;">${actual}</span> 
               <span style="font-size:11px; color:var(--muted); font-weight:600;">/ ${metaPersonal}</span>
             </div>
-
           </div>
-          
           <div style="width:100%; height:12px; background:rgba(0,0,0,0.4); border-radius:10px; overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); position: relative;">
             <div style="width:${porcentaje}%; height:100%; background: linear-gradient(90deg, ${colorStart}, ${colorEnd}); box-shadow: 0 0 12px ${glow}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease; border-radius:10px; position: relative;">
               <div style="position:absolute; top:0; left:0; right:0; height:50%; background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0)); border-radius: 10px 10px 0 0;"></div>
@@ -1411,15 +1423,9 @@ function renderDashboardCharts() {
   }
 }
 
-// ----------------------------------------------------
-// TABLA DE AUDITORÍA (FILTRADA SOLO AL MES ACTUAL)
-// ----------------------------------------------------
-
-// Función auxiliar para obtener solo los audios del mes en curso
 function getAudiosDelMes() {
   const dToday = new Date();
   const currMonthStr = (dToday.getMonth() + 1).toString().padStart(2, '0'); 
-  
   return histAll.filter(h => {
     if(!h.fecha) return false;
     const parts = h.fecha.split(' ')[0].split('/'); 
@@ -1446,19 +1452,14 @@ function renderAuditoria(arr) {
   </tr>`).join('');
 }
 
-// Aplicar el buscador SOLO sobre los audios del mes actual
 function filterHist() {
   const q = document.getElementById('hist-search').value.toLowerCase();
   const audiosDelMes = getAudiosDelMes();
-  
   const audiosFiltrados = audiosDelMes.filter(h => 
     `${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q)
   );
-  
   renderAuditoria(audiosFiltrados);
 }
-
-// ----------------------------------------------------
 
 async function publishPost() {
   const t = document.getElementById('feed-text').value.trim(); if(!t) return;
@@ -1477,9 +1478,6 @@ async function sendMsg() {
   } catch(e) {}
 }
 
-// ==========================================
-// G. BUSCADOR YOUTUBE
-// ==========================================
 const YOUTUBE_API_KEY = 'AIzaSyDRptcuOZDyYAU3Tdp5Osrox238Z4l4zD8'; 
 
 async function searchYouTube() {
@@ -1505,9 +1503,7 @@ async function searchYouTube() {
              onclick="playYouTubeVideo('${item.id.videoId}')" 
              onmouseover="this.style.background='rgba(255,255,255,0.03)'" 
              onmouseout="this.style.background='var(--bg2)'">
-          
           <img src="${item.snippet.thumbnails.default.url}" style="width:110px; height:62px; border-radius:8px; object-fit:cover; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
-          
           <div style="flex:1; min-width:0;">
             <div style="font-size:14px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               ${item.snippet.title}
@@ -1516,7 +1512,6 @@ async function searchYouTube() {
               ${item.snippet.channelTitle}
             </div>
           </div>
-          
           <div style="padding-right:12px; color:var(--p);">
             <svg style="width:28px; height:28px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
           </div>
