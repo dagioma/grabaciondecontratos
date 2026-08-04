@@ -272,7 +272,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   #app { flex-direction: column; }
   .main { height: calc(100vh - 64px - var(--safe-bottom)); }
   
-  .view { padding: 16px; padding-bottom: calc(80px + var(--safe-bottom)); }
+  .view { padding: 16px; padding-bottom: calc(90px + var(--safe-bottom)); }
   
   .topbar { height: 56px; min-height: 56px; padding: 0 20px; padding-top: var(--safe-top); }
   .mobile-logout-btn { display: block; }
@@ -282,7 +282,10 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .card-body { padding: 16px; }
   #toast.show { bottom: calc(64px + var(--safe-bottom) + 16px); }
   
-  #v-chat { padding: 0; padding-bottom: calc(64px + var(--safe-bottom)); }
+  /* CORRECCIÓN DE ESPACIADO EN MÓVIL PARA EL CHAT */
+  #v-chat { padding: 0 !important; height: 100% !important; padding-bottom: calc(64px + var(--safe-bottom)) !important; }
+  .chat-layout { height: 100% !important; border: none; border-radius: 0; }
+  .chat-room { height: 100% !important; }
 }
 </style>
 </head>
@@ -294,7 +297,6 @@ tr:hover td { background: rgba(255,255,255,0.03); }
     <h1>Interconexiones 360</h1>
     <p class="sub">Plataforma Back Office Operativa</p>
     
-    <!-- Usamos form para que el navegador ofrezca guardar la contraseña nativamente -->
     <form onsubmit="event.preventDefault(); doLogin();">
       <div style="margin-bottom:12px;">
         <input type="text" class="inp" id="l-user" name="username" placeholder="Usuario (Ej. Marco)" autocomplete="username" style="text-align:center; font-weight:600;">
@@ -702,7 +704,6 @@ try {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Autocompletar si el usuario eligió "Recordar"
   const sUser = localStorage.getItem('i360_saved_user');
   const sPass = localStorage.getItem('i360_saved_pass');
   if (sUser && sPass) {
@@ -773,12 +774,9 @@ function goto(viewId, element) {
 // ==========================================
 // C. AUTENTICACIÓN Y SESIÓN
 // ==========================================
-
-// Escuchador global de inicio de sesión real
 auth.onAuthStateChanged(user => {
   if (user) {
     CU = { uid: user.uid };
-    // Extraemos el nombre antes del @360.com y ponemos la primera letra en mayúscula
     let rawName = user.email.split('@')[0];
     let capName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
     
@@ -811,7 +809,6 @@ async function doLogin() {
   btn.disabled = true;
   btn.textContent = "Verificando...";
 
-  // Si seleccionó "Recordar", guardamos en LocalStorage
   if (chk) {
     localStorage.setItem('i360_saved_user', rawUser);
     localStorage.setItem('i360_saved_pass', pass);
@@ -820,12 +817,10 @@ async function doLogin() {
     localStorage.removeItem('i360_saved_pass');
   }
 
-  // Convertimos a minúsculas y agregamos el dominio fantasma
   const emailFormat = rawUser.toLowerCase() + "@360.com";
 
   try {
     await auth.signInWithEmailAndPassword(emailFormat, pass);
-    // Si es exitoso, auth.onAuthStateChanged toma el control
   } catch (error) {
     console.error(error);
     showToast('Usuario o contraseña incorrectos', '❌');
@@ -854,7 +849,7 @@ async function doLogout() {
     if(CU) { 
       await db.collection('presence').doc(CU.uid).update({ online: false, lastSeen: Date.now() }); 
     }
-    await auth.signOut(); // Cierra la sesión en el servidor
+    await auth.signOut();
     location.reload();
   } catch(e) { console.error(e); }
 }
@@ -951,7 +946,6 @@ function generarMensajeWsp() {
   if(!asesor && CUP && CUP.name) asesor = CUP.name;
   if(!asesor) asesor = "[Nombre del asesor]";
   
-  // Procesar Fecha
   const fechaRaw = document.getElementById("wsp-fecha").value;
   let fechaFormat = "[Fecha]";
   if (fechaRaw) {
@@ -960,10 +954,7 @@ function generarMensajeWsp() {
     fechaFormat = `${parseInt(partes[2], 10)} de ${meses[parseInt(partes[1], 10) - 1]}`;
   }
 
-  // Procesar Hora
   const horaVal = document.getElementById("wsp-hora").value || "[Rango de hora]";
-  
-  // Fecha y Hora unida
   const fechaHora = `${fechaFormat}, entre las ${horaVal}`;
 
   const correo = document.getElementById("wsp-correo").value.trim() || "[correo registrado]";
@@ -1008,10 +999,8 @@ function generarMensajeWsp() {
 function copiarWsp() {
   const txt = document.getElementById("wsp-resultado");
   if(!txt.value) return showToast("Primero debes generar el mensaje", "⚠️");
-  
   txt.select();
   document.execCommand("copy");
-  
   if(window.getSelection) { window.getSelection().removeAllRanges(); }
   showToast("Copiado al portapapeles", "📋");
 }
@@ -1083,7 +1072,6 @@ async function deleteRecord(id, audioUrl) {
 function initListeners() {
   console.log("⏳ Sincronizando datos...");
 
-  // 1. Chat
   db.collection('chat_general').orderBy('ts').limitToLast(50).onSnapshot(snap => {
     const box = document.getElementById('chat-msgs'); box.innerHTML = ''; let c = 0;
     snap.forEach(doc => {
@@ -1097,7 +1085,6 @@ function initListeners() {
     document.getElementById('stat-msgs').textContent = snap.size;
   });
 
-  // 2. Feed
   db.collection('social_feed').orderBy('ts','desc').limit(25).onSnapshot(snap => {
     const list = document.getElementById('feed-list'); list.innerHTML = '';
     document.getElementById('stat-posts').textContent = snap.size;
@@ -1108,14 +1095,12 @@ function initListeners() {
     });
   });
 
-  // 3. Auditoría & Llamadas (Gráficos)
   db.collection('historial_llamadas').orderBy('timestamp','desc').onSnapshot(snap => {
     histAll = []; 
     snap.forEach(doc => { let data = doc.data(); data.id = doc.id; histAll.push(data); });
     
     document.getElementById('stat-total').textContent = snap.size;
     
-    // Lista de actividad reciente
     const dA = document.getElementById('dash-activity');
     if(!histAll.length){ dA.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-weight:500;">Sin actividad aún</div>'; }
     else { dA.innerHTML = histAll.slice(0,6).map(h => `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);"><div style="width:6px;height:6px;background:var(--p);border-radius:50%;flex-shrink:0;"></div><div style="flex:1;min-width:0;"><p style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.nombre}</p><p style="font-size:11px;color:var(--muted);font-weight:500;">${h.agente} · ${h.fecha}</p></div><span class="tag purple" style="font-size:10px;">${h.duracion}</span></div>`).join(''); }
@@ -1124,7 +1109,6 @@ function initListeners() {
     renderDashboardCharts();
   });
 
-  // 4. Presencia 
   db.collection('presence').onSnapshot(snap => {
     currentAgents = []; 
     snap.forEach(doc => currentAgents.push(doc.data()));
@@ -1168,7 +1152,13 @@ function renderDashboardCharts() {
 
   const normalizeAgente = (name) => {
     if (!name) return 'DESCONOCIDO';
-    return name.trim().toUpperCase();
+    let n = name.trim().toUpperCase();
+    if (n.includes('DANIELA')) return 'DANIELA';
+    if (n.includes('MARCO')) return 'MARCO';
+    if (n.includes('MARIETTE')) return 'MARIETTE';
+    if (n.includes('ALEJANDRO')) return 'ALEJANDRO';
+    if (n.includes('FRANCO')) return 'FRANCO';
+    return n;
   };
 
   const dToday = new Date();
@@ -1339,17 +1329,17 @@ function renderDashboardCharts() {
     const targets = [
       { key: 'MARCO', label: 'Marco', meta: 250 },
       { key: 'MARIETTE', label: 'Mariette', meta: 170 },
-      { key: 'DANIELA CM', label: 'Daniela CM', meta: 170 },
+      { key: 'DANIELA', label: 'Daniela', meta: 170 },
       { key: 'ALEJANDRO', label: 'Alejandro', meta: 170 },
       { key: 'FRANCO', label: 'Franco', meta: 55 }
     ];
     
-    const conteoMetas = { 'MARIETTE':0, 'DANIELA CM':0, 'ALEJANDRO':0, 'MARCO':0, 'FRANCO':0 };
+    const conteoMetas = { 'MARIETTE':0, 'DANIELA':0, 'ALEJANDRO':0, 'MARCO':0, 'FRANCO':0 };
 
     llamadasMesActual.forEach(h => {
       const ag = normalizeAgente(h.agente);
       targets.forEach(t => {
-        if (ag.includes(t.key)) {
+        if (ag === t.key) {
           conteoMetas[t.key]++;
         }
       });
