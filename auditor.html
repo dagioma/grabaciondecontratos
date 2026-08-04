@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Firebase Core, Firestore, Auth y JSZip -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<!-- Librería JSZip para generar el archivo ZIP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
@@ -38,7 +39,7 @@ body {
 .brand-text h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
 .brand-text p { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-.topbar-actions { display: flex; gap: 12px; }
+.topbar-actions { display: flex; gap: 12px; align-items: center; }
 
 /* CONTENIDO PRINCIPAL */
 .layout { display: flex; flex: 1; overflow: hidden; padding: 24px; gap: 24px; }
@@ -100,104 +101,47 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #4a4d5a; border-radius: 99px; }
 
-/* =========================================================
-   MEDIA QUERIES - RESPONSIVE MOBILE ADAPTATION
-========================================================= */
+/* PANTALLA DE BLOQUEO SI NO HAY SESIÓN */
+#auth-guard {
+  position: fixed; inset: 0; background: var(--bg); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.3s ease;
+}
+#auth-guard.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+.guard-box { background: var(--surface); border: 1px solid var(--border); padding: 32px; border-radius: 20px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
 @media (max-width: 768px) {
-  body { 
-    height: auto; 
-    min-height: 100vh; 
-    overflow-y: auto; 
-  }
-  
-  .layout { 
-    flex-direction: column; 
-    padding: 16px; 
-    gap: 16px; 
-    overflow: visible; 
-  }
-
-  .topbar { 
-    height: auto; 
-    flex-direction: column; 
-    padding: 16px; 
-    gap: 16px; 
-    align-items: stretch;
-  }
-  
-  .brand {
-    justify-content: center;
-  }
-
-  .topbar-actions { 
-    width: 100%; 
-    justify-content: space-between; 
-  }
-
-  .topbar-actions .btn {
-    flex: 1;
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  .main-content { 
-    overflow: visible; 
-    border-radius: 12px;
-  }
-  
-  .side-panel { 
-    max-width: 100%; 
-    overflow-y: visible; 
-    gap: 16px;
-  }
-
-  .toolbar { 
-    flex-direction: column; 
-    align-items: stretch; 
-    padding: 16px; 
-    gap: 12px;
-  }
-
+  body { height: auto; min-height: 100vh; overflow-y: auto; }
+  .layout { flex-direction: column; padding: 16px; gap: 16px; overflow: visible; }
+  .topbar { height: auto; flex-direction: column; padding: 16px; gap: 16px; align-items: stretch; }
+  .brand { justify-content: center; }
+  .topbar-actions { width: 100%; justify-content: space-between; }
+  .topbar-actions .btn { flex: 1; padding: 10px; font-size: 12px; }
+  .main-content { overflow: visible; border-radius: 12px; }
+  .side-panel { max-width: 100%; overflow-y: visible; gap: 16px; }
+  .toolbar { flex-direction: column; align-items: stretch; padding: 16px; gap: 12px; }
   .agent-filter { max-width: 100%; }
-  
-  .date-filter-container { 
-    flex-wrap: wrap; 
-  }
-  
-  .date-filter-container > span {
-    width: 100%;
-    margin-bottom: -4px;
-  }
-  
-  .date-filter { 
-    max-width: 100%; 
-    flex: 1; 
-  }
-
-  .table-container { 
-    overflow-x: auto; 
-  }
-  
-  td, th { 
-    white-space: nowrap; 
-    padding: 12px 16px; 
-  }
-  
-  audio { 
-    width: 180px; 
-  }
-
-  .modal { 
-    padding: 24px; 
-  }
-  
-  #dl-range-container { 
-    flex-direction: column; 
-  }
+  .date-filter-container { flex-wrap: wrap; }
+  .date-filter-container > span { width: 100%; margin-bottom: -4px; }
+  .date-filter { max-width: 100%; flex: 1; }
+  .table-container { overflow-x: auto; }
+  td, th { white-space: nowrap; padding: 12px 16px; }
+  audio { width: 180px; }
+  .modal { padding: 24px; }
 }
 </style>
 </head>
 <body>
+
+<!-- PANTALLA DE BLOQUEO DE SEGURIDAD (SI NO ESTÁ LOGUEADO) -->
+<div id="auth-guard">
+  <div class="guard-box">
+    <div class="logo-box" style="margin: 0 auto 16px auto; width: 50px; height: 50px; font-size: 18px;">🔒</div>
+    <h2 style="font-size: 20px; margin-bottom: 8px;">Acceso Restringido</h2>
+    <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Debes iniciar sesión en la plataforma principal para acceder al Portal de Auditoría.</p>
+    <a href="index.html" class="btn" style="text-decoration:none; justify-content:center;">Ir al Login</a>
+  </div>
+</div>
 
 <header class="topbar">
   <div class="brand">
@@ -208,7 +152,7 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
     </div>
   </div>
   <div class="topbar-actions">
-    <!-- BOTÓN QUE AHORA ABRE EL MODAL DE OPCIONES -->
+    <span id="user-badge" style="font-size: 12px; font-weight: 700; color: var(--muted); background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);">Verificando...</span>
     <button class="btn" onclick="abrirModalDescarga()" style="background: rgba(14, 165, 233, 0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.3);">
       <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
       Descargar ZIP
@@ -245,7 +189,7 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
           </tr>
         </thead>
         <tbody id="audio-table-body">
-          <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted);">Conectando con la base de datos...</td></tr>
+          <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted);">Verificando credenciales...</td></tr>
         </tbody>
       </table>
     </div>
@@ -275,7 +219,7 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
 
 <div id="toast">Acción completada</div>
 
-<!-- 1. MODAL: OPCIONES DE DESCARGA -->
+<!-- MODAL: OPCIONES DE DESCARGA -->
 <div class="modal-overlay" id="downloadModal">
   <div class="modal">
     <h2>📦 Configurar Descarga ZIP</h2>
@@ -307,7 +251,7 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
   </div>
 </div>
 
-<!-- 2. MODAL: BARRA DE PROGRESO -->
+<!-- MODAL: BARRA DE PROGRESO -->
 <div class="modal-overlay" id="progressModal">
   <div class="modal" style="text-align: center;">
     <h2>Preparando Descarga ZIP</h2>
@@ -318,7 +262,6 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
       <div class="progress-text" id="progress-percent">0%</div>
     </div>
 
-    <!-- CONTROLES DE DESCARGA -->
     <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
       <button id="btn-pause-resume" class="btn sm" onclick="togglePausaDescarga()" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border);">
         ⏸ Pausar
@@ -330,12 +273,11 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
   </div>
 </div>
 
-<!-- 3. MODAL: CORS (EN CASO DE ERROR DE PERMISOS) -->
+<!-- MODAL: CORS -->
 <div class="modal-overlay" id="corsModal">
   <div class="modal">
     <h2 style="color: var(--danger);">⚠️ Bloqueo de Seguridad (CORS)</h2>
-    <p>Tu base de datos Firebase está bloqueando la descarga del archivo ZIP por seguridad. El código está bien, pero Firebase no permite empaquetar archivos sin tu permiso.</p>
-    <p>Para solucionarlo de por vida, abre la consola <strong>Cloud Shell</strong> en Google Cloud y ejecuta estos dos comandos:</p>
+    <p>Tu base de datos Firebase está bloqueando la descarga del archivo ZIP por seguridad.</p>
     <div class="code-block">echo '[{"origin": ["*"],"method": ["GET"],"maxAgeSeconds": 3600}]' > cors.json</div>
     <div class="code-block">gsutil cors set cors.json gs://crm-telecom-db014.firebasestorage.app</div>
     <div style="text-align: right; margin-top: 20px;">
@@ -345,7 +287,6 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
 </div>
 
 <script>
-// CONFIGURACIÓN DE FIREBASE
 const FB_CFG = {
   apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
   authDomain:"crm-telecom-db014.firebaseapp.com",
@@ -357,16 +298,34 @@ const FB_CFG = {
 
 if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 let allAudios = [];
 let currentFilteredAudios = []; 
 let pieChartInstance = null;
-
-// ===============================================
-// VARIABLES DE CONTROL DE DESCARGA
-// ===============================================
 let estadoDescarga = 'detenida'; 
-let controladorAborto = null;    
+let controladorAborto = null;   
+
+// CONTROL DE AUTENTICACIÓN (BLOQUEO DE ENLACES DIRECTOS)
+auth.onAuthStateChanged(user => {
+  const guard = document.getElementById('auth-guard');
+  const badge = document.getElementById('user-badge');
+
+  if (user) {
+    // Usuario autenticado correctamente
+    guard.classList.add('hidden');
+    let rawName = user.email ? user.email.split('@')[0] : 'Auditor';
+    let capName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    badge.textContent = `👤 ${capName}`;
+    
+    // Cargar datos una vez verificado
+    cargarDatosAuditoria();
+  } else {
+    // Sin sesión: Muestra pantalla de bloqueo
+    guard.classList.remove('hidden');
+    badge.textContent = 'No autorizado';
+  }
+});
 
 function showToast(msg, duration = 3000) {
   const t = document.getElementById('toast');
@@ -375,16 +334,18 @@ function showToast(msg, duration = 3000) {
   setTimeout(() => t.classList.remove('show'), duration);
 }
 
-db.collection('historial_llamadas').orderBy('timestamp', 'desc').onSnapshot(snap => {
-  allAudios = [];
-  snap.forEach(doc => {
-    let data = doc.data();
-    data.id = doc.id;
-    allAudios.push(data);
+function cargarDatosAuditoria() {
+  db.collection('historial_llamadas').orderBy('timestamp', 'desc').onSnapshot(snap => {
+    allAudios = [];
+    snap.forEach(doc => {
+      let data = doc.data();
+      data.id = doc.id;
+      allAudios.push(data);
+    });
+    populateAgentFilter();
+    applyFilters(); 
   });
-  populateAgentFilter();
-  applyFilters(); 
-});
+}
 
 function populateAgentFilter() {
   const filter = document.getElementById('agent-filter');
@@ -487,11 +448,6 @@ function exportarExcel() {
   document.body.appendChild(link); link.click(); document.body.removeChild(link);
 }
 
-
-// ==========================================
-// NUEVO SISTEMA DE MENÚ Y FILTRADO POR FECHAS
-// ==========================================
-
 function abrirModalDescarga() {
   document.getElementById('downloadModal').style.display = 'flex';
   toggleDlRange();
@@ -511,15 +467,13 @@ function toggleDlRange() {
   }
 }
 
-// Convierte "DD/MM/YYYY" o "DD/MM" en un objeto Date de Javascript para hacer comparaciones precisas
 function parseAudioDate(fechaStr) {
   if(!fechaStr) return new Date(0);
-  let clean = fechaStr.split(' ')[0].split('-')[0].trim(); // Extrae solo "24/07/2026" o "24/07"
+  let clean = fechaStr.split(' ')[0].split('-')[0].trim();
   let parts = clean.split('/');
-  
   if (parts.length >= 2) {
     let d = parseInt(parts[0], 10);
-    let m = parseInt(parts[1], 10) - 1; // Meses en JS son 0-11
+    let m = parseInt(parts[1], 10) - 1;
     let y = parts.length === 3 ? parseInt(parts[2], 10) : new Date().getFullYear();
     return new Date(y, m, d);
   }
@@ -567,13 +521,8 @@ function prepararYDescargarZip() {
   }
 
   cerrarModalDescarga();
-  iniciarDescargaZip(audiosToDownload); // Mandamos la lista configurada a la función de descarga
+  iniciarDescargaZip(audiosToDownload);
 }
-
-
-// ==========================================
-// FUNCIONES DE CONTROL (PAUSA / CANCELAR)
-// ==========================================
 
 async function esperarSiEstaPausado() {
   while (estadoDescarga === 'pausada') {
@@ -607,10 +556,6 @@ function cancelarDescarga() {
   showToast("Descarga cancelada correctamente 🛑", 4000);
 }
 
-
-// ==========================================
-// FUNCIÓN PRINCIPAL DE DESCARGA ZIP (RECIBE LA LISTA A DESCARGAR)
-// ==========================================
 async function iniciarDescargaZip(listaAudios) {
   estadoDescarga = 'corriendo';
   controladorAborto = new AbortController(); 
@@ -639,7 +584,7 @@ async function iniciarDescargaZip(listaAudios) {
   let failedCount = 0;
   let corsError = false;
   
-  const totalFiles = listaAudios.length; // Usa la lista personalizada seleccionada en el menú
+  const totalFiles = listaAudios.length;
 
   for (let i = 0; i < totalFiles; i++) {
     if (estadoDescarga === 'cancelada') return;
@@ -655,12 +600,10 @@ async function iniciarDescargaZip(listaAudios) {
       try {
         let datePart = 'Sin_Fecha';
         if (audio.fecha) {
-          // Extrae "DD_MM_YYYY" puro, sin importar la hora
           datePart = audio.fecha.split(' ')[0].split('-')[0].trim().replace(/\//g, '_'); 
         }
         
         let folderName = `audios_${datePart}`; 
-
         let cleanName = (audio.nombre || 'Audio').replace(/[^a-zA-Z0-9_-]/g, '_');
         let cleanAgent = (audio.agente || 'Agente').replace(/[^a-zA-Z0-9_-]/g, '_');
         
