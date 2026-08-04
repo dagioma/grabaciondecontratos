@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Interconexiones 360 – Grabadora & CRM</title>
+<title>Interconexiones 360 – CRM & Grabadora</title>
 <link rel="icon" href="https://media.licdn.com/dms/image/v2/D4E03AQHM3EFPcRHXcw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1685741851370?e=1785369600&v=beta&t=w63z70kcpD3oflacus3FyNYz_W9EIdeAX4sg0jV1do8">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,28 +53,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 ::-webkit-scrollbar-thumb:hover { background: #6c7182; }
 
 /* =========================================
-    3. PANTALLA DE LOGIN (AUTH)
-    ========================================= */
-#auth-screen {
-  position: fixed; inset: 0; z-index: 200; background: var(--bg);
-  display: flex; align-items: center; justify-content: center; padding: 24px;
-  transition: opacity 0.4s, visibility 0.4s;
-}
-#auth-screen.out { opacity: 0; visibility: hidden; pointer-events: none; }
-.auth-box {
-  width: 100%; max-width: 360px; background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 20px; padding: 40px 28px 32px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-}
-.auth-glow {
-  width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(145deg, var(--p), var(--p3));
-  display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; color: #fff;
-  margin: 0 auto 22px; box-shadow: 0 8px 20px var(--p-glow);
-}
-.auth-box h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; color: var(--text); }
-.auth-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-
-/* =========================================
-    4. COMPONENTES (INPUTS Y BOTONES)
+    3. COMPONENTES (INPUTS Y BOTONES)
     ========================================= */
 .inp {
   width: 100%; padding: 13px 15px; background: rgba(0,0,0,0.15); border: 1px solid var(--border2);
@@ -104,9 +83,9 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 .btn.info-btn:hover { background: var(--info); color: #fff; }
 
 /* =========================================
-    5. LAYOUT PRINCIPAL (SIDEBAR Y TOPBAR)
+    4. LAYOUT PRINCIPAL (SIDEBAR Y TOPBAR)
     ========================================= */
-#app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+#app { display: flex; height: 100vh; width: 100vw; overflow: hidden; opacity: 0; transition: opacity 0.5s; } /* Oculto inicialmente hasta que Firebase valide */
 
 .sidebar { width: 240px; min-width: 240px; display: flex; flex-direction: column; background: var(--surface); border-right: 1px solid var(--border); box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
 .sb-header { padding: 18px 14px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
@@ -144,7 +123,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 /* =========================================
-    6. TARJETAS Y ESTADÍSTICAS
+    5. TARJETAS Y ESTADÍSTICAS
     ========================================= */
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; margin: 0 auto 20px auto; max-width: 580px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 .card-head { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; text-align: left; background: rgba(0,0,0,0.1); }
@@ -168,7 +147,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 .chart-select option { background: var(--bg2); color: var(--text); }
 
 /* =========================================
-    7. GRABADORA Y WSP
+    6. GRABADORA Y WSP
     ========================================= */
 .rec-display { background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: var(--r2); padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .rec-status { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border2); }
@@ -194,7 +173,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 .input-grid-wsp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
 
 /* =========================================
-    8. TABLAS, ETIQUETAS Y AUDITORÍA
+    7. TABLAS, ETIQUETAS Y AUDITORÍA
     ========================================= */
 .tag { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
 .tag.purple { background: rgba(147,51,234,0.15); color: #d8b4fe; border: 1px solid rgba(147,51,234,0.3); }
@@ -214,7 +193,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 .btn-dl-mini:hover { background: rgba(22,163,74,0.25); }
 
 /* =========================================
-    9. CHAT Y FEED
+    8. CHAT Y FEED
     ========================================= */
 .chat-layout { display: flex; flex-direction: column; height: 100%; border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; background: var(--bg2); }
 .chat-room { display: flex; flex-direction: column; height: 100%; width: 100%; }
@@ -233,7 +212,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 .send-btn:active { transform: scale(0.95); }
 
 /* =========================================
-    10. EXTRAS (TOAST, NOTIFICACIONES, MOBILE)
+    9. EXTRAS (TOAST, NOTIFICACIONES, MOBILE)
     ========================================= */
 #toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: #f1f2f5; color: #18191c; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; transition: bottom .4s cubic-bezier(.34,1.56,.64,1); z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 #toast.show { bottom: calc(var(--safe-bottom) + 80px); }
@@ -290,33 +269,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 </head>
 <body>
 
-<div id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-glow">360</div>
-    <h1>Interconexiones 360</h1>
-    <p class="sub">Plataforma Back Office Operativa</p>
-    
-    <form onsubmit="event.preventDefault(); doLogin();">
-      <div style="margin-bottom:12px;">
-        <input type="text" class="inp" id="l-user" name="username" placeholder="Usuario (Ej. Marco)" autocomplete="username" style="text-align:center; font-weight:600;">
-      </div>
-      <div style="margin-bottom:12px;">
-        <input type="password" class="inp" id="l-password" name="password" placeholder="Contraseña" autocomplete="current-password" style="text-align:center; font-weight:600;">
-      </div>
-      
-      <div style="margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:8px;">
-        <input type="checkbox" id="chk-remember" style="accent-color:var(--p); width:16px; height:16px; cursor:pointer;">
-        <label for="chk-remember" style="font-size:13px; color:var(--text); cursor:pointer;">Recordar credenciales</label>
-      </div>
-
-      <button type="submit" class="btn" id="btn-login">Ingresar al sistema</button>
-    </form>
-    
-    <p style="font-size:12px; color:var(--muted2); margin-top:20px; font-weight:500;">Acceso exclusivo para operadores</p>
-  </div>
-</div>
-
-<div id="app" style="display:none">
+<div id="app">
   <aside class="sidebar">
     <div class="sb-header">
       <div class="sb-logo">360</div>
@@ -672,6 +625,9 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 <div id="toast"><span id="toast-txt">Mensaje</span></div>
 
+<!-- ============================================== -->
+<!-- SCRIPT CON GUARDIÁN DE FIREBASE                -->
+<!-- ============================================== -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -712,19 +668,64 @@ try {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  const sUser = localStorage.getItem('i360_saved_user');
-  const sPass = localStorage.getItem('i360_saved_pass');
-  if (sUser && sPass) {
-    document.getElementById('l-user').value = sUser;
-    document.getElementById('l-password').value = sPass;
-    document.getElementById('chk-remember').checked = true;
-  }
-  
   updateClock(); setInterval(updateClock, 30000);
 });
 
 // ==========================================
-// B. FUNCIONES UTILITARIAS BÁSICAS
+// B. GUARDIÁN DE AUTENTICACIÓN (NUEVO)
+// ==========================================
+auth.onAuthStateChanged(user => {
+  if (user) {
+    // Si hay usuario, mostramos el CRM (App) y configuramos datos
+    CU = { uid: user.uid };
+    let rawName = user.email.split('@')[0];
+    let capName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    
+    CUP = { name: capName, role: 'Agente BackOffice' };
+    
+    document.getElementById('sb-name').textContent = CUP.name;
+    document.getElementById('sb-av-letter').textContent = CUP.name.charAt(0);
+    document.getElementById('top-av-letter').textContent = CUP.name.charAt(0);
+    document.getElementById('wsp-asesor').value = CUP.name;
+    
+    document.getElementById('app').style.opacity = '1';
+    
+    initListeners();
+    updatePresence();
+  } else {
+    // Si NO hay usuario, bloqueamos acceso y redirigimos a login
+    document.body.style.display = 'none'; // Oculta visualmente todo de golpe
+    window.location.replace('login.html'); // Expulsa a la página de login
+  }
+});
+
+async function doLogout() {
+  if(heartbeatTimer) clearInterval(heartbeatTimer); 
+  try { 
+    if(CU) { 
+      await db.collection('presence').doc(CU.uid).update({ online: false, lastSeen: Date.now() }); 
+    }
+    await auth.signOut();
+    // La redirección ocurrirá automáticamente por el onAuthStateChanged (Guardián)
+  } catch(e) { console.error(e); }
+}
+
+function updatePresence() {
+  if(!CU || !CUP) return;
+  const sendHeartbeat = () => {
+    db.collection('presence').doc(CU.uid).set({
+      name: CUP.name,
+      online: true,
+      lastSeen: Date.now() 
+    }, {merge: true});
+  };
+  sendHeartbeat(); 
+  if(heartbeatTimer) clearInterval(heartbeatTimer);
+  heartbeatTimer = setInterval(sendHeartbeat, 30000); 
+}
+
+// ==========================================
+// C. FUNCIONES UTILITARIAS BÁSICAS
 // ==========================================
 function updateClock() {
   const now = new Date();
@@ -779,88 +780,6 @@ function goto(viewId, element) {
   }
 }
 
-// ==========================================
-// C. AUTENTICACIÓN Y SESIÓN
-// ==========================================
-auth.onAuthStateChanged(user => {
-  if (user) {
-    CU = { uid: user.uid };
-    let rawName = user.email.split('@')[0];
-    let capName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
-    
-    CUP = { name: capName, role: 'Agente BackOffice' };
-    
-    document.getElementById('sb-name').textContent = CUP.name;
-    document.getElementById('sb-av-letter').textContent = CUP.name.charAt(0);
-    document.getElementById('top-av-letter').textContent = CUP.name.charAt(0);
-    document.getElementById('wsp-asesor').value = CUP.name;
-    
-    document.getElementById('auth-screen').classList.add('out');
-    document.getElementById('app').style.display = 'flex';
-    
-    initListeners();
-    updatePresence();
-  } else {
-    document.getElementById('auth-screen').classList.remove('out');
-    document.getElementById('app').style.display = 'none';
-  }
-});
-
-async function doLogin() {
-  const rawUser = document.getElementById('l-user').value.trim();
-  const pass = document.getElementById('l-password').value.trim();
-  const chk = document.getElementById('chk-remember').checked;
-  const btn = document.getElementById('btn-login');
-
-  if(!rawUser || !pass) return showToast('Ingresa credenciales','⚠️');
-  
-  btn.disabled = true;
-  btn.textContent = "Verificando...";
-
-  if (chk) {
-    localStorage.setItem('i360_saved_user', rawUser);
-    localStorage.setItem('i360_saved_pass', pass);
-  } else {
-    localStorage.removeItem('i360_saved_user');
-    localStorage.removeItem('i360_saved_pass');
-  }
-
-  const emailFormat = rawUser.toLowerCase() + "@360.com";
-
-  try {
-    await auth.signInWithEmailAndPassword(emailFormat, pass);
-  } catch (error) {
-    console.error(error);
-    showToast('Usuario o contraseña incorrectos', '❌');
-    btn.disabled = false;
-    btn.textContent = "Ingresar al sistema";
-  }
-}
-
-function updatePresence() {
-  if(!CU || !CUP) return;
-  const sendHeartbeat = () => {
-    db.collection('presence').doc(CU.uid).set({
-      name: CUP.name,
-      online: true,
-      lastSeen: Date.now() 
-    }, {merge: true});
-  };
-  sendHeartbeat(); 
-  if(heartbeatTimer) clearInterval(heartbeatTimer);
-  heartbeatTimer = setInterval(sendHeartbeat, 30000); 
-}
-
-async function doLogout() {
-  if(heartbeatTimer) clearInterval(heartbeatTimer); 
-  try { 
-    if(CU) { 
-      await db.collection('presence').doc(CU.uid).update({ online: false, lastSeen: Date.now() }); 
-    }
-    await auth.signOut();
-    location.reload();
-  } catch(e) { console.error(e); }
-}
 
 // ==========================================
 // D. GRABADORA DE AUDIO
