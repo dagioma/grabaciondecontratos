@@ -110,6 +110,10 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
 #auth-guard.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
 .guard-box { background: var(--surface); border: 1px solid var(--border); padding: 32px; border-radius: 20px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
 
+/* Animación de carga para el bloqueo */
+.spinner { border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--p); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px auto; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
 @media (max-width: 768px) {
   body { height: auto; min-height: 100vh; overflow-y: auto; }
   .layout { flex-direction: column; padding: 16px; gap: 16px; overflow: visible; }
@@ -133,13 +137,13 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
 </head>
 <body>
 
-<!-- PANTALLA DE BLOQUEO DE SEGURIDAD (SI NO ESTÁ LOGUEADO) -->
+<!-- PANTALLA DE BLOQUEO (Ahora sirve como pantalla de carga segura) -->
 <div id="auth-guard">
   <div class="guard-box">
-    <div class="logo-box" style="margin: 0 auto 16px auto; width: 50px; height: 50px; font-size: 18px;">🔒</div>
-    <h2 style="font-size: 20px; margin-bottom: 8px;">Acceso Restringido</h2>
-    <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Debes iniciar sesión en la plataforma principal para acceder al Portal de Auditoría.</p>
-    <a href="index.html" class="btn" style="text-decoration:none; justify-content:center;">Ir al Login</a>
+    <div class="spinner"></div>
+    <h2 style="font-size: 20px; margin-bottom: 8px;">Verificando Acceso</h2>
+    <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Comprobando credenciales de seguridad...</p>
+    <a href="login.html" class="btn" style="text-decoration:none; justify-content:center; display:none;" id="fallback-login-btn">Ir al Login</a>
   </div>
 </div>
 
@@ -153,6 +157,12 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
   </div>
   <div class="topbar-actions">
     <span id="user-badge" style="font-size: 12px; font-weight: 700; color: var(--muted); background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);">Verificando...</span>
+    
+    <!-- NUEVO: Botón de Cerrar Sesión -->
+    <button class="btn" onclick="cerrarSesion()" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3);">
+      Salir
+    </button>
+    
     <button class="btn" onclick="abrirModalDescarga()" style="background: rgba(14, 165, 233, 0.1); color: var(--info); border: 1px solid rgba(14,165,233,0.3);">
       <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
       Descargar ZIP
@@ -189,7 +199,7 @@ audio::-webkit-media-controls-current-time-display, audio::-webkit-media-control
           </tr>
         </thead>
         <tbody id="audio-table-body">
-          <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted);">Verificando credenciales...</td></tr>
+          <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--muted);">Cargando historial de audios...</td></tr>
         </tbody>
       </table>
     </div>
@@ -306,26 +316,40 @@ let pieChartInstance = null;
 let estadoDescarga = 'detenida'; 
 let controladorAborto = null;   
 
-// CONTROL DE AUTENTICACIÓN (BLOQUEO DE ENLACES DIRECTOS)
+// CONTROL DE AUTENTICACIÓN ESTRICTO
 auth.onAuthStateChanged(user => {
   const guard = document.getElementById('auth-guard');
   const badge = document.getElementById('user-badge');
+  const fallbackBtn = document.getElementById('fallback-login-btn');
 
   if (user) {
-    // Usuario autenticado correctamente
+    // Usuario autenticado correctamente: Quita la pantalla de carga segura
     guard.classList.add('hidden');
     let rawName = user.email ? user.email.split('@')[0] : 'Auditor';
     let capName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
     badge.textContent = `👤 ${capName}`;
     
-    // Cargar datos una vez verificado
+    // Solo carga los datos SI el usuario está logueado
     cargarDatosAuditoria();
   } else {
-    // Sin sesión: Muestra pantalla de bloqueo
-    guard.classList.remove('hidden');
-    badge.textContent = 'No autorizado';
+    // Sin sesión: REDIRECCIÓN FORZOSA AL LOGIN
+    // Esto expulsa automáticamente a cualquiera que intente entrar con el enlace directo
+    window.location.replace('login.html'); 
+    
+    // Por si la redirección falla en algún navegador específico, mostramos el botón
+    fallbackBtn.style.display = 'flex';
   }
 });
+
+// Función para cerrar sesión
+function cerrarSesion() {
+  auth.signOut().then(() => {
+    // La redirección ocurrirá automáticamente gracias al observador de arriba
+    showToast("Cerrando sesión...");
+  }).catch((error) => {
+    showToast("Error al cerrar sesión", 3000);
+  });
+}
 
 function showToast(msg, duration = 3000) {
   const t = document.getElementById('toast');
