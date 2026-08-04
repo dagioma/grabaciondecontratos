@@ -84,6 +84,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 .inp::placeholder { color: var(--muted2); }
 select.inp { appearance: auto; cursor: pointer; }
 select.inp option { background: var(--bg2); color: var(--text); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
 .btn {
   width: 100%; padding: 13px; background: var(--p); color: #fff; border: none; border-radius: var(--r);
@@ -475,13 +477,29 @@ tr:hover td { background: rgba(255,255,255,0.03); }
                 <input type="text" id="wsp-cliente" class="inp" placeholder="Ej. Juan Pérez">
               </div>
               <div>
-                <label class="field-label">Nombre del Asesor (Autocompletado)</label>
+                <label class="field-label">Nombre del Asesor</label>
                 <input type="text" id="wsp-asesor" class="inp" placeholder="Ej. Carlos">
               </div>
+              
+              <!-- NUEVO: SELECTOR DE FECHA CON CALENDARIO -->
               <div>
-                <label class="field-label">Fecha y Hora de Instalación</label>
-                <input type="text" id="wsp-fecha" class="inp" placeholder="Ej. 15 de Agosto, 10:00 AM">
+                <label class="field-label">Fecha de Instalación</label>
+                <input type="date" id="wsp-fecha" class="inp">
               </div>
+              
+              <!-- NUEVO: SELECTOR DE HORARIO DESPLEGABLE -->
+              <div>
+                <label class="field-label">Rango de Hora</label>
+                <select id="wsp-hora" class="inp">
+                  <option value="" disabled selected>Selecciona un horario</option>
+                  <option value="8:00 AM a 10:00 AM">8:00 AM a 10:00 AM</option>
+                  <option value="10:00 AM a 12:00 PM">10:00 AM a 12:00 PM</option>
+                  <option value="12:00 PM a 2:00 PM">12:00 PM a 2:00 PM</option>
+                  <option value="2:00 PM a 4:00 PM">2:00 PM a 4:00 PM</option>
+                  <option value="4:00 PM a 6:00 PM">4:00 PM a 6:00 PM</option>
+                </select>
+              </div>
+
               <div>
                 <label class="field-label">Número de Celular (Coordinación y WSP)</label>
                 <input type="text" id="wsp-celular" class="inp" placeholder="Ej. 999 999 999">
@@ -867,7 +885,21 @@ function generarMensajeWsp() {
   if(!asesor && CUP && CUP.name) asesor = CUP.name;
   if(!asesor) asesor = "[Nombre del asesor]";
   
-  const fechaHora = document.getElementById("wsp-fecha").value.trim() || "[fecha y hora]";
+  // Procesar Fecha
+  const fechaRaw = document.getElementById("wsp-fecha").value;
+  let fechaFormat = "[Fecha]";
+  if (fechaRaw) {
+    const partes = fechaRaw.split('-');
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    fechaFormat = `${parseInt(partes[2], 10)} de ${meses[parseInt(partes[1], 10) - 1]}`;
+  }
+
+  // Procesar Hora
+  const horaVal = document.getElementById("wsp-hora").value || "[Rango de hora]";
+  
+  // Fecha y Hora unida
+  const fechaHora = `${fechaFormat}, entre las ${horaVal}`;
+
   const correo = document.getElementById("wsp-correo").value.trim() || "[correo registrado]";
   const celular = document.getElementById("wsp-celular").value.trim() || "[número de celular]";
   
