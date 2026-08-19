@@ -1523,7 +1523,8 @@ function renderDashboardCharts() {
       };
 
 if (calls >= thresholds.radiante) return { name: 'Radiante', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/27.png', color: '#ffea9c' };
-if (calls >= thresholds.inmortal) return { name: 'Inmortal', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/26.png', color: '#c74d56' };
+// 👇 LÍNEA CORREGIDA CON UN ENLACE ESTABLE DE LA VALORANT API 👇
+if (calls >= thresholds.inmortal) return { name: 'Inmortal', img: 'https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e1afc1cafed3/26/largeicon.png', color: '#c74d56' };
 if (calls >= thresholds.ascendente) return { name: 'Ascendente', img: 'https://cdn3.emoji.gg/emojis/4071-valorant-ascendant-3.png', color: '#66b88b' };
 if (calls >= thresholds.diamante) return { name: 'Diamante', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/20.png', color: '#b489c4' };
 if (calls >= thresholds.platino) return { name: 'Platino', img: 'https://trackercdn.com/cdn/tracker.gg/valorant/icons/tiers/17.png', color: '#5299a9' };
