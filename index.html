@@ -1377,7 +1377,7 @@ function normalizeAgente(name) {
   if (n.includes('DANIELA')) return 'DANIELA';
   if (n.includes('MARCO')) return 'MARCO';
   if (n.includes('MARIETTE')) return 'MARIETTE';
-  if (n.includes('ALEJANDRO')) return 'ALEJANDRO';
+  if (n.includes('EDU')) return 'EDU';
   if (n.includes('FRANCO')) return 'FRANCO';
   return n;
 }
@@ -1494,11 +1494,11 @@ function renderDashboardCharts() {
       { key: 'MARCO', label: 'Marco', meta: 250 },
       { key: 'MARIETTE', label: 'Mariette', meta: 170 },
       { key: 'DANIELA', label: 'Daniela', meta: 170 },
-      { key: 'ALEJANDRO', label: 'Alejandro', meta: 170 },
+      { key: 'EDU', label: 'Edu', meta: 170 },
       { key: 'FRANCO', label: 'Franco', meta: 55 }
     ];
     
-    const conteoMetas = { 'MARIETTE':0, 'DANIELA':0, 'ALEJANDRO':0, 'MARCO':0, 'FRANCO':0 };
+    const conteoMetas = { 'MARIETTE':0, 'DANIELA':0, 'EDU':0, 'MARCO':0, 'FRANCO':0 };
 
     llamadasMesActual.forEach(h => {
       const ag = normalizeAgente(h.agente);
