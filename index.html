@@ -148,7 +148,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .chart-select:focus { border-color: var(--p); }
 .chart-select option { background: var(--bg2); color: var(--text); }
 
-/* Elementos clicables de usuario */
 .user-trigger { cursor: pointer; transition: 0.15s; border-radius: 8px; }
 .user-trigger:hover { background: rgba(255,255,255,0.04); }
 
@@ -250,7 +249,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .input-grid-wsp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
 
 /* =========================================
-   7. TABLAS, AUDITORÍA, CHAT CON DMs, EXTRAS
+   7. TABLAS, AUDITORÍA, CHAT CON DMs ORDENADOS
    ========================================= */
 .tag { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
 .tag.purple { background: rgba(147,51,234,0.15); color: #d8b4fe; border: 1px solid rgba(147,51,234,0.3); }
@@ -268,13 +267,17 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 /* CHAT CON PANEL DE MENSAJES PRIVADOS */
 .chat-layout { display: flex; flex-direction: row; height: 100%; border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; background: var(--bg2); }
-.chat-sidebar { width: 250px; min-width: 250px; border-right: 1px solid var(--border); background: rgba(0,0,0,0.12); display: flex; flex-direction: column; }
-.chat-sb-head { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+.chat-sidebar { width: 275px; min-width: 275px; border-right: 1px solid var(--border); background: rgba(0,0,0,0.14); display: flex; flex-direction: column; }
+.chat-sb-head { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; display: flex; justify-content: space-between; align-items: center; }
 .chat-contacts { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
-.chat-contact-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.15s; color: var(--muted); position: relative; }
+.chat-contact-item { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 10px; cursor: pointer; transition: 0.18s; color: var(--muted); position: relative; border: 1px solid transparent; }
 .chat-contact-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
-.chat-contact-item.active { background: rgba(59, 130, 246, 0.14); color: var(--text); border: 1px solid rgba(59, 130, 246, 0.3); }
-.dm-badge { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 99px; }
+.chat-contact-item.active { background: rgba(59, 130, 246, 0.14); color: var(--text); border-color: rgba(59, 130, 246, 0.35); }
+.chat-contact-item.unread-item { background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.25); }
+.dm-badge { background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 99px; box-shadow: 0 2px 6px rgba(239,68,68,0.4); flex-shrink: 0; }
+.contact-preview { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.contact-preview.unread { color: var(--text); font-weight: 700; }
+.contact-time { font-size: 10px; color: var(--muted2); font-weight: 600; flex-shrink: 0; margin-left: auto; }
 
 .chat-room { display: flex; flex-direction: column; height: 100%; flex: 1; min-width: 0; }
 .msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; background: var(--bg); }
@@ -307,9 +310,11 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 .emoji-item { font-size: 20px; cursor: pointer; padding: 4px; transition: 0.2s; border-radius: 6px;}
 .emoji-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.1); }
 
-/* PUNTOS DE ESTADO (ONLINE/OFFLINE/RECORDING) */
-.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); margin-left: auto; flex-shrink: 0; display: none; }
-.notif-dot.active { display: inline-block; box-shadow: 0 0 8px var(--danger); }
+/* PUNTOS DE ESTADO Y BADGE GLOBAL */
+.nav-badge { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 99px; display: none; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+.nav-badge.active { display: inline-block; animation: popBadge 0.3s ease; }
+@keyframes popBadge { 0% { transform: scale(0.5); } 80% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
 .pulse-dot.anim { animation: pulseDot 2s ease infinite; }
 @keyframes pulseDot { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
@@ -322,6 +327,17 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 /* TOAST */
 #toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: #f1f2f5; color: #18191c; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; transition: bottom .4s cubic-bezier(.34,1.56,.64,1); z-index: 999999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 #toast.show { bottom: calc(var(--safe-bottom) + 80px); }
+
+/* NOTIFICACIÓN FLOTANTE INTERACTIVA DE MENSAJE NUEVO */
+#msg-notif-popup {
+  position: fixed; top: 18px; right: 18px; width: 330px; max-width: calc(100vw - 36px);
+  background: var(--bg2); border: 1px solid var(--p); border-left: 4px solid var(--p);
+  border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.65); z-index: 999995; cursor: pointer;
+  transform: translateX(130%); transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+}
+#msg-notif-popup.show { transform: translateX(0); }
+#msg-notif-popup:hover { background: #272930; }
 
 /* =========================================
    8. MODO DIOS ADMIN (MEGÁFONO Y CELEBRACIÓN)
@@ -367,7 +383,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .sb-nav { flex-direction: row; justify-content: flex-start; padding: 0; gap: 0; overflow-x: auto; white-space: nowrap; }
   .nav-item { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 10px; border-radius: 12px; min-width: 65px; justify-content: center; }
   .nav-item.active { background: transparent; color: var(--p); border-left: none; border-top: 3px solid var(--p); border-radius: 0; padding-top: 7px; }
-  .notif-dot { position: absolute; top: 6px; right: 14px; }
+  .nav-badge { position: absolute; top: 4px; right: 10px; padding: 1px 5px; font-size: 9px; }
   #app { flex-direction: column; }
   .main { height: calc(100vh - 64px - var(--safe-bottom)); }
   .view { padding: 16px; padding-bottom: calc(90px + var(--safe-bottom)); }
@@ -383,7 +399,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   .chat-sidebar { width: 100%; min-width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
   .chat-sb-head { display: none; }
   .chat-contacts { flex-direction: row; overflow-x: auto; padding: 8px 12px; gap: 8px; }
-  .chat-contact-item { white-space: nowrap; padding: 6px 12px; flex-shrink: 0; }
+  .chat-contact-item { white-space: nowrap; padding: 6px 12px; flex-shrink: 0; min-width: 155px; }
   .chat-room { height: 100% !important; }
 }
 </style>
@@ -394,6 +410,18 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 <div id="global-loader">
   <div class="spinner"></div>
   <div style="font-weight: 700; color: var(--text); font-size: 14px;">Iniciando Interconexiones 360...</div>
+</div>
+
+<!-- POPUP FLOTANTE DE NOTIFICACIÓN DE MENSAJE -->
+<div id="msg-notif-popup" onclick="openNotifChannel()">
+  <div id="notif-popup-av" style="width:40px;height:40px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;background-size:cover;background-position:center;">💬</div>
+  <div style="flex:1;min-width:0;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <strong id="notif-popup-title" style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Nuevo mensaje</strong>
+      <span style="font-size:10px;color:var(--p3);font-weight:700;">Responder →</span>
+    </div>
+    <div id="notif-popup-body" style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">...</div>
+  </div>
 </div>
 
 <div id="app">
@@ -447,7 +475,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
       <div class="nav-item" id="nav-chat" onclick="goto('chat',this)">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
         <span>Chat & DMs</span>
-        <div class="notif-dot" id="chat-global-dot"></div>
+        <span class="nav-badge" id="chat-global-badge">0</span>
       </div>
       
       <div class="nav-item" id="nav-music" onclick="goto('music', this)">
@@ -537,7 +565,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
           <div class="card" style="margin:0; width:100%; max-width:100%; display:flex; flex-direction:column;">
             <div class="card-head">
               <span>Agentes (Estado)</span>
-              <span style="font-size:10px; color:var(--p3); font-weight:600; text-transform:none;">Clic para ver perfil</span>
+              <span style="font-size:10px; color:var(--p3); font-weight:600; text-transform:none;">Clic para perfil / DM</span>
             </div>
             <div id="dash-agents" style="padding:12px 16px;display:flex;flex-direction:column;gap:6px; flex:1;">
               <div style="color:var(--muted);font-size:13px;font-weight:500;">Sincronizando…</div>
@@ -567,7 +595,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA: MI PERFIL (MEJORADO) -->
+      <!-- VISTA: MI PERFIL -->
       <div class="view" id="v-profile">
         <div class="card" style="max-width: 520px; margin: 0 auto;">
           <div class="card-head">
@@ -743,7 +771,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA 3: HISTORIAL (SOLO MUESTRA DEL MES ACTUAL) -->
+      <!-- VISTA 3: HISTORIAL -->
       <div class="view" id="v-history">
         <div style="max-width:1000px;margin:0 auto;">
           <div class="search-bar">
@@ -785,15 +813,18 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA 5: CHAT MULTIMEDIA + MENSAJES PRIVADOS -->
+      <!-- VISTA 5: CHAT MULTIMEDIA + MENSAJES PRIVADOS ORDENADOS -->
       <div class="view" id="v-chat" style="padding:0;height:100%;">
         <div class="chat-layout">
           
           <!-- BARRA LATERAL DE SALAS Y MENSAJES DIRECTOS -->
           <div class="chat-sidebar">
-            <div class="chat-sb-head">Canales & Mensajes Directos</div>
+            <div class="chat-sb-head">
+              <span>Mensajes Recientes</span>
+              <button class="btn sm ghost" id="btn-enable-notifs" onclick="requestBrowserNotifPermission()" style="padding:3px 8px;font-size:10px;width:auto;" title="Activar alertas de escritorio">🔔 Alertas</button>
+            </div>
             <div class="chat-contacts" id="chat-contacts-list">
-              <!-- Se llena dinámicamente: Sala General + Usuarios -->
+              <!-- Se llena dinámicamente ordenado por el último mensaje -->
             </div>
           </div>
 
@@ -987,7 +1018,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
 <script>
-/* global firebase, Chart, MediaRecorder */
+/* global firebase, Chart, MediaRecorder, Notification */
 
 // ==========================================
 // A. VARIABLES GLOBALES Y CONFIGURACIÓN
@@ -1005,11 +1036,13 @@ let newAvatarFile = null;
 let currentChatMessages = []; 
 let myCurrentStatus = 'offline'; 
 
-// Variables para Chat Privado (DM) y Modal de Perfil
+// Variables para Chat Privado (DM), Notificaciones y Ordenamiento
 let activeChatChannel = 'general'; // 'general' o el uid de otro agente
-let unreadDMs = {}; // { uid: cantidad }
-let modalTargetUser = null; // { uid, name, avatarUrl, bio }
+let unreadDMs = {}; // { channelId: cantidad }
+let modalTargetUser = null;
 let initialChatLoadDone = false;
+let lastNotifChannelId = 'general';
+let notifPopupTimer = null;
 
 const FB_CFG = {
   apiKey:"AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
@@ -1029,6 +1062,7 @@ try {
 
 document.addEventListener('DOMContentLoaded', function() {
   updateClock(); setInterval(updateClock, 30000);
+  checkNotifButtonState();
 });
 
 document.addEventListener('click', (e) => {
@@ -1036,6 +1070,113 @@ document.addEventListener('click', (e) => {
     document.getElementById('emoji-picker').classList.remove('show');
   }
 });
+
+// ==========================================
+// SISTEMA DE SONIDO Y NOTIFICACIONES POR USUARIO
+// ==========================================
+function playNotificationSound(isPrivate = true) {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(isPrivate ? 587.33 : 440, now); // D5 o A4
+    osc1.frequency.exponentialRampToValueAtTime(isPrivate ? 880 : 659.25, now + 0.14);
+
+    gain1.gain.setValueAtTime(0.001, now);
+    gain1.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+    gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.36);
+  } catch(e) {}
+}
+
+function checkNotifButtonState() {
+  const btn = document.getElementById('btn-enable-notifs');
+  if (!btn || !('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    btn.textContent = '🔔 Activas';
+    btn.style.color = 'var(--success)';
+  }
+}
+
+function requestBrowserNotifPermission() {
+  if (!('Notification' in window)) {
+    return showToast("Tu navegador no soporta notificaciones nativas", "⚠️");
+  }
+  Notification.requestPermission().then(perm => {
+    checkNotifButtonState();
+    if (perm === 'granted') {
+      showToast("Notificaciones de escritorio activadas", "🔔");
+      playNotificationSound(true);
+    } else {
+      showToast("Permiso de notificaciones denegado", "⚠️");
+    }
+  });
+}
+
+function triggerIncomingMessageNotification(msgData) {
+  const senderUid = msgData.uid;
+  const isPrivate = Boolean(msgData.targetUid && msgData.targetUid === CU.uid);
+  const channelToOpen = isPrivate ? senderUid : 'general';
+  const senderProf = allProfilesCache[senderUid] || { name: 'Agente', avatarUrl: '' };
+  const senderName = senderProf.name || 'Agente';
+
+  // 1. Sonido de alerta
+  playNotificationSound(isPrivate);
+
+  // 2. Banner Flotante Interactivo dentro de la App
+  lastNotifChannelId = channelToOpen;
+  const popup = document.getElementById('msg-notif-popup');
+  const avEl = document.getElementById('notif-popup-av');
+  const titleEl = document.getElementById('notif-popup-title');
+  const bodyEl = document.getElementById('notif-popup-body');
+
+  if (senderProf.avatarUrl) {
+    avEl.style.backgroundImage = `url('${senderProf.avatarUrl}')`;
+    avEl.textContent = '';
+  } else {
+    avEl.style.backgroundImage = 'none';
+    avEl.textContent = senderName.charAt(0).toUpperCase();
+  }
+
+  titleEl.textContent = isPrivate ? `💬 Privado de ${senderName}` : `🌐 ${senderName} en Sala General`;
+  bodyEl.textContent = msgData.text || 'Archivo multimedia recibido';
+
+  popup.classList.add('show');
+  clearTimeout(notifPopupTimer);
+  notifPopupTimer = setTimeout(() => popup.classList.remove('show'), 5000);
+
+  // 3. Notificación nativa de Windows/Navegador si está permitida y la ventana está en segundo plano
+  if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
+    try {
+      const n = new Notification(isPrivate ? `Mensaje privado de ${senderName}` : `${senderName} (Sala 360)`, {
+        body: msgData.text || 'Nuevo archivo recibido',
+        icon: senderProf.avatarUrl || 'https://www.citypng.com/public/uploads/preview/hd-valorant-official-symbol-sign-logo-png-701751694788082d3btqfskcj.png'
+      });
+      n.onclick = () => {
+        window.focus();
+        openNotifChannel(channelToOpen);
+        n.close();
+      };
+    } catch(e) {}
+  }
+}
+
+function openNotifChannel(forcedChannel = null) {
+  const targetChannel = forcedChannel || lastNotifChannelId || 'general';
+  document.getElementById('msg-notif-popup').classList.remove('show');
+  goto('chat', document.getElementById('nav-chat'));
+  selectChatChannel(targetChannel);
+  setTimeout(() => document.getElementById('chat-inp').focus(), 150);
+}
 
 // ==========================================
 // B. GUARDIÁN DE AUTENTICACIÓN
@@ -1185,7 +1326,6 @@ function applyProfileToDOM() {
   applyAv('top-av-img', 'top-av-letter');
   applyAv('prof-av-preview', 'prof-av-letter');
 
-  // Mostrar u ocultar botones de "Ver Foto" y "Eliminar Foto"
   const hasPhoto = Boolean(myProfile.avatarUrl);
   document.getElementById('btn-view-my-photo').style.display = hasPhoto ? 'inline-flex' : 'none';
   document.getElementById('btn-delete-my-photo').style.display = hasPhoto ? 'inline-flex' : 'none';
@@ -1314,7 +1454,6 @@ function openUserProfile(uid, fallbackName = 'Agente') {
     bio: prof.bio || 'Agente de Interconexiones 360 · BackOffice CRM'
   };
 
-  // Avatar en modal
   const avEl = document.getElementById('upm-av');
   const letEl = document.getElementById('upm-av-letter');
   if (modalTargetUser.avatarUrl) {
@@ -1329,7 +1468,6 @@ function openUserProfile(uid, fallbackName = 'Agente') {
   document.getElementById('upm-name').textContent = displayName;
   document.getElementById('upm-bio').textContent = modalTargetUser.bio;
 
-  // Estado online en vivo
   const now = Date.now();
   const pres = currentAgents.find(a => (targetUid && a.uid === targetUid) || (a.name && a.name.toUpperCase() === displayName.toUpperCase()));
   let finalStatus = 'offline';
@@ -1346,13 +1484,11 @@ function openUserProfile(uid, fallbackName = 'Agente') {
     stEl.innerHTML = '<span class="status-dot-offline"></span><span style="color:var(--muted);">Desconectado</span>';
   }
 
-  // Estadísticas del agente
   const stats = getAgentCallStats(displayName);
   document.getElementById('upm-calls-hoy').textContent = stats.hoy;
   document.getElementById('upm-calls-mes').textContent = stats.mes;
   document.getElementById('upm-calls-total').textContent = stats.total;
 
-  // Botones según si tiene foto o si soy yo mismo
   document.getElementById('upm-btn-photo').style.display = modalTargetUser.avatarUrl ? 'flex' : 'none';
   const dmBtn = document.getElementById('upm-btn-dm');
   if (targetUid && CU && targetUid === CU.uid) {
@@ -1447,7 +1583,7 @@ function goto(viewId, element) {
     wsp:       { t:'Mensaje WhatsApp', s:'Generador post-grabación' },
     history:   { t:'Audios del Mes', s:'Audios grabados del mes actual' },
     feed:      { t:'Muro del Equipo', s:'Anuncios y comunidad' },
-    chat:      { t:'Chat & Mensajes Privados', s:'Comunicación grupal y directa' },
+    chat:      { t:'Chat & Mensajes Privados', s:'Ordenados por actividad reciente' },
     music:     { t:'Reproductor', s:'Música de fondo' },
     profile:   { t:'Mi Perfil', s:'Ajustes personales y foto' },
     admin:     { t:'Centro de Comando', s:'Control Global en Tiempo Real' }
@@ -1459,9 +1595,9 @@ function goto(viewId, element) {
   }
 
   if (viewId === 'chat') {
-    if (activeChatChannel !== 'general' && unreadDMs[activeChatChannel]) {
+    if (unreadDMs[activeChatChannel]) {
       delete unreadDMs[activeChatChannel];
-      updateGlobalChatDot();
+      updateGlobalChatBadge();
       renderChatContacts();
     }
     renderChatMessages();
@@ -1629,36 +1765,52 @@ function limpiarWsp() {
 // ==========================================
 function initListeners() {
   
-  // 1. EL CHAT GENERAL Y MENSAJES PRIVADOS (DMs)
-  db.collection('chat_general').orderBy('ts').limitToLast(250).onSnapshot(snap => {
+  // 1. EL CHAT GENERAL Y MENSAJES PRIVADOS (DMs) CON NOTIFICACIONES Y ORDENAMIENTO
+  db.collection('chat_general').orderBy('ts').limitToLast(300).onSnapshot(snap => {
     currentChatMessages = [];
     
     snap.docChanges().forEach(change => {
       if (change.type === 'added') {
         const data = change.doc.data();
+        
+        // Comandos del Admin
         if (data.type === 'sys_alert' || data.type === 'sys_celebration') {
           if (data.client_ts && (Date.now() - data.client_ts < 15000)) {
             if (data.type === 'sys_alert') triggerMegaAlert(data.text);
             else if (data.type === 'sys_celebration') triggerConfetti();
           }
-        } else if (initialChatLoadDone && data.targetUid === CU.uid && data.uid !== CU.uid) {
-          // Nuevo mensaje privado recibido para mí
-          const senderProf = allProfilesCache[data.uid] || { name: 'Agente' };
+          return;
+        }
+
+        // Notificaciones en tiempo real cuando ya cargó el historial inicial
+        if (initialChatLoadDone && data.uid !== CU.uid) {
           const isChatViewActive = document.getElementById('v-chat').classList.contains('active');
-          if (!isChatViewActive || activeChatChannel !== data.uid) {
-            unreadDMs[data.uid] = (unreadDMs[data.uid] || 0) + 1;
-            updateGlobalChatDot();
-            renderChatContacts();
-            showToast(`Mensaje privado de ${senderProf.name}`, '💬');
+          
+          // Caso A: Mensaje Privado dirigido a este usuario (CU.uid)
+          if (data.targetUid === CU.uid) {
+            if (!isChatViewActive || activeChatChannel !== data.uid || document.hidden) {
+              unreadDMs[data.uid] = (unreadDMs[data.uid] || 0) + 1;
+              updateGlobalChatBadge();
+            }
+            triggerIncomingMessageNotification(data);
+          }
+          // Caso B: Mensaje en la Sala General (!data.targetUid)
+          else if (!data.targetUid) {
+            if (!isChatViewActive || activeChatChannel !== 'general' || document.hidden) {
+              unreadDMs['general'] = (unreadDMs['general'] || 0) + 1;
+              updateGlobalChatBadge();
+              triggerIncomingMessageNotification(data);
+            }
           }
         }
       }
     });
 
+    let seqIndex = 0;
     snap.forEach(doc => { 
       const d = doc.data();
       if (d.type !== 'sys_alert' && d.type !== 'sys_celebration') {
-        currentChatMessages.push({ id: doc.id, ...d }); 
+        currentChatMessages.push({ id: doc.id, _seq: ++seqIndex, ...d }); 
       }
     });
     
@@ -1667,7 +1819,7 @@ function initListeners() {
     renderChatMessages();
   });
 
-  // 2. SOCIAL FEED (MURO CON PERFILES CLICABLES Y OPCIÓN DE ELIMINAR PROPIOS)
+  // 2. SOCIAL FEED (MURO)
   db.collection('social_feed').orderBy('ts','desc').limit(25).onSnapshot(snap => {
     const list = document.getElementById('feed-list'); list.innerHTML = '';
     document.getElementById('stat-posts').textContent = snap.size;
@@ -1782,10 +1934,14 @@ function renderPresenceUI() {
       statusRender = '<span class="status-dot-offline" style="margin-right:6px;"></span><span style="color:var(--muted2);">Desconectado</span>';
     }
 
+    const unreadCount = unreadDMs[u.uid] || 0;
+    const unreadPill = unreadCount > 0 ? `<span class="dm-badge" style="margin-left:6px;">${unreadCount} 💬</span>` : '';
+
     c.innerHTML += `<div class="user-trigger" onclick="openUserProfile('${u.uid}', '${safeName}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 8px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;" title="Ver perfil o enviar mensaje privado">
       <div style="display:flex;align-items:center;gap:10px;">
         ${avatarHTML}
         <span style="color:var(--text);">${u.name||'?'}</span>
+        ${unreadPill}
       </div>
       <span style="font-weight:700;font-size:11px; display:flex; align-items:center;">
         ${statusRender}
@@ -2048,25 +2204,38 @@ async function deleteRecord(id) {
 }
 
 // ==========================================
-// I. CHAT GRUPAL + SISTEMA DE MENSAJES PRIVADOS (DMs)
+// I. CHAT GRUPAL + DMs ORDENADOS POR ÚLTIMO MENSAJE
 // ==========================================
-function updateGlobalChatDot() {
+function updateGlobalChatBadge() {
   const totalUnread = Object.values(unreadDMs).reduce((a, b) => a + b, 0);
-  const dot = document.getElementById('chat-global-dot');
-  if (dot) {
-    if (totalUnread > 0) dot.classList.add('active');
-    else dot.classList.remove('active');
+  const badge = document.getElementById('chat-global-badge');
+  if (badge) {
+    if (totalUnread > 0) {
+      badge.textContent = totalUnread > 99 ? '99+' : totalUnread;
+      badge.classList.add('active');
+      document.title = `(${totalUnread}) Interconexiones 360 – CRM`;
+    } else {
+      badge.classList.remove('active');
+      document.title = `Interconexiones 360 – CRM & Colaboración`;
+    }
   }
 }
 
 function selectChatChannel(channelId) {
   activeChatChannel = channelId;
-  if (channelId !== 'general' && unreadDMs[channelId]) {
+  if (unreadDMs[channelId]) {
     delete unreadDMs[channelId];
-    updateGlobalChatDot();
+    updateGlobalChatBadge();
   }
   renderChatContacts();
   renderChatMessages();
+}
+
+function getMsgTimestampScore(m) {
+  if (!m) return 0;
+  if (m.client_ts) return m.client_ts;
+  if (m.ts && typeof m.ts.toMillis === 'function') return m.ts.toMillis();
+  return m._seq || 0;
 }
 
 function renderChatContacts() {
@@ -2074,17 +2243,32 @@ function renderChatContacts() {
   if (!list || !CU) return;
 
   const now = Date.now();
+
+  // Último mensaje de la Sala General
+  const generalMsgs = currentChatMessages.filter(m => !m.targetUid);
+  const lastGenMsg = generalMsgs.length ? generalMsgs[generalMsgs.length - 1] : null;
+  const genUnread = unreadDMs['general'] || 0;
+  let genPreview = 'Todo el equipo';
+  if (lastGenMsg) {
+    const gAuthor = lastGenMsg.uid === CU.uid ? 'Tú' : ((allProfilesCache[lastGenMsg.uid] && allProfilesCache[lastGenMsg.uid].name) || 'Agente');
+    genPreview = `${gAuthor}: ${lastGenMsg.text || 'Archivo'}`;
+  }
+
   let html = `
-    <div class="chat-contact-item ${activeChatChannel === 'general' ? 'active' : ''}" onclick="selectChatChannel('general')">
-      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, var(--p), var(--info));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;">🌐</div>
+    <div class="chat-contact-item ${activeChatChannel === 'general' ? 'active' : ''} ${genUnread > 0 ? 'unread-item' : ''}" onclick="selectChatChannel('general')">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg, var(--p), var(--info));display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0;">🌐</div>
       <div style="min-width:0;flex:1;">
-        <div style="font-size:13px;font-weight:800;color:var(--text);">Sala General 360</div>
-        <div style="font-size:10px;color:var(--muted);">Todo el equipo</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+          <span style="font-size:13px;font-weight:800;color:var(--text);">Sala General 360</span>
+          <span class="contact-time">${lastGenMsg ? (lastGenMsg.hora || '') : ''}</span>
+        </div>
+        <div class="contact-preview ${genUnread > 0 ? 'unread' : ''}">${genPreview}</div>
       </div>
+      ${genUnread > 0 ? `<span class="dm-badge">${genUnread}</span>` : ''}
     </div>
   `;
 
-  // Unir perfiles registrados y agentes en presencia
+  // Construir mapa de todos los usuarios (excepto yo mismo y admin oculto)
   const userMap = {};
   Object.entries(allProfilesCache).forEach(([uid, p]) => {
     if (uid !== CU.uid && p.name && p.name.toLowerCase() !== 'admin') {
@@ -2097,31 +2281,70 @@ function renderChatContacts() {
     }
   });
 
-  const contacts = Object.values(userMap).sort((a, b) => a.name.localeCompare(b.name));
+  // Calcular el último mensaje privado con cada usuario para ordenarlos de más reciente a más antiguo
+  const contacts = Object.values(userMap).map(u => {
+    const dmMsgs = currentChatMessages.filter(m =>
+      (m.uid === CU.uid && m.targetUid === u.uid) ||
+      (m.uid === u.uid && m.targetUid === CU.uid)
+    );
+    const lastMsg = dmMsgs.length ? dmMsgs[dmMsgs.length - 1] : null;
+    const lastScore = lastMsg ? getMsgTimestampScore(lastMsg) : 0;
+    const lastSeq = lastMsg ? (lastMsg._seq || 0) : 0;
+    const pres = currentAgents.find(a => a.uid === u.uid);
+    const isOnline = Boolean(pres && (pres.online === true || pres.status !== 'offline') && (now - (pres.lastSeen || 0) < 60000));
+    const unread = unreadDMs[u.uid] || 0;
+
+    return {
+      ...u,
+      lastMsg,
+      lastScore,
+      lastSeq,
+      isOnline,
+      unread
+    };
+  });
+
+  // ORDENAMIENTO:
+  // 1. Primero los que tienen mensajes no leídos o el último mensaje más reciente (arriba del todo)
+  // 2. Si no tienen mensajes aún, primero los conectados (online) y luego alfabéticamente
+  contacts.sort((a, b) => {
+    if (b.lastSeq !== a.lastSeq) return b.lastSeq - a.lastSeq;
+    if (b.lastScore !== a.lastScore) return b.lastScore - a.lastScore;
+    if (a.isOnline !== b.isOnline) return a.isOnline ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
 
   contacts.forEach(u => {
-    const pres = currentAgents.find(a => a.uid === u.uid);
-    let isOnline = pres && (pres.online === true || pres.status !== 'offline') && (now - (pres.lastSeen || 0) < 60000);
-    let dotHtml = isOnline
-      ? `<span class="pulse-dot" style="width:7px;height:7px;"></span>`
-      : `<span class="status-dot-offline" style="width:7px;height:7px;"></span>`;
+    let dotHtml = u.isOnline
+      ? `<span class="pulse-dot" style="width:7px;height:7px;flex-shrink:0;"></span>`
+      : `<span class="status-dot-offline" style="width:7px;height:7px;flex-shrink:0;"></span>`;
 
     let avHtml = u.avatarUrl
-      ? `<div style="width:30px;height:30px;border-radius:50%;background:url('${u.avatarUrl}') center/cover;border:1px solid var(--border);flex-shrink:0;"></div>`
-      : `<div style="width:30px;height:30px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">${u.name.charAt(0).toUpperCase()}</div>`;
+      ? `<div style="width:34px;height:34px;border-radius:50%;background:url('${u.avatarUrl}') center/cover;border:1px solid var(--border);flex-shrink:0;"></div>`
+      : `<div style="width:34px;height:34px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">${u.name.charAt(0).toUpperCase()}</div>`;
 
-    const unread = unreadDMs[u.uid] || 0;
-    const badgeHtml = unread > 0 ? `<span class="dm-badge">${unread}</span>` : '';
+    let previewText = 'Enviar mensaje privado';
+    let timeText = '';
+    if (u.lastMsg) {
+      const prefix = u.lastMsg.uid === CU.uid ? 'Tú: ' : '';
+      previewText = `${prefix}${u.lastMsg.text || 'Archivo multimedia'}`;
+      timeText = u.lastMsg.hora || '';
+    }
+
+    const badgeHtml = u.unread > 0 ? `<span class="dm-badge">${u.unread}</span>` : '';
 
     html += `
-      <div class="chat-contact-item ${activeChatChannel === u.uid ? 'active' : ''}" onclick="selectChatChannel('${u.uid}')">
+      <div class="chat-contact-item ${activeChatChannel === u.uid ? 'active' : ''} ${u.unread > 0 ? 'unread-item' : ''}" onclick="selectChatChannel('${u.uid}')">
         ${avHtml}
         <div style="min-width:0;flex:1;">
-          <div style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;">
-            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.name}</span>
-            ${dotHtml}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+            <div style="font-size:12px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;min-width:0;">
+              <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.name}</span>
+              ${dotHtml}
+            </div>
+            <span class="contact-time">${timeText}</span>
           </div>
-          <div style="font-size:10px;color:var(--muted);">Mensaje directo</div>
+          <div class="contact-preview ${u.unread > 0 ? 'unread' : ''}">${previewText}</div>
         </div>
         ${badgeHtml}
       </div>
@@ -2144,6 +2367,7 @@ async function sendTextMsg() {
     text: t,
     type: 'text',
     hora: h,
+    client_ts: Date.now(),
     ts: firebase.firestore.FieldValue.serverTimestamp()
   };
   if (activeChatChannel !== 'general') {
@@ -2165,6 +2389,7 @@ async function sendMediaMsg(event) {
       type: isVideo ? 'video' : 'image',
       mediaUrl: mediaUrl,
       hora: h,
+      client_ts: Date.now(),
       ts: firebase.firestore.FieldValue.serverTimestamp()
     };
     if (activeChatChannel !== 'general') {
@@ -2179,7 +2404,6 @@ function renderChatMessages() {
   if (!CU) return;
   const box = document.getElementById('chat-msgs'); box.innerHTML = ''; 
 
-  // Actualizar cabecera según canal activo
   const titleEl = document.getElementById('chat-room-title');
   const actionsEl = document.getElementById('chat-header-actions');
   const headerAvEl = document.getElementById('chat-header-av');
@@ -2202,7 +2426,6 @@ function renderChatMessages() {
     inpEl.placeholder = `Mensaje privado para ${targetProf.name}...`;
   }
 
-  // Filtrar mensajes del canal activo
   const filteredMsgs = currentChatMessages.filter(m => {
     if (activeChatChannel === 'general') {
       return !m.targetUid;
