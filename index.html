@@ -1048,7 +1048,11 @@ tr:hover td { background: rgba(255,255,255,0.03); }
               <input type="text" id="yt-search-input" placeholder="Buscar canciones, artistas..." onkeypress="if(event.key==='Enter')searchYouTube()">
               <button class="btn sm info-btn" onclick="searchYouTube()">Buscar</button>
             </div>
-            <div id="yt-player-wrapper" style="display: none; margin-bottom: 24px; border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div id="yt-player-wrapper" style="display: none; margin-bottom: 24px; border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(0,0,0,0.25);">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 14px; border-bottom:1px solid var(--border);">
+                <span style="font-size:11px; font-weight:800; color:var(--p3);">🎵 Reproductor Activo</span>
+                <button class="btn sm danger" style="padding:5px 12px; font-size:11px; width:auto;" onclick="stopYouTubeVideo()">⏹️ Detener y cerrar reproductor</button>
+              </div>
               <iframe id="yt-iframe" width="100%" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div id="yt-results-list" style="display: flex; flex-direction: column; gap: 12px;">
@@ -1207,10 +1211,11 @@ tr:hover td { background: rgba(255,255,255,0.03); }
             </div>
             <div class="admin-card-body">
               <div>
-                <label class="field-label">Reproducir canción de YouTube en todas las PCs (Link o ID)</label>
+                <label class="field-label">Reproducir o cortar música de YouTube en las PCs (Link o ID)</label>
+                <input type="text" id="admin-yt-input" class="inp" placeholder="Pega link de YouTube o ID..." style="margin-bottom:8px;">
                 <div style="display:flex; gap:8px;">
-                  <input type="text" id="admin-yt-input" class="inp" placeholder="Pega link de YouTube o ID...">
-                  <button class="btn sm info-btn" onclick="sendAdminDJPlay()">▶️ Poner Música</button>
+                  <button class="btn sm info-btn" style="flex:1;" onclick="sendAdminDJPlay()">▶️ Poner Música</button>
+                  <button class="btn sm danger" style="flex:1;" onclick="sendAdminDJStop()">⏹️ Cortar Música</button>
                 </div>
               </div>
               <div style="border-top:1px solid var(--border); padding-top:12px;">
@@ -2222,6 +2227,9 @@ function initListeners() {
               goto('music');
               playYouTubeVideo(data.videoId);
               showToast("🎵 El Admin puso música para el equipo", "🎧");
+            } else if (data.type === 'sys_yt_stop') {
+              stopYouTubeVideo(true);
+              showToast("🔇 El Admin detuvo la música de YouTube", "⏹️");
             }
           }
           return;
@@ -2263,7 +2271,6 @@ function initListeners() {
           else fallbackReactionsMap[tId][em].push(rUid);
         }
       } else if (d.type === 'sys_config') {
-        // Reconstruir el último estado de configuración global del Admin
         if (typeof d.chatLocked === 'boolean') adminConfigState.chatLocked = d.chatLocked;
         if (typeof d.pinnedBanner === 'string') adminConfigState.pinnedBanner = d.pinnedBanner;
         if (typeof d.adminStealth === 'boolean') adminConfigState.adminStealth = d.adminStealth;
@@ -2342,7 +2349,6 @@ function initListeners() {
 }
 
 function applyAdminConfigToUI() {
-  // 1. Banner Global Fijado
   const pinBanner = document.getElementById('global-pinned-banner');
   const pinText = document.getElementById('global-pinned-text');
   if (adminConfigState.pinnedBanner && adminConfigState.pinnedBanner.trim() !== '') {
@@ -2352,7 +2358,6 @@ function applyAdminConfigToUI() {
     pinBanner.style.display = 'none';
   }
 
-  // 2. Estado de bloqueo de Sala General
   const lockBtn = document.getElementById('btn-admin-lock-chat');
   if (lockBtn) {
     if (adminConfigState.chatLocked) {
@@ -2364,7 +2369,6 @@ function applyAdminConfigToUI() {
     }
   }
 
-  // 3. Estado de Modo Fantasma (Stealth)
   const stealthBtn = document.getElementById('btn-admin-stealth');
   if (stealthBtn) {
     if (adminConfigState.adminStealth) {
@@ -2378,7 +2382,6 @@ function applyAdminConfigToUI() {
     }
   }
 
-  // 4. Sincronizar inputs de metas en panel Admin y recalcular gráficos
   ['MARCO', 'MARIETTE', 'DANIELA', 'EDU', 'FRANCO'].forEach(k => {
     const inp = document.getElementById('meta-inp-' + k);
     if (inp && adminConfigState.customMetas[k]) {
@@ -3286,6 +3289,13 @@ function playYouTubeVideo(videoId) {
   document.getElementById('yt-iframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
   document.getElementById('yt-player-wrapper').style.display = 'block';
 }
+function stopYouTubeVideo(silent = false) {
+  const iframe = document.getElementById('yt-iframe');
+  const wrapper = document.getElementById('yt-player-wrapper');
+  if (iframe) iframe.src = '';
+  if (wrapper) wrapper.style.display = 'none';
+  if (!silent) showToast("Reproductor detenido", "⏹️");
+}
 
 // ==========================================
 // K. FUNCIONES DE SUPERPODER MODO DIOS (ADMIN)
@@ -3344,7 +3354,6 @@ async function sendAdminRemoteControl(actionType, forcedTargetUid = null) {
 
   try {
     await db.collection('chat_general').add(payload);
-    // Si hay un UID específico y es cambio de estado, intentamos actualizar también presence directamente
     if (targetAgentUid !== 'ALL' && (actionType === 'force_online' || actionType === 'force_offline')) {
       const st = actionType === 'force_online' ? 'online' : 'offline';
       db.collection('presence').doc(targetAgentUid).update({ status: st, online: st === 'online', lastSeen: Date.now() }).catch(() => {});
@@ -3470,6 +3479,22 @@ async function sendAdminDJPlay() {
     showToast("🎵 Reproduciendo música en las pantallas seleccionadas", "🎧");
   } catch (e) {
     showToast("Error al enviar música", "❌");
+  }
+}
+
+async function sendAdminDJStop() {
+  const targetAgentUid = getSelectedAdminTarget();
+  try {
+    await db.collection('chat_general').add({
+      uid: CU.uid,
+      type: 'sys_yt_stop',
+      targetAgentUid: targetAgentUid,
+      client_ts: Date.now(),
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast("⏹️ Música detenida en las pantallas seleccionadas", "🔇");
+  } catch (e) {
+    showToast("Error al detener la música", "❌");
   }
 }
 
