@@ -51,6 +51,14 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-s
 ::-webkit-scrollbar-thumb { background: #4a4d5a; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: #6c7182; }
 
+/* EFECTO TERREMOTO / ZUMBIDO ADMIN */
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: translate(-8px, -6px) rotate(-1deg); }
+  20%, 40%, 60%, 80% { transform: translate(8px, 6px) rotate(1deg); }
+}
+body.shake-screen { animation: screenShake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+
 /* =========================================
    LOADER GLOBAL
    ========================================= */
@@ -81,6 +89,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .btn:disabled { background: var(--border); color: var(--muted2); box-shadow: none; cursor: not-allowed; pointer-events: none; }
 .btn.danger { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); box-shadow: none; }
 .btn.danger:hover { background: var(--danger); color: #fff; }
+.btn.warning-btn { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); box-shadow: none; }
+.btn.warning-btn:hover { background: var(--warning); color: #18191c; }
 .btn.success { background: var(--wsp); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); color: #fff; border:none; }
 .btn.success:hover { background: #20BA59; box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4); }
 .btn.sm { width: auto; padding: 9px 18px; font-size: 13px; }
@@ -121,6 +131,13 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .topbar { height: 60px; min-height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--surface); box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10; }
 .page-title { font-size: 16px; font-weight: 800; color: var(--text); }
 .page-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+/* BANNER GLOBAL FIJADO POR EL ADMIN */
+#global-pinned-banner {
+  display: none; background: linear-gradient(90deg, rgba(59,130,246,0.18), rgba(14,165,233,0.18));
+  border-bottom: 1px solid rgba(59,130,246,0.4); color: var(--text); padding: 9px 20px;
+  font-size: 13px; font-weight: 700; align-items: center; justify-content: space-between; gap: 10px; z-index: 9;
+}
 
 .mobile-logout-btn { display: none; background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s; }
 .mobile-logout-btn:active { background: rgba(239, 68, 68, 0.1); }
@@ -433,8 +450,25 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 #msg-notif-popup:hover { background: #272930; }
 
 /* =========================================
-   8. MODO DIOS ADMIN (MEGÁFONO Y CELEBRACIÓN)
+   8. MODO DIOS ADMIN (PANEL Y OVERLAYS)
    ========================================= */
+.admin-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px; max-width: 1100px; margin: 0 auto;
+}
+.admin-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2);
+  overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+}
+.admin-card-head {
+  padding: 13px 18px; border-bottom: 1px solid var(--border); font-size: 12px;
+  font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(239, 68, 68, 0.08); color: var(--danger);
+}
+.admin-card-body { padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.meta-inputs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
 #mega-alert-overlay {
   position: fixed; inset: 0; background: rgba(220, 38, 38, 0.95); z-index: 999999;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -620,6 +654,15 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         <div class="user-av" id="top-av-img" style="width:36px;height:36px;font-size:14px;" onclick="goto('profile', document.getElementById('nav-profile'))" title="Mi Perfil"><span id="top-av-letter">-</span></div>
       </div>
     </header>
+
+    <!-- BANNER GLOBAL FIJADO EN VIVO POR EL ADMIN -->
+    <div id="global-pinned-banner">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span>📌 <strong>AVISO DE SUPERVISIÓN:</strong></span>
+        <span id="global-pinned-text"></span>
+      </div>
+      <button class="btn sm ghost" onclick="document.getElementById('global-pinned-banner').style.display='none'" style="padding:3px 8px;font-size:10px;width:auto;">Ocultar</button>
+    </div>
 
     <div class="content">
       
@@ -1015,31 +1058,189 @@ tr:hover td { background: rgba(255,255,255,0.03); }
         </div>
       </div>
 
-      <!-- VISTA 7: MODO ADMIN -->
+      <!-- VISTA 7: CENTRO DE COMANDO MODO DIOS (ADMIN SUPERPOWERS) -->
       <div class="view" id="v-admin">
-        <div class="card" style="max-width: 650px; margin: 0 auto; border-color: var(--danger);">
-          <div class="card-head" style="background: rgba(239,68,68,0.1); color: var(--danger);">⚡ MODO DIOS - CONTROL EN TIEMPO REAL</div>
-          <div class="card-body">
-            
-            <div style="margin-bottom: 30px;">
-              <label class="field-label" style="color:var(--text);">1. Megáfono Global (Takeover)</label>
-              <p style="font-size:11px; color:var(--muted); margin-bottom:10px;">Interrumpe la pantalla de todos los agentes activos con un mensaje urgente.</p>
-              <input type="text" id="admin-broadcast-msg" class="inp" placeholder="Ej: ¡Urgente! Reunión en meet en 5 minutos..." style="margin-bottom:12px;">
-              <button class="btn danger" onclick="sendAdminAction('alert')">
-                <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
-                Lanzar Alerta Global
-              </button>
+        <div style="max-width: 1100px; margin: 0 auto 18px auto; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.35); border-radius: var(--r2); padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+          <div>
+            <div style="font-size: 15px; font-weight: 900; color: var(--danger); display:flex; align-items:center; gap:8px;">
+              ⚡ CENTRO DE COMANDO SUPREMO – MODO DIOS
             </div>
-
-            <div style="border-top: 1px solid var(--border); padding-top: 20px;">
-              <label class="field-label" style="color:var(--text);">2. Boost de Moral (Celebración)</label>
-              <p style="font-size:11px; color:var(--muted); margin-bottom:10px;">Haz llover confeti en la pantalla de todos los agentes. Ideal al llegar a las metas diarias.</p>
-              <button class="btn success" onclick="sendAdminAction('celebration')">
-                🎉 Disparar Confeti a Todo el Equipo
-              </button>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+              Selecciona si tus comandos afectarán a <strong>Todo el Equipo</strong> o a un <strong>Agente específico</strong>.
             </div>
-
           </div>
+          <div style="display:flex; align-items:center; gap:10px; min-width: 240px;">
+            <label style="font-size:11px; font-weight:800; color:var(--text); white-space:nowrap;">🎯 Destinatario:</label>
+            <select id="admin-target-select" class="inp" style="padding: 8px 12px; font-weight: 700;">
+              <option value="ALL">🌐 Todo el Equipo (Global)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="admin-grid">
+          
+          <!-- PODER 1: MEGÁFONO, ZUMBIDO Y CONFETI -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>📢 1. Intervención de Pantalla & Moral</span>
+              <span>En Vivo</span>
+            </div>
+            <div class="admin-card-body">
+              <div>
+                <label class="field-label">Mensaje de Alerta (Megáfono con Sirena)</label>
+                <input type="text" id="admin-broadcast-msg" class="inp" placeholder="Ej: ¡Reunión urgente en 5 minutos!">
+              </div>
+              <button class="btn danger" onclick="sendAdminAction('alert')">
+                🚨 Lanzar Megáfono + Sirena
+              </button>
+              <div style="display:flex; gap:8px;">
+                <button class="btn warning-btn" onclick="sendAdminAction('nudge')" title="Hace temblar la pantalla del agente con sonido">
+                  📳 Zumbido / Terremoto
+                </button>
+                <button class="btn success" onclick="sendAdminAction('celebration')">
+                  🎉 Lluvia de Confeti
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PODER 2: CONTROL REMOTO DE AGENTES (ESTADO, VISTA, KICK) -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>🎮 2. Control Remoto de Turno y Sesión</span>
+              <span>Agentes</span>
+            </div>
+            <div class="admin-card-body">
+              <p style="font-size:11px; color:var(--muted);">Aplica sobre el destinatario seleccionado arriba (Todos o un agente específico):</p>
+              <div style="display:flex; gap:8px;">
+                <button class="btn sm success" style="flex:1;" onclick="sendAdminRemoteControl('force_online')">
+                  🟢 Forzar Disponible
+                </button>
+                <button class="btn sm warning-btn" style="flex:1;" onclick="sendAdminRemoteControl('force_offline')">
+                  ⏸️ Pausar / Bloquear
+                </button>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <select id="admin-goto-view" class="inp" style="padding:9px 12px; flex:1;">
+                  <option value="recorder">🎙️ Vista Grabadora</option>
+                  <option value="chat">💬 Vista Chat</option>
+                  <option value="dashboard">📊 Vista Dashboard</option>
+                  <option value="wsp">📱 Vista WSP</option>
+                  <option value="feed">📰 Vista Muro</option>
+                </select>
+                <button class="btn sm info-btn" onclick="sendAdminRemoteControl('force_goto')">
+                  🚀 Mover Pantalla
+                </button>
+              </div>
+              <button class="btn danger" onclick="sendAdminRemoteControl('force_kick')">
+                🥾 Cerrar Sesión Remotamente (Kick)
+              </button>
+            </div>
+          </div>
+
+          <!-- PODER 3: BANNER FIJADO GLOBAL Y BLOQUEO DE CHAT -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>📌 3. Banner Global & Control de Chat</span>
+              <span>Sistema</span>
+            </div>
+            <div class="admin-card-body">
+              <div>
+                <label class="field-label">Fijar Aviso Permanente arriba de todo el CRM</label>
+                <input type="text" id="admin-pin-input" class="inp" placeholder="Ej: Meta del día: 45 contratos. ¡Vamos equipo!">
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn sm" style="flex:1;" onclick="setAdminGlobalConfig('pin')">📌 Fijar Banner</button>
+                <button class="btn sm ghost" style="flex:1;" onclick="setAdminGlobalConfig('unpin')">❌ Quitar Banner</button>
+              </div>
+              <div style="border-top:1px solid var(--border); padding-top:10px; display:flex; gap:8px;">
+                <button class="btn sm warning-btn" id="btn-admin-lock-chat" style="flex:1;" onclick="toggleAdminChatLock()">
+                  🔒 Silenciar Sala General
+                </button>
+                <button class="btn sm danger" style="flex:1;" onclick="clearGeneralChatAdmin()">
+                  🧹 Vaciar Chat General
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PODER 4: GESTOR DE METAS MENSUALES EN VIVO -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>🏆 4. Editor de Metas Mensuales (Rangos)</span>
+              <span>Tiempo Real</span>
+            </div>
+            <div class="admin-card-body">
+              <div class="meta-inputs-grid">
+                <div>
+                  <label class="field-label">Meta Marco</label>
+                  <input type="number" id="meta-inp-MARCO" class="inp" value="250" style="padding:8px 10px;">
+                </div>
+                <div>
+                  <label class="field-label">Meta Mariette</label>
+                  <input type="number" id="meta-inp-MARIETTE" class="inp" value="170" style="padding:8px 10px;">
+                </div>
+                <div>
+                  <label class="field-label">Meta Daniela</label>
+                  <input type="number" id="meta-inp-DANIELA" class="inp" value="170" style="padding:8px 10px;">
+                </div>
+                <div>
+                  <label class="field-label">Meta Edu</label>
+                  <input type="number" id="meta-inp-EDU" class="inp" value="170" style="padding:8px 10px;">
+                </div>
+                <div style="grid-column: span 2;">
+                  <label class="field-label">Meta Franco</label>
+                  <input type="number" id="meta-inp-FRANCO" class="inp" value="55" style="padding:8px 10px;">
+                </div>
+              </div>
+              <button class="btn" onclick="saveAdminCustomMetas()">
+                💾 Actualizar Metas a Todo el Equipo
+              </button>
+            </div>
+          </div>
+
+          <!-- PODER 5: DJ GLOBAL YOUTUBE Y MODO FANTASMA -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>🎵 5. DJ Global & Modo Fantasma (Stealth)</span>
+              <span>Especiales</span>
+            </div>
+            <div class="admin-card-body">
+              <div>
+                <label class="field-label">Reproducir canción de YouTube en todas las PCs (Link o ID)</label>
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="admin-yt-input" class="inp" placeholder="Pega link de YouTube o ID...">
+                  <button class="btn sm info-btn" onclick="sendAdminDJPlay()">▶️ Poner Música</button>
+                </div>
+              </div>
+              <div style="border-top:1px solid var(--border); padding-top:12px;">
+                <label class="field-label">Privacidad de Supervisión (Aviso Amarillo en Dashboard)</label>
+                <button class="btn ghost" id="btn-admin-stealth" onclick="toggleAdminStealthMode()">
+                  👻 Activar Modo Fantasma (Ocultar aviso de Admin activo)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PODER 6: EXPORTACIÓN MASTER EXCEL / CSV -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>📊 6. Exportación Master & Auditoría</span>
+              <span>Datos</span>
+            </div>
+            <div class="admin-card-body">
+              <p style="font-size:12px; color:var(--muted); line-height:1.5;">
+                Descarga la base de datos de llamadas grabadas en formato <strong>CSV (compatible con Excel)</strong> con fecha, agente, referencia, duración y link del audio.
+              </p>
+              <button class="btn success" onclick="exportCallsCSV('mes')">
+                📥 Descargar Reporte del Mes Actual (.CSV)
+              </button>
+              <button class="btn info-btn" onclick="exportCallsCSV('todo')">
+                🗂️ Descargar Historial Completo (.CSV)
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -1093,6 +1294,13 @@ tr:hover td { background: rgba(255,255,255,0.03); }
       <div id="upm-actions" style="display:flex; gap:10px; margin-top:18px;">
         <button class="btn ghost" id="upm-btn-photo" style="flex:1;" onclick="viewModalUserPhoto()">👁️ Ver Foto</button>
         <button class="btn" id="upm-btn-dm" style="flex:1.4;" onclick="startDMFromModal()">💬 Mensaje Privado</button>
+      </div>
+
+      <!-- ACCIONES RÁPIDAS EXCLUSIVAS PARA EL ADMIN DENTRO DEL PERFIL DE CUALQUIER AGENTE -->
+      <div id="upm-admin-quick" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); gap:6px; flex-wrap:wrap;">
+        <button class="btn sm warning-btn" style="flex:1; padding:7px; font-size:11px;" onclick="adminQuickActionFromModal('nudge')">📳 Zumbido</button>
+        <button class="btn sm info-btn" style="flex:1; padding:7px; font-size:11px;" onclick="adminQuickActionFromModal('force_offline')">⏸️ Pausar</button>
+        <button class="btn sm danger" style="flex:1; padding:7px; font-size:11px;" onclick="adminQuickActionFromModal('force_kick')">🥾 Expulsar</button>
       </div>
     </div>
   </div>
@@ -1148,23 +1356,35 @@ let myProfile = { name: 'Cargando...', avatarUrl: '', bio: '' };
 let allProfilesCache = {}; 
 let newAvatarFile = null;
 let currentChatMessages = []; 
-let fallbackReactionsMap = {}; // { msgId: { emoji: [uid1, uid2] } }
+let fallbackReactionsMap = {}; 
 let myCurrentStatus = 'offline'; 
 
 // Variables para Chat Privado (DM), Notificaciones y Ordenamiento
-let activeChatChannel = 'general'; // 'general' o el uid de otro agente
-let unreadDMs = {}; // { channelId: cantidad }
+let activeChatChannel = 'general';
+let unreadDMs = {};
 let modalTargetUser = null;
 let initialChatLoadDone = false;
 let lastNotifChannelId = 'general';
 let notifPopupTimer = null;
 
-// Variables para Grabadora de Notas de Voz en el Chat
+// Variables para Notas de Voz en el Chat
 let chatVoiceMR = null;
 let chatVoiceChunks = [];
 let chatVoiceTimer = null;
 let chatVoiceSec = 0;
 let chatVoiceCancelled = false;
+
+// Estado Global de Configuración Admin (Sincronizado en tiempo real)
+let adminConfigState = {
+  chatLocked: false,
+  pinnedBanner: '',
+  adminStealth: false,
+  customMetas: { MARCO: 250, MARIETTE: 170, DANIELA: 170, EDU: 170, FRANCO: 55 }
+};
+
+function isAdminUser() {
+  return Boolean(CUP && CUP.name && CUP.name.toLowerCase() === 'admin');
+}
 
 // Catálogo ampliado de Emojis por Categorías
 const EMOJI_CATALOG = {
@@ -1243,7 +1463,7 @@ function renderEmojiCategory(catKey, tabEl = null) {
 }
 
 // ==========================================
-// SISTEMA DE SONIDO Y NOTIFICACIONES POR USUARIO
+// SISTEMA DE SONIDOS (NOTIFICACIÓN Y SIRENA DE ALARMA ADMIN)
 // ==========================================
 function playNotificationSound(isPrivate = true) {
   try {
@@ -1266,6 +1486,28 @@ function playNotificationSound(isPrivate = true) {
     gain1.connect(ctx.destination);
     osc1.start(now);
     osc1.stop(now + 0.36);
+  } catch(e) {}
+}
+
+function playAdminAlarmSiren() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.linearRampToValueAtTime(880, now + 0.25);
+    osc.frequency.linearRampToValueAtTime(440, now + 0.5);
+    osc.frequency.linearRampToValueAtTime(880, now + 0.75);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.86);
   } catch(e) {}
 }
 
@@ -1371,6 +1613,7 @@ auth.onAuthStateChanged(async (user) => {
     
     db.collection('perfiles').onSnapshot(snap => {
       snap.forEach(doc => { allProfilesCache[doc.id] = doc.data(); });
+      populateAdminTargetSelect();
       renderChatContacts();
       renderChatMessages(); 
       renderPresenceUI(); 
@@ -1659,12 +1902,16 @@ function openUserProfile(uid, fallbackName = 'Agente') {
 
   document.getElementById('upm-btn-photo').style.display = modalTargetUser.avatarUrl ? 'flex' : 'none';
   const dmBtn = document.getElementById('upm-btn-dm');
+  const adminQuickRow = document.getElementById('upm-admin-quick');
+
   if (targetUid && CU && targetUid === CU.uid) {
     dmBtn.innerHTML = '⚙️ Editar Mi Perfil';
     dmBtn.onclick = () => { closeUserProfile(); goto('profile', document.getElementById('nav-profile')); };
+    if (adminQuickRow) adminQuickRow.style.display = 'none';
   } else {
     dmBtn.innerHTML = '💬 Mensaje Privado';
     dmBtn.onclick = startDMFromModal;
+    if (adminQuickRow) adminQuickRow.style.display = isAdminUser() && targetUid ? 'flex' : 'none';
   }
 
   document.getElementById('user-profile-modal-backdrop').classList.add('show');
@@ -1743,7 +1990,8 @@ function goto(viewId, element) {
   if(target) target.classList.add('active');
   
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if(element) element.classList.add('active');
+  const navEl = element || document.getElementById('nav-' + viewId) || (viewId === 'admin' ? document.getElementById('nav-item-admin') : null);
+  if(navEl) navEl.classList.add('active');
   
   const titles = {
     dashboard: { t:'Dashboard', s:'Resumen operativo' },
@@ -1754,7 +2002,7 @@ function goto(viewId, element) {
     chat:      { t:'Chat & Mensajes Privados', s:'Notas de voz, reacciones y mensajes directos' },
     music:     { t:'Reproductor', s:'Música de fondo' },
     profile:   { t:'Mi Perfil', s:'Ajustes personales y foto' },
-    admin:     { t:'Centro de Comando', s:'Control Global en Tiempo Real' }
+    admin:     { t:'Centro de Comando', s:'Modo Dios - Control Total en Tiempo Real' }
   };
   
   if(titles[viewId]) {
@@ -1929,31 +2177,57 @@ function limpiarWsp() {
 }
 
 // ==========================================
-// H. LECTURA PRINCIPAL Y LISTENER GLOBAL
+// H. LECTURA PRINCIPAL Y LISTENER GLOBAL (CON COMANDOS ADMIN)
 // ==========================================
+function isTargetedToMe(targetAgentUid) {
+  if (!targetAgentUid || targetAgentUid === 'ALL') return true;
+  return Boolean(CU && targetAgentUid === CU.uid);
+}
+
 function initListeners() {
   
-  // 1. EL CHAT GENERAL, DMs, NOTAS DE VOZ Y REACCIONES
-  db.collection('chat_general').orderBy('ts').limitToLast(350).onSnapshot(snap => {
+  // 1. EL CHAT GENERAL, DMs, NOTAS DE VOZ, REACCIONES Y COMANDOS ADMIN
+  db.collection('chat_general').orderBy('ts').limitToLast(380).onSnapshot(snap => {
     currentChatMessages = [];
     fallbackReactionsMap = {};
     
     snap.docChanges().forEach(change => {
       if (change.type === 'added') {
         const data = change.doc.data();
+        const isRecent = data.client_ts && (Date.now() - data.client_ts < 15000);
         
-        // Comandos del Admin
-        if (data.type === 'sys_alert' || data.type === 'sys_celebration') {
-          if (data.client_ts && (Date.now() - data.client_ts < 15000)) {
-            if (data.type === 'sys_alert') triggerMegaAlert(data.text);
-            else if (data.type === 'sys_celebration') triggerConfetti();
+        // Procesar Comandos Efímeros del Admin en Tiempo Real
+        if (data.type && data.type.startsWith('sys_')) {
+          if (isRecent && isTargetedToMe(data.targetAgentUid)) {
+            if (data.type === 'sys_alert') {
+              playAdminAlarmSiren();
+              triggerMegaAlert(data.text);
+            } else if (data.type === 'sys_celebration') {
+              triggerConfetti();
+            } else if (data.type === 'sys_nudge') {
+              triggerScreenShake(data.text);
+            } else if (data.type === 'sys_force_online' && !isAdminUser()) {
+              changeMyStatus('online');
+              showToast("El Administrador activó tu turno (Disponible)", "🟢");
+            } else if (data.type === 'sys_force_offline' && !isAdminUser()) {
+              changeMyStatus('offline');
+              showToast("El Administrador pausó tu turno", "⏸️");
+            } else if (data.type === 'sys_force_goto' && data.viewId && !isAdminUser()) {
+              goto(data.viewId);
+              showToast(`El Administrador movió tu vista a ${data.viewId.toUpperCase()}`, "🚀");
+            } else if (data.type === 'sys_force_kick' && !isAdminUser()) {
+              showToast("Sesión finalizada por el Administrador", "🥾");
+              setTimeout(() => doLogout(), 1000);
+            } else if (data.type === 'sys_yt_play' && data.videoId) {
+              goto('music');
+              playYouTubeVideo(data.videoId);
+              showToast("🎵 El Admin puso música para el equipo", "🎧");
+            }
           }
           return;
         }
 
-        if (data.type === 'sys_reaction') return;
-
-        // Notificaciones en tiempo real cuando ya cargó el historial inicial
+        // Notificaciones normales de mensajes
         if (initialChatLoadDone && data.uid !== CU.uid) {
           const isChatViewActive = document.getElementById('v-chat').classList.contains('active');
           
@@ -1978,7 +2252,6 @@ function initListeners() {
     snap.forEach(doc => { 
       const d = doc.data();
       if (d.type === 'sys_reaction') {
-        // Procesar evento de reacción (fallback por si reglas de Firestore impiden .update directo)
         const tId = d.targetMsgId;
         const em = d.emoji;
         const rUid = d.uid;
@@ -1989,12 +2262,21 @@ function initListeners() {
           if (idx > -1) fallbackReactionsMap[tId][em].splice(idx, 1);
           else fallbackReactionsMap[tId][em].push(rUid);
         }
-      } else if (d.type !== 'sys_alert' && d.type !== 'sys_celebration') {
+      } else if (d.type === 'sys_config') {
+        // Reconstruir el último estado de configuración global del Admin
+        if (typeof d.chatLocked === 'boolean') adminConfigState.chatLocked = d.chatLocked;
+        if (typeof d.pinnedBanner === 'string') adminConfigState.pinnedBanner = d.pinnedBanner;
+        if (typeof d.adminStealth === 'boolean') adminConfigState.adminStealth = d.adminStealth;
+        if (d.customMetas && typeof d.customMetas === 'object') {
+          adminConfigState.customMetas = { ...adminConfigState.customMetas, ...d.customMetas };
+        }
+      } else if (!d.type || !d.type.startsWith('sys_')) {
         currentChatMessages.push({ id: doc.id, _seq: ++seqIndex, ...d }); 
       }
     });
     
     initialChatLoadDone = true;
+    applyAdminConfigToUI();
     renderChatContacts();
     renderChatMessages();
   });
@@ -2014,7 +2296,7 @@ function initListeners() {
         ? `<div onclick="openUserProfile('${p.uid || ''}', '${safeName}')" style="width:38px;height:38px;border-radius:50%;background:url('${authorProfile.avatarUrl}') center/cover; border: 2px solid var(--p); cursor:pointer;"></div>`
         : `<div onclick="openUserProfile('${p.uid || ''}', '${safeName}')" style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg, var(--p), var(--p3));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;cursor:pointer;">${(authorProfile.name||'?').charAt(0).toUpperCase()}</div>`;
 
-      const canDelete = (CU && p.uid === CU.uid) || (CUP && CUP.name && CUP.name.toLowerCase() === 'admin');
+      const canDelete = (CU && p.uid === CU.uid) || isAdminUser();
 
       list.innerHTML += `
         <div class="card" style="margin-bottom:12px;border-radius:14px;background:var(--bg2);">
@@ -2052,10 +2334,80 @@ function initListeners() {
   db.collection('presence').onSnapshot(snap => {
     currentAgents = []; 
     snap.forEach(doc => currentAgents.push({ uid: doc.id, ...doc.data() }));
+    populateAdminTargetSelect();
     renderPresenceUI(); 
     renderChatContacts();
   });
   setInterval(() => { renderPresenceUI(); renderChatContacts(); }, 15000);
+}
+
+function applyAdminConfigToUI() {
+  // 1. Banner Global Fijado
+  const pinBanner = document.getElementById('global-pinned-banner');
+  const pinText = document.getElementById('global-pinned-text');
+  if (adminConfigState.pinnedBanner && adminConfigState.pinnedBanner.trim() !== '') {
+    pinText.textContent = adminConfigState.pinnedBanner;
+    pinBanner.style.display = 'flex';
+  } else {
+    pinBanner.style.display = 'none';
+  }
+
+  // 2. Estado de bloqueo de Sala General
+  const lockBtn = document.getElementById('btn-admin-lock-chat');
+  if (lockBtn) {
+    if (adminConfigState.chatLocked) {
+      lockBtn.innerHTML = '🔓 Desbloquear Sala General';
+      lockBtn.className = 'btn sm success';
+    } else {
+      lockBtn.innerHTML = '🔒 Silenciar Sala General';
+      lockBtn.className = 'btn sm warning-btn';
+    }
+  }
+
+  // 3. Estado de Modo Fantasma (Stealth)
+  const stealthBtn = document.getElementById('btn-admin-stealth');
+  if (stealthBtn) {
+    if (adminConfigState.adminStealth) {
+      stealthBtn.innerHTML = '👁️ Modo Fantasma ACTIVO (Clic para mostrarte)';
+      stealthBtn.style.borderColor = 'var(--success)';
+      stealthBtn.style.color = 'var(--success)';
+    } else {
+      stealthBtn.innerHTML = '👻 Activar Modo Fantasma (Ocultar aviso de Admin activo)';
+      stealthBtn.style.borderColor = '';
+      stealthBtn.style.color = '';
+    }
+  }
+
+  // 4. Sincronizar inputs de metas en panel Admin y recalcular gráficos
+  ['MARCO', 'MARIETTE', 'DANIELA', 'EDU', 'FRANCO'].forEach(k => {
+    const inp = document.getElementById('meta-inp-' + k);
+    if (inp && adminConfigState.customMetas[k]) {
+      inp.value = adminConfigState.customMetas[k];
+    }
+  });
+
+  renderPresenceUI();
+  renderDashboardCharts();
+}
+
+function populateAdminTargetSelect() {
+  const sel = document.getElementById('admin-target-select');
+  if (!sel) return;
+  const currentVal = sel.value || 'ALL';
+  const userMap = {};
+  Object.entries(allProfilesCache).forEach(([uid, p]) => {
+    if (p.name && p.name.toLowerCase() !== 'admin') userMap[uid] = p.name;
+  });
+  currentAgents.forEach(a => {
+    if (a.uid && a.name && a.name.toLowerCase() !== 'admin') userMap[a.uid] = a.name;
+  });
+
+  let html = `<option value="ALL">🌐 Todo el Equipo (Global)</option>`;
+  Object.entries(userMap).sort((a,b) => a[1].localeCompare(b[1])).forEach(([uid, name]) => {
+    html += `<option value="${uid}">👤 Solo a: ${name}</option>`;
+  });
+  sel.innerHTML = html;
+  if ([...sel.options].some(o => o.value === currentVal)) sel.value = currentVal;
 }
 
 function updateMyProfileStats() {
@@ -2085,8 +2437,11 @@ function renderPresenceUI() {
   let adminOnlineElsewhere = processed.some(u => u.name && u.name.toLowerCase() === 'admin' && u.isOnline);
   const alertBanner = document.getElementById('admin-alert-banner');
   if (alertBanner) {
-    if (adminOnlineElsewhere && (!CUP || CUP.name.toLowerCase() !== 'admin')) alertBanner.style.display = 'flex';
-    else alertBanner.style.display = 'none';
+    if (adminOnlineElsewhere && !adminConfigState.adminStealth && !isAdminUser()) {
+      alertBanner.style.display = 'flex';
+    } else {
+      alertBanner.style.display = 'none';
+    }
   }
 
   processed = processed.filter(u => !(u.name && u.name.toLowerCase() === 'admin'));
@@ -2255,12 +2610,13 @@ function renderDashboardCharts() {
       return parts.length > 1 && parts[1] === currMonthStr; 
     });
 
+    const cm = adminConfigState.customMetas || {};
     const targets = [
-      { key: 'MARCO', label: 'Marco', meta: 250 },
-      { key: 'MARIETTE', label: 'Mariette', meta: 170 },
-      { key: 'DANIELA', label: 'Daniela', meta: 170 },
-      { key: 'EDU', label: 'Edu', meta: 170 },
-      { key: 'FRANCO', label: 'Franco', meta: 55 }
+      { key: 'MARCO', label: 'Marco', meta: Number(cm.MARCO) || 250 },
+      { key: 'MARIETTE', label: 'Mariette', meta: Number(cm.MARIETTE) || 170 },
+      { key: 'DANIELA', label: 'Daniela', meta: Number(cm.DANIELA) || 170 },
+      { key: 'EDU', label: 'Edu', meta: Number(cm.EDU) || 170 },
+      { key: 'FRANCO', label: 'Franco', meta: Number(cm.FRANCO) || 55 }
     ];
     
     const conteoMetas = { 'MARIETTE':0, 'DANIELA':0, 'EDU':0, 'MARCO':0, 'FRANCO':0 };
@@ -2427,8 +2783,8 @@ function renderChatContacts() {
   const generalMsgs = currentChatMessages.filter(m => !m.targetUid);
   const lastGenMsg = generalMsgs.length ? generalMsgs[generalMsgs.length - 1] : null;
   const genUnread = unreadDMs['general'] || 0;
-  let genPreview = 'Todo el equipo';
-  if (lastGenMsg) {
+  let genPreview = adminConfigState.chatLocked ? '🔒 Sala silenciada por Admin' : 'Todo el equipo';
+  if (lastGenMsg && !adminConfigState.chatLocked) {
     const gAuthor = lastGenMsg.uid === CU.uid ? 'Tú' : ((allProfilesCache[lastGenMsg.uid] && allProfilesCache[lastGenMsg.uid].name) || 'Agente');
     const gTxt = lastGenMsg.type === 'audio' ? '🎤 Nota de voz' : (lastGenMsg.text || 'Archivo');
     genPreview = `${gAuthor}: ${gTxt}`;
@@ -2536,6 +2892,10 @@ function insertEmoji(emoji) {
   inp.focus();
 }
 
+function isCurrentChannelLockedForMe() {
+  return activeChatChannel === 'general' && adminConfigState.chatLocked && !isAdminUser();
+}
+
 // ==========================================
 // GRABACIÓN Y ENVÍO DE NOTAS DE VOZ EN EL CHAT
 // ==========================================
@@ -2553,6 +2913,9 @@ function toggleChatVoiceUI(recording) {
 }
 
 async function startChatVoiceNote() {
+  if (isCurrentChannelLockedForMe()) {
+    return showToast("La Sala General está silenciada por el Administrador", "🔒");
+  }
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     chatVoiceChunks = [];
@@ -2636,6 +2999,9 @@ async function uploadAndSendVoiceNote(blob, durationStr) {
 }
 
 async function sendTextMsg() {
+  if (isCurrentChannelLockedForMe()) {
+    return showToast("La Sala General está silenciada por el Administrador", "🔒");
+  }
   const inp = document.getElementById('chat-inp'); const t = inp.value.trim(); if(!t) return; inp.value='';
   const d = new Date(); const h = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
   const payload = {
@@ -2653,6 +3019,9 @@ async function sendTextMsg() {
 }
 
 async function sendMediaMsg(event) {
+  if (isCurrentChannelLockedForMe()) {
+    return showToast("La Sala General está silenciada por el Administrador", "🔒");
+  }
   const file = event.target.files[0]; if(!file) return; document.getElementById('chat-media-upload').value = ""; 
   const isVideo = file.type.startsWith('video/');
   const isAudio = file.type.startsWith('audio/');
@@ -2730,12 +3099,10 @@ async function toggleMessageReaction(msgId, emoji) {
   else currentList.push(CU.uid);
 
   try {
-    // Intento 1: Actualizar directamente el documento del mensaje
     await db.collection('chat_general').doc(msgId).update({
       [`reactions.${emoji}`]: currentList
     });
   } catch (err) {
-    // Intento 2 (Fallback automático si las reglas de Firestore bloquean .update en documentos ajenos)
     try {
       await db.collection('chat_general').add({
         type: 'sys_reaction',
@@ -2761,10 +3128,14 @@ function renderChatMessages() {
   const inpEl = document.getElementById('chat-inp');
 
   if (activeChatChannel === 'general') {
-    titleEl.textContent = '🌐 Sala Messenger 360 (Equipo)';
+    const lockTag = adminConfigState.chatLocked ? ' 🔒 (Silenciada por Admin)' : '';
+    titleEl.textContent = `🌐 Sala Messenger 360${lockTag}`;
     actionsEl.style.display = 'none';
     headerAvEl.innerHTML = '<span class="pulse-dot anim"></span>';
-    inpEl.placeholder = 'Escribe un mensaje para todo el equipo...';
+    inpEl.placeholder = isCurrentChannelLockedForMe()
+      ? '🔒 Sala silenciada temporalmente por el Administrador...'
+      : 'Escribe un mensaje para todo el equipo...';
+    inpEl.disabled = isCurrentChannelLockedForMe();
   } else {
     const targetProf = allProfilesCache[activeChatChannel] || { name: 'Agente', avatarUrl: '' };
     const safeName = (targetProf.name || 'Agente').replace(/'/g, "\\'");
@@ -2775,6 +3146,7 @@ function renderChatMessages() {
       ? `<div onclick="openUserProfile('${activeChatChannel}', '${safeName}')" style="width:28px;height:28px;border-radius:50%;background:url('${targetProf.avatarUrl}') center/cover;cursor:pointer;border:1px solid var(--p);"></div>`
       : `<div onclick="openUserProfile('${activeChatChannel}', '${safeName}')" style="width:28px;height:28px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;">${(targetProf.name||'?').charAt(0).toUpperCase()}</div>`;
     inpEl.placeholder = `Mensaje privado para ${targetProf.name}...`;
+    inpEl.disabled = false;
   }
 
   const filteredMsgs = currentChatMessages.filter(m => {
@@ -2822,18 +3194,16 @@ function renderChatMessages() {
       : '';
     
     const nameStr = !isMe ? `<div class="msg-author" onclick="openUserProfile('${m.uid}', '${safeName}')" style="color:var(--p3);">${authorProfile.name}</div>` : '';
-    const delBtn = isMe ? `<button class="msg-del-btn" onclick="deleteChatMsg('${m.id}')" title="Eliminar mensaje">🗑️</button>` : '';
+    const canDeleteMsg = isMe || isAdminUser();
+    const delBtn = canDeleteMsg ? `<button class="msg-del-btn" onclick="deleteChatMsg('${m.id}')" title="Eliminar mensaje">🗑️</button>` : '';
 
-    // Ocultar texto redundante si es un archivo o nota de voz
     const hideDefaultMediaText = m.text === '📷 Imagen enviada' || m.text === '🎥 Video enviado' || m.type === 'audio';
     const textContentHTML = (!hideDefaultMediaText && m.text) ? `<div>${m.text}</div>` : '';
 
-    // Menú flotante de reacciones rápidas
     const quickReactOpts = QUICK_REACTIONS.map(em =>
       `<span class="react-opt" onclick="toggleMessageReaction('${m.id}', '${em}')">${em}</span>`
     ).join('');
 
-    // Píldoras de reacciones activas en este mensaje
     const reactionsObj = getCombinedReactionsForMsg(m);
     let reactionsPillsHTML = '';
     Object.entries(reactionsObj).forEach(([em, uidList]) => {
@@ -2918,28 +3288,218 @@ function playYouTubeVideo(videoId) {
 }
 
 // ==========================================
-// K. FUNCIONES MODO DIOS
+// K. FUNCIONES DE SUPERPODER MODO DIOS (ADMIN)
 // ==========================================
+function getSelectedAdminTarget() {
+  const sel = document.getElementById('admin-target-select');
+  return sel ? sel.value : 'ALL';
+}
+
 async function sendAdminAction(type) {
+  const targetAgentUid = getSelectedAdminTarget();
   let msg = '';
   if (type === 'alert') {
     msg = document.getElementById('admin-broadcast-msg').value.trim();
-    if (!msg) return showToast("Escribe un mensaje para la alerta", "⚠️");
+    if (!msg) return showToast("Escribe un mensaje para el Megáfono", "⚠️");
     document.getElementById('admin-broadcast-msg').value = '';
+  } else if (type === 'nudge') {
+    msg = document.getElementById('admin-broadcast-msg').value.trim() || '⚡ ¡El Administrador solicita tu atención inmediata!';
   }
+
+  let sysType = 'sys_celebration';
+  if (type === 'alert') sysType = 'sys_alert';
+  else if (type === 'nudge') sysType = 'sys_nudge';
+
   try {
     await db.collection('chat_general').add({ 
       uid: CU.uid, 
       text: msg, 
-      type: type === 'alert' ? 'sys_alert' : 'sys_celebration', 
+      type: sysType, 
+      targetAgentUid: targetAgentUid,
       client_ts: Date.now(), 
       ts: firebase.firestore.FieldValue.serverTimestamp() 
     });
-    showToast("Comando enviado a todo el equipo", "🚀");
+    showToast("Comando enviado en tiempo real", "🚀");
   } catch(e) { 
-    console.error("Error Admin Action: ", e);
     showToast("Error al enviar comando", "❌"); 
   }
+}
+
+async function sendAdminRemoteControl(actionType, forcedTargetUid = null) {
+  const targetAgentUid = forcedTargetUid || getSelectedAdminTarget();
+  const payload = {
+    uid: CU.uid,
+    type: 'sys_' + actionType,
+    targetAgentUid: targetAgentUid,
+    client_ts: Date.now(),
+    ts: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  if (actionType === 'force_goto') {
+    payload.viewId = document.getElementById('admin-goto-view').value;
+  }
+  if (actionType === 'force_kick' && !confirm("¿Seguro que deseas cerrar la sesión remotamente del destinatario seleccionado?")) {
+    return;
+  }
+
+  try {
+    await db.collection('chat_general').add(payload);
+    // Si hay un UID específico y es cambio de estado, intentamos actualizar también presence directamente
+    if (targetAgentUid !== 'ALL' && (actionType === 'force_online' || actionType === 'force_offline')) {
+      const st = actionType === 'force_online' ? 'online' : 'offline';
+      db.collection('presence').doc(targetAgentUid).update({ status: st, online: st === 'online', lastSeen: Date.now() }).catch(() => {});
+    }
+    showToast("Orden remota ejecutada", "⚡");
+  } catch (e) {
+    showToast("Error al enviar orden remota", "❌");
+  }
+}
+
+function adminQuickActionFromModal(action) {
+  if (!modalTargetUser || !modalTargetUser.uid) return;
+  const targetUid = modalTargetUser.uid;
+  closeUserProfile();
+  if (action === 'nudge') {
+    db.collection('chat_general').add({
+      uid: CU.uid,
+      text: `⚡ ¡${modalTargetUser.name}, el Administrador solicita tu atención!`,
+      type: 'sys_nudge',
+      targetAgentUid: targetUid,
+      client_ts: Date.now(),
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast(`Zumbido enviado a ${modalTargetUser.name}`, "📳");
+  } else {
+    sendAdminRemoteControl(action, targetUid);
+  }
+}
+
+async function saveAdminConfigToFirestore(newPartialConfig, toastMsg) {
+  adminConfigState = { ...adminConfigState, ...newPartialConfig };
+  try {
+    await db.collection('chat_general').add({
+      uid: CU.uid,
+      type: 'sys_config',
+      chatLocked: adminConfigState.chatLocked,
+      pinnedBanner: adminConfigState.pinnedBanner,
+      adminStealth: adminConfigState.adminStealth,
+      customMetas: adminConfigState.customMetas,
+      client_ts: Date.now(),
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    applyAdminConfigToUI();
+    showToast(toastMsg || "Configuración global actualizada", "✅");
+  } catch (e) {
+    showToast("Error al guardar configuración", "❌");
+  }
+}
+
+function setAdminGlobalConfig(mode) {
+  if (mode === 'pin') {
+    const txt = document.getElementById('admin-pin-input').value.trim();
+    if (!txt) return showToast("Escribe el texto del banner a fijar", "⚠️");
+    saveAdminConfigToFirestore({ pinnedBanner: txt }, "📌 Banner fijado en todas las pantallas");
+    document.getElementById('admin-pin-input').value = '';
+  } else {
+    saveAdminConfigToFirestore({ pinnedBanner: '' }, "Banner global retirado");
+  }
+}
+
+function toggleAdminChatLock() {
+  const newLock = !adminConfigState.chatLocked;
+  saveAdminConfigToFirestore(
+    { chatLocked: newLock },
+    newLock ? "🔒 Sala General silenciada (Solo Admin escribe)" : "🔓 Sala General abierta para todos"
+  );
+}
+
+function toggleAdminStealthMode() {
+  const newStealth = !adminConfigState.adminStealth;
+  saveAdminConfigToFirestore(
+    { adminStealth: newStealth },
+    newStealth ? "👻 Modo Fantasma activado (Aviso amarillo oculto)" : "👁️ Modo Fantasma desactivado"
+  );
+}
+
+function saveAdminCustomMetas() {
+  const newMetas = {
+    MARCO: Number(document.getElementById('meta-inp-MARCO').value) || 250,
+    MARIETTE: Number(document.getElementById('meta-inp-MARIETTE').value) || 170,
+    DANIELA: Number(document.getElementById('meta-inp-DANIELA').value) || 170,
+    EDU: Number(document.getElementById('meta-inp-EDU').value) || 170,
+    FRANCO: Number(document.getElementById('meta-inp-FRANCO').value) || 55
+  };
+  saveAdminConfigToFirestore({ customMetas: newMetas }, "🏆 Metas mensuales actualizadas para todo el equipo");
+}
+
+async function clearGeneralChatAdmin() {
+  if (!confirm("¿Seguro que deseas borrar todos los mensajes visibles de la Sala General?")) return;
+  showToast("Limpiando Sala General...", "🧹");
+  try {
+    const genMsgs = currentChatMessages.filter(m => !m.targetUid);
+    await Promise.all(genMsgs.map(m => db.collection('chat_general').doc(m.id).delete()));
+    showToast("Sala General vaciada con éxito", "✅");
+  } catch (e) {
+    showToast("Error al limpiar algunos mensajes", "❌");
+  }
+}
+
+function extractYouTubeId(input) {
+  if (!input) return '';
+  const trimmed = input.trim();
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = trimmed.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : (trimmed.length === 11 ? trimmed : '');
+}
+
+async function sendAdminDJPlay() {
+  const raw = document.getElementById('admin-yt-input').value.trim();
+  const videoId = extractYouTubeId(raw);
+  if (!videoId) return showToast("Ingresa un enlace o ID válido de YouTube", "⚠️");
+  const targetAgentUid = getSelectedAdminTarget();
+  try {
+    await db.collection('chat_general').add({
+      uid: CU.uid,
+      type: 'sys_yt_play',
+      videoId: videoId,
+      targetAgentUid: targetAgentUid,
+      client_ts: Date.now(),
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('admin-yt-input').value = '';
+    showToast("🎵 Reproduciendo música en las pantallas seleccionadas", "🎧");
+  } catch (e) {
+    showToast("Error al enviar música", "❌");
+  }
+}
+
+function exportCallsCSV(scope = 'mes') {
+  const rowsData = scope === 'mes' ? getAudiosDelMes() : histAll;
+  if (!rowsData || !rowsData.length) {
+    return showToast("No hay registros de llamadas para exportar", "⚠️");
+  }
+  const headers = ['Fecha', 'Referencia_Nombre', 'Duracion', 'Agente', 'URL_Audio'];
+  const csvRows = [headers.join(',')];
+
+  rowsData.forEach(r => {
+    const row = [
+      `"${(r.fecha || '').replace(/"/g, '""')}"`,
+      `"${(r.nombre || '').replace(/"/g, '""')}"`,
+      `"${(r.duracion || '').replace(/"/g, '""')}"`,
+      `"${(r.agente || '').replace(/"/g, '""')}"`,
+      `"${(r.audioUrl || '').replace(/"/g, '""')}"`
+    ];
+    csvRows.push(row.join(','));
+  });
+
+  const csvString = '\uFEFF' + csvRows.join('\n');
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Reporte_Llamadas_360_${scope}_${Date.now()}.csv`;
+  a.click();
+  showToast("Reporte CSV descargado", "📥");
 }
 
 function triggerMegaAlert(msg) {
@@ -2947,7 +3507,17 @@ function triggerMegaAlert(msg) {
   document.getElementById('mega-alert-overlay').classList.add('show');
 }
 
+function triggerScreenShake(msg) {
+  playAdminAlarmSiren();
+  document.body.classList.remove('shake-screen');
+  void document.body.offsetWidth;
+  document.body.classList.add('shake-screen');
+  showToast(msg || "⚡ ¡El Administrador solicita tu atención!", "📳");
+  setTimeout(() => document.body.classList.remove('shake-screen'), 1000);
+}
+
 function triggerConfetti() {
+  playNotificationSound(true);
   const overlay = document.getElementById('celebration-overlay');
   overlay.style.display = 'block'; overlay.innerHTML = ''; 
   const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ffd700'];
