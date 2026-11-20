@@ -456,6 +456,20 @@ tr:hover td { background: rgba(255,255,255,0.03); }
   display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 18px; max-width: 1100px; margin: 0 auto;
 }
+.admin-badge-pill {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff; font-size: 9px; font-weight: 900; padding: 2px 6px;
+  border-radius: 6px; letter-spacing: 0.4px; text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.35); flex-shrink: 0;
+}
+.chat-contact-item.admin-pinned {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.06);
+}
+.chat-contact-item.admin-pinned.active {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: #f59e0b;
+}
 .admin-card {
   background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2);
   overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; flex-direction: column;
@@ -911,9 +925,14 @@ tr:hover td { background: rgba(255,255,255,0.03); }
       <!-- VISTA 3: HISTORIAL -->
       <div class="view" id="v-history">
         <div style="max-width:1000px;margin:0 auto;">
-          <div class="search-bar">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
-            <input type="text" id="hist-search" placeholder="Filtrar audios del mes actual..." oninput="filterHist()">
+          <div style="display:flex; gap:10px; align-items:stretch; margin-bottom:16px;">
+            <div class="search-bar" style="margin-bottom:0; flex:1;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line></svg>
+              <input type="text" id="hist-search" placeholder="Filtrar audios del mes actual..." oninput="filterHist()">
+            </div>
+            <button id="btn-hist-admin-add" class="btn sm success" style="display:none; white-space:nowrap;" onclick="openAdminAddAudioShortcut()">
+              ➕ Agregar Audio (Admin)
+            </button>
           </div>
           <div class="card" style="max-width:100%;margin:0;border-radius:16px;">
             <div class="table-wrap">
@@ -1242,6 +1261,52 @@ tr:hover td { background: rgba(255,255,255,0.03); }
               </button>
               <button class="btn info-btn" onclick="exportCallsCSV('todo')">
                 🗂️ Descargar Historial Completo (.CSV)
+              </button>
+            </div>
+          </div>
+
+          <!-- PODER 7: AGREGAR AUDIOS A "AUDIOS DEL MES" COMO ADMIN -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>🎙️ 7. Agregar Audio a "Audios del Mes"</span>
+              <span>Admin</span>
+            </div>
+            <div class="admin-card-body">
+              <div>
+                <label class="field-label">Agente asignado</label>
+                <select id="admin-audio-agente" class="inp" style="padding:9px 12px; font-weight:700;">
+                  <option value="Marco">Marco</option>
+                  <option value="Mariette">Mariette</option>
+                  <option value="Daniela">Daniela</option>
+                  <option value="Edu">Edu</option>
+                  <option value="Franco">Franco</option>
+                </select>
+              </div>
+              <div style="display:grid; grid-template-columns: 1.4fr 0.8fr; gap:8px;">
+                <div>
+                  <label class="field-label">Referencia / Cliente</label>
+                  <input type="text" id="admin-audio-nombre" class="inp" placeholder="Ej: Contrato_WOW_8421" style="padding:9px 12px;">
+                </div>
+                <div>
+                  <label class="field-label">Duración</label>
+                  <input type="text" id="admin-audio-duracion" class="inp" value="01:30" placeholder="01:30" style="padding:9px 12px;">
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <div>
+                  <label class="field-label">Fecha (DD/MM HH:MM)</label>
+                  <input type="text" id="admin-audio-fecha" class="inp" placeholder="Auto (Hoy)" style="padding:9px 12px;">
+                </div>
+                <div>
+                  <label class="field-label">Archivo de audio (Opcional)</label>
+                  <input type="file" id="admin-audio-file" accept="audio/*" class="inp" style="padding:7px 10px; font-size:12px;">
+                </div>
+              </div>
+              <button class="btn success" id="btn-admin-add-audio" onclick="adminAddAudioToMonth()">
+                ➕ Agregar a Audios del Mes
+              </button>
+              <button class="btn ghost" onclick="goto('history', document.getElementById('nav-history'))">
+                📂 Ver en Audios del Mes
               </button>
             </div>
           </div>
@@ -1611,6 +1676,8 @@ auth.onAuthStateChanged(async (user) => {
       document.getElementById('nav-sec-admin').style.display = 'block';
       document.getElementById('nav-item-admin').style.display = 'flex';
       document.getElementById('prof-role-tag').textContent = 'Administrador';
+      const histAddBtn = document.getElementById('btn-hist-admin-add');
+      if (histAddBtn) histAddBtn.style.display = 'inline-flex';
     }
     
     applyProfileToDOM();
@@ -2809,13 +2876,28 @@ function renderChatContacts() {
 
   const userMap = {};
   Object.entries(allProfilesCache).forEach(([uid, p]) => {
-    if (uid !== CU.uid && p.name && p.name.toLowerCase() !== 'admin') {
-      userMap[uid] = { uid, name: p.name, avatarUrl: p.avatarUrl || '', bio: p.bio || '' };
+    if (uid !== CU.uid && p.name) {
+      const isAdm = p.name.toLowerCase() === 'admin';
+      userMap[uid] = {
+        uid,
+        name: isAdm ? 'Administrador' : p.name,
+        isAdminContact: isAdm,
+        avatarUrl: p.avatarUrl || '',
+        bio: p.bio || ''
+      };
     }
   });
   currentAgents.forEach(a => {
-    if (a.uid && a.uid !== CU.uid && a.name && a.name.toLowerCase() !== 'admin') {
-      if (!userMap[a.uid]) userMap[a.uid] = { uid: a.uid, name: a.name, avatarUrl: '' };
+    if (a.uid && a.uid !== CU.uid && a.name) {
+      const isAdm = a.name.toLowerCase() === 'admin';
+      if (!userMap[a.uid]) {
+        userMap[a.uid] = {
+          uid: a.uid,
+          name: isAdm ? 'Administrador' : a.name,
+          isAdminContact: isAdm,
+          avatarUrl: ''
+        };
+      }
     }
   });
 
@@ -2842,6 +2924,7 @@ function renderChatContacts() {
   });
 
   contacts.sort((a, b) => {
+    if (a.isAdminContact !== b.isAdminContact) return a.isAdminContact ? -1 : 1;
     if (b.lastSeq !== a.lastSeq) return b.lastSeq - a.lastSeq;
     if (b.lastScore !== a.lastScore) return b.lastScore - a.lastScore;
     if (a.isOnline !== b.isOnline) return a.isOnline ? -1 : 1;
@@ -2852,6 +2935,7 @@ function renderChatContacts() {
     let dotHtml = u.isOnline
       ? `<span class="pulse-dot" style="width:7px;height:7px;flex-shrink:0;"></span>`
       : `<span class="status-dot-offline" style="width:7px;height:7px;flex-shrink:0;"></span>`;
+    const adminBadge = u.isAdminContact ? `<span class="admin-badge-pill">👑 ADMIN</span>` : '';
 
     let avHtml = u.avatarUrl
       ? `<div style="width:34px;height:34px;border-radius:50%;background:url('${u.avatarUrl}') center/cover;border:1px solid var(--border);flex-shrink:0;"></div>`
@@ -2869,12 +2953,13 @@ function renderChatContacts() {
     const badgeHtml = u.unread > 0 ? `<span class="dm-badge">${u.unread}</span>` : '';
 
     html += `
-      <div class="chat-contact-item ${activeChatChannel === u.uid ? 'active' : ''} ${u.unread > 0 ? 'unread-item' : ''}" onclick="selectChatChannel('${u.uid}')">
+      <div class="chat-contact-item ${u.isAdminContact ? 'admin-pinned' : ''} ${activeChatChannel === u.uid ? 'active' : ''} ${u.unread > 0 ? 'unread-item' : ''}" onclick="selectChatChannel('${u.uid}')">
         ${avHtml}
         <div style="min-width:0;flex:1;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
-            <div style="font-size:12px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;min-width:0;">
+            <div style="font-size:12px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:5px;min-width:0;">
               <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.name}</span>
+              ${adminBadge}
               ${dotHtml}
             </div>
             <span class="contact-time">${timeText}</span>
@@ -3556,6 +3641,68 @@ function triggerConfetti() {
     overlay.appendChild(conf);
   }
   setTimeout(() => { overlay.style.display = 'none'; }, 6000);
+}
+
+function openAdminAddAudioShortcut() {
+  if (!isAdminUser()) return showToast("Solo el Administrador puede agregar audios manualmente", "🔒");
+  goto('admin', document.getElementById('nav-item-admin'));
+  setTimeout(() => {
+    const inp = document.getElementById('admin-audio-nombre');
+    if (inp) {
+      inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      inp.focus();
+    }
+  }, 150);
+}
+
+async function adminAddAudioToMonth() {
+  if (!isAdminUser()) return showToast("Acceso denegado: requiere rol Admin", "🔒");
+  const agente = (document.getElementById('admin-audio-agente').value || 'Marco').trim();
+  const nombre = document.getElementById('admin-audio-nombre').value.trim();
+  const duracion = document.getElementById('admin-audio-duracion').value.trim() || '01:00';
+  const fechaInput = document.getElementById('admin-audio-fecha').value.trim();
+  const fileInput = document.getElementById('admin-audio-file');
+  const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+  if (!nombre) {
+    return showToast("Ingresa el nombre o referencia del audio/contrato", "⚠️");
+  }
+
+  const btn = document.getElementById('btn-admin-add-audio');
+  const origHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Guardando en Audios del Mes...';
+
+  try {
+    let audioUrl = '';
+    if (file) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const snap = await storage.ref(`audios_crm/admin_${Date.now()}_${safeName}`).put(file);
+      audioUrl = await snap.ref.getDownloadURL();
+    }
+
+    const fechaFinal = fechaInput || getDateStr();
+    await db.collection('historial_llamadas').add({
+      fecha: fechaFinal,
+      nombre: nombre,
+      duracion: duracion,
+      agente: agente,
+      audioUrl: audioUrl,
+      agregadoPorAdmin: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    document.getElementById('admin-audio-nombre').value = '';
+    document.getElementById('admin-audio-fecha').value = '';
+    if (fileInput) fileInput.value = '';
+    showToast(`Audio agregado a "Audios del Mes" para ${agente}`, "✅");
+  } catch (e) {
+    console.error(e);
+    showToast("Error al agregar el audio en Firebase", "❌");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
+  }
 }
 </script>
 </body>
