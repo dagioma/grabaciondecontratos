@@ -14,47 +14,54 @@
   --border:#2d2f36; --text:#f1f2f5; --muted:#8b92a5;
   --p:#8b5cf6; --p-glow:rgba(139,92,246,.2);
   --info:#0ea5e9; --success:#10b981; --danger:#ef4444;
+  --media-invert:1; --scheme:dark; --scroll-thumb:#4a4d5a;
+}
+body.light-mode {
+  --bg:#eef2f7; --surface:#ffffff; --surface-hover:#f1f5f9;
+  --border:#cbd5e1; --text:#0f172a; --muted:#475569;
+  --p:#7c3aed; --p-glow:rgba(124,58,237,.16);
+  --info:#0284c7; --success:#059669; --danger:#dc2626;
+  --media-invert:0; --scheme:light; --scroll-thumb:#cbd5e1;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.topbar{background:var(--surface);min-height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:10;gap:16px}
+body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:background-color .25s ease,color .25s ease}
+.topbar{background:var(--surface);min-height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:10;gap:16px}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .logo-box{background:linear-gradient(135deg,var(--p),#c4b5fd);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;box-shadow:0 4px 10px var(--p-glow);flex-shrink:0}
 .brand-text h1{font-size:18px;font-weight:800;letter-spacing:-.5px}.brand-text p{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 .topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.user-badge{font-size:12px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.05);padding:7px 12px;border-radius:8px;border:1px solid var(--border)}
+.user-badge{font-size:12px;font-weight:700;color:var(--muted);background:rgba(128,128,128,.08);padding:7px 12px;border-radius:8px;border:1px solid var(--border)}
 .layout{display:flex;flex:1;min-height:0;overflow:hidden;padding:24px;gap:24px}
 .main-content{flex:2;min-width:0;display:flex;flex-direction:column;background:var(--surface);border-radius:16px;border:1px solid var(--border);overflow:hidden}
-.toolbar{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;background:rgba(0,0,0,.1);flex-wrap:wrap}
+.toolbar{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;background:rgba(0,0,0,.05);flex-wrap:wrap}
 .inp{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:13px;font-family:inherit;outline:none;min-width:0;flex:1;transition:border-color .2s,box-shadow .2s}
 .inp:focus{border-color:var(--p);box-shadow:0 0 0 3px var(--p-glow)}
 .btn{background:var(--p);color:#fff;border:1px solid transparent;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:filter .2s,box-shadow .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
-.btn:hover{filter:brightness(1.1);box-shadow:0 4px 12px var(--p-glow)}.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;filter:none}
-.btn.sm{padding:8px 13px;font-size:12px}.btn.secondary{background:rgba(255,255,255,.05);color:var(--muted);border-color:var(--border)}
-.btn.info{background:rgba(14,165,233,.1);color:var(--info);border-color:rgba(14,165,233,.3)}
-.btn.success{background:rgba(16,185,129,.1);color:var(--success);border-color:rgba(16,185,129,.3)}
-.btn.danger{background:rgba(239,68,68,.1);color:var(--danger);border-color:rgba(239,68,68,.3)}
-.agent-filter{max-width:190px}.date-filter-container{display:flex;align-items:center;gap:8px}.date-filter-container>span{font-size:12px;color:var(--muted);font-weight:600}.date-filter{max-width:145px;padding:9px 12px;color-scheme:dark}
-.load-status{width:100%;min-height:16px;color:var(--muted);font-size:11px;padding:0 2px}.load-status.busy{color:#c4b5fd}
+.btn:hover{filter:brightness(1.08);box-shadow:0 4px 12px var(--p-glow)}.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;filter:none}
+.btn.sm{padding:8px 13px;font-size:12px}.btn.secondary{background:rgba(128,128,128,.08);color:var(--muted);border-color:var(--border)}
+.btn.info{background:rgba(14,165,233,.12);color:var(--info);border-color:rgba(14,165,233,.3)}
+.btn.success{background:rgba(16,185,129,.12);color:var(--success);border-color:rgba(16,185,129,.3)}
+.btn.danger{background:rgba(239,68,68,.12);color:var(--danger);border-color:rgba(239,68,68,.3)}
+.agent-filter{max-width:190px}.date-filter-container{display:flex;align-items:center;gap:8px}.date-filter-container>span{font-size:12px;color:var(--muted);font-weight:600}.date-filter{max-width:145px;padding:9px 12px;color-scheme:var(--scheme)}
+.load-status{width:100%;min-height:16px;color:var(--muted);font-size:11px;padding:0 2px}.load-status.busy{color:var(--p)}
 .table-container{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
 table{width:100%;border-collapse:collapse;text-align:left;min-width:760px}
 th{background:var(--bg);padding:14px 16px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:500;vertical-align:middle}tbody tr:hover td{background:var(--surface-hover)}
-audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}audio::-webkit-media-controls-panel{background-color:var(--bg)}audio::-webkit-media-controls-play-button,audio::-webkit-media-controls-mute-button{filter:invert(1)}audio::-webkit-media-controls-current-time-display,audio::-webkit-media-controls-time-remaining-display{color:#fff}
-.tag{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(255,255,255,.1);white-space:nowrap;display:inline-block}.tag.purple{color:#c4b5fd;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3)}
-.table-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,.08);flex-wrap:wrap}
+audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}audio::-webkit-media-controls-panel{background-color:var(--bg)}audio::-webkit-media-controls-play-button,audio::-webkit-media-controls-mute-button{filter:invert(var(--media-invert))}audio::-webkit-media-controls-current-time-display,audio::-webkit-media-controls-time-remaining-display{color:var(--text)}
+.tag{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(128,128,128,.12);white-space:nowrap;display:inline-block}.tag.purple{color:var(--p);background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.3)}
+.table-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,.04);flex-wrap:wrap}
 .results-info{font-size:11px;color:var(--muted)}
 .side-panel{flex:1;max-width:350px;min-width:250px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;flex-shrink:0}
-.stat-icon{position:absolute;right:18px;top:18px;width:40px;height:40px;background:rgba(255,255,255,.05);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.stat-icon{position:absolute;right:18px;top:18px;width:40px;height:40px;background:rgba(128,128,128,.08);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .stat-label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}.stat-val{font-size:34px;font-weight:900;line-height:1;color:var(--text);overflow-wrap:anywhere}.stat-sub{font-size:11px;color:var(--muted);font-weight:600;line-height:1.4}
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;flex:1;min-height:290px;display:flex;flex-direction:column;flex-shrink:0}.chart-container{flex:1;position:relative;min-height:200px;margin-top:14px}
-#toast{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;padding:12px 22px;border-radius:40px;font-size:13px;font-weight:600;transition:bottom .3s;z-index:99999;box-shadow:0 10px 25px rgba(0,0,0,.5);text-align:center;width:max-content;max-width:90%}#toast.show{bottom:25px}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;align-items:center;justify-content:center;padding:16px}.modal{background:var(--surface);padding:28px;border-radius:16px;width:100%;max-width:500px;border:1px solid var(--border);max-height:90vh;overflow-y:auto}.modal h2{margin-bottom:14px;font-size:20px}.modal p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:14px}.code-block{background:var(--bg);padding:12px;border-radius:8px;font-family:monospace;color:var(--text);font-size:12px;margin-bottom:10px;word-break:break-all}
-.progress-container{background:var(--bg);border-radius:10px;width:100%;height:24px;overflow:hidden;border:1px solid var(--border);position:relative;margin-top:18px}.progress-fill{background:linear-gradient(90deg,var(--info),var(--p));width:0%;height:100%;transition:width .2s;box-shadow:0 0 10px var(--p-glow)}.progress-text{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:11px;font-weight:800;text-shadow:1px 1px 2px rgba(0,0,0,.8)}
-::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#4a4d5a;border-radius:99px}
-#auth-guard{position:fixed;inset:0;background:var(--bg);z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .3s;padding:16px}#auth-guard.hidden{opacity:0;pointer-events:none;visibility:hidden}.guard-box{background:var(--surface);border:1px solid var(--border);padding:32px;border-radius:20px;text-align:center;max-width:380px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-.spinner{border:4px solid rgba(255,255,255,.1);border-left-color:var(--p);border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px}@keyframes spin{to{transform:rotate(360deg)}}
+#toast{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;padding:12px 22px;border-radius:40px;font-size:13px;font-weight:600;transition:bottom .3s;z-index:99999;box-shadow:0 10px 25px rgba(0,0,0,.35);text-align:center;width:max-content;max-width:90%}#toast.show{bottom:25px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10000;align-items:center;justify-content:center;padding:16px}.modal{background:var(--surface);padding:28px;border-radius:16px;width:100%;max-width:500px;border:1px solid var(--border);max-height:90vh;overflow-y:auto}.modal h2{margin-bottom:14px;font-size:20px}.modal p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:14px}.code-block{background:var(--bg);padding:12px;border-radius:8px;font-family:monospace;color:var(--text);font-size:12px;margin-bottom:10px;word-break:break-all}.progress-container{background:var(--bg);border-radius:10px;width:100%;height:24px;overflow:hidden;border:1px solid var(--border);position:relative;margin-top:18px}.progress-fill{background:linear-gradient(90deg,var(--info),var(--p));width:0%;height:100%;transition:width .2s;box-shadow:0 0 10px var(--p-glow)}.progress-text{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:11px;font-weight:800;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.8)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:99px}
+#auth-guard{position:fixed;inset:0;background:var(--bg);z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .3s;padding:16px}#auth-guard.hidden{opacity:0;pointer-events:none;visibility:hidden}.guard-box{background:var(--surface);border:1px solid var(--border);padding:32px;border-radius:20px;text-align:center;max-width:380px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.spinner{border:4px solid rgba(128,128,128,.2);border-left-color:var(--p);border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:1050px){.layout{gap:16px;padding:16px}.side-panel{max-width:300px}}
 @media(max-width:768px){body{height:auto;min-height:100vh;overflow-y:auto}.topbar{height:auto;flex-direction:column;padding:16px;gap:14px;align-items:stretch}.brand{justify-content:center}.topbar-actions{width:100%;justify-content:center}.topbar-actions .btn{flex:1;padding:9px 8px;font-size:11px}.user-badge{width:100%;text-align:center}.layout{flex-direction:column;padding:12px;gap:14px;overflow:visible}.main-content{overflow:hidden;border-radius:12px;min-height:600px}.toolbar{align-items:stretch;padding:14px;gap:10px}.toolbar>.inp,.agent-filter{max-width:none;width:100%;flex:auto}.date-filter-container{width:100%;flex-wrap:wrap}.date-filter-container>span{width:100%}.date-filter{max-width:none;flex:1}.table-container{min-height:360px}.side-panel{max-width:100%;min-width:0;overflow:visible;gap:14px}.chart-card{min-height:300px}.modal{padding:22px}.table-footer{align-items:stretch}.table-footer .btn{width:100%}}
 </style>
@@ -76,6 +83,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
   </div>
   <div class="topbar-actions">
     <span id="user-badge" class="user-badge">Verificando...</span>
+    <button class="btn secondary" id="btn-theme-auditor" onclick="toggleAuditorTheme()">☀️ Claro</button>
     <button class="btn danger" onclick="cerrarSesion()">Salir</button>
     <button class="btn info" onclick="abrirModalDescarga()">⬇ Descargar ZIP</button>
     <button class="btn success" id="btn-export" onclick="exportarExcel()">Exportar datos</button>
@@ -134,8 +142,8 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
       <option value="filtros">🔍 Según los filtros actuales de la tabla</option>
     </select>
     <div id="dl-range-container" style="display:none;gap:12px;margin-bottom:16px">
-      <div style="flex:1"><label style="font-size:11px;color:var(--muted);font-weight:700">DESDE:</label><input type="date" id="dl-start" class="inp" style="width:100%;color-scheme:dark;margin-top:4px"></div>
-      <div style="flex:1"><label style="font-size:11px;color:var(--muted);font-weight:700">HASTA:</label><input type="date" id="dl-end" class="inp" style="width:100%;color-scheme:dark;margin-top:4px"></div>
+      <div style="flex:1"><label style="font-size:11px;color:var(--muted);font-weight:700">DESDE:</label><input type="date" id="dl-start" class="inp" style="width:100%;color-scheme:var(--scheme);margin-top:4px"></div>
+      <div style="flex:1"><label style="font-size:11px;color:var(--muted);font-weight:700">HASTA:</label><input type="date" id="dl-end" class="inp" style="width:100%;color-scheme:var(--scheme);margin-top:4px"></div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:22px">
       <button class="btn sm secondary" onclick="cerrarModalDescarga()">Cancelar</button>
@@ -166,7 +174,6 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
   </div>
 </div>
 
-<!-- Librerías cargadas después del HTML para no bloquear la primera pintura. -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -174,6 +181,35 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 'use strict';
+
+let lastAgentCounts = Object.create(null);
+
+function applyAuditorTheme(mode, syncChart = true) {
+  const isLight = mode === 'light';
+  document.body.classList.toggle('light-mode', isLight);
+  localStorage.setItem('crm_theme_mode', mode);
+  const btn = document.getElementById('btn-theme-auditor');
+  if (btn) btn.textContent = isLight ? '🌙 Oscuro' : '☀️ Claro';
+  if (syncChart && pieChartInstance) {
+    renderPieChart(lastAgentCounts);
+  }
+}
+
+function toggleAuditorTheme() {
+  const next = document.body.classList.contains('light-mode') ? 'dark' : 'light';
+  applyAuditorTheme(next, true);
+}
+
+applyAuditorTheme(localStorage.getItem('crm_theme_mode') || 'dark', false);
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'crm_theme_mode' && e.newValue) {
+    applyAuditorTheme(e.newValue, true);
+  }
+});
+window.addEventListener('pageshow', () => {
+  applyAuditorTheme(localStorage.getItem('crm_theme_mode') || 'dark', true);
+});
 
 const FB_CFG = {
   apiKey: "AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
@@ -189,12 +225,11 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const audiosRef = db.collection('historial_llamadas');
 
-// La tabla consulta 50 documentos. La búsqueda global usa lotes separados de 500.
 const PAGE_SIZE = 50;
 const SCAN_BATCH_SIZE = 500;
-let allAudios = [];                 // Documentos descargados para la paginación visible.
-let fullIndexAudios = null;         // Se llena solo cuando se necesita una operación global.
-let fullIndexPromise = null;        // Evita iniciar dos escaneos simultáneos.
+let allAudios = [];
+let fullIndexAudios = null;
+let fullIndexPromise = null;
 let lastVisibleDoc = null;
 let hasMoreDb = false;
 let isLoadingPage = false;
@@ -282,7 +317,6 @@ async function cargarPrimeraPagina() {
 async function cargarMasAudios() {
   if (isLoadingPage) return;
 
-  // Si ya se hizo una búsqueda global, los siguientes 50 se muestran desde la caché.
   if (fullIndexAudios) {
     if (visibleLimit < currentFilteredAudios.length) {
       visibleLimit += PAGE_SIZE;
@@ -349,8 +383,6 @@ function criteriaNeedGlobalScan(criteria) {
   return Boolean(criteria.q || criteria.agent !== 'ALL' || criteria.date);
 }
 
-// Firestore no ofrece búsqueda nativa de subcadenas en varios campos.
-// Para conservar la búsqueda general actual, se revisan los documentos por lotes una sola vez.
 async function ensureFullIndex() {
   if (fullIndexAudios) return fullIndexAudios;
   if (fullIndexPromise) return fullIndexPromise;
@@ -372,7 +404,6 @@ async function ensureFullIndex() {
       cursor = snapshot.docs[snapshot.docs.length - 1];
       setLoadStatus(`Indexando historial para búsqueda global: ${scanned.toLocaleString('es-PE')} audios revisados...`, true);
 
-      // Cede el hilo principal entre lotes para que la interfaz siga respondiendo.
       await new Promise(resolve => setTimeout(resolve, 0));
       if (snapshot.size < SCAN_BATCH_SIZE) break;
     }
@@ -383,7 +414,6 @@ async function ensureFullIndex() {
     hasMoreDb = false;
     visibleLimit = PAGE_SIZE;
     populateAgentFilter(fullIndexAudios);
-    // Actualiza la vista incluso cuando el escaneo fue solicitado por Exportar o ZIP.
     currentFilteredAudios = fullIndexAudios.filter(audio => audioMatchesCriteria(audio, getFilterCriteria()));
     renderCurrentView();
     setLoadStatus(`Búsqueda global lista: ${scanned.toLocaleString('es-PE')} audios disponibles en memoria.`, false);
@@ -582,6 +612,7 @@ function updateAnalytics(dataArray) {
     agentCounts[agent] = (agentCounts[agent] || 0) + 1;
     totalSeconds += durationToSeconds(audio.duracion);
   });
+  lastAgentCounts = agentCounts;
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   document.getElementById('val-total-time').textContent = `${hours}h ${minutes}m`;
@@ -599,6 +630,10 @@ function durationToSeconds(value) {
 
 function renderPieChart(agentCounts) {
   if (typeof Chart === 'undefined') return;
+  const isLight = document.body.classList.contains('light-mode');
+  const legendColor = isLight ? '#0f172a' : '#f1f2f5';
+  const borderColor = isLight ? '#ffffff' : '#1c1d22';
+
   const labels = Object.keys(agentCounts);
   const values = Object.values(agentCounts);
   const bgColors = ['rgba(139,92,246,.8)','rgba(16,185,129,.8)','rgba(14,165,233,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.8)','rgba(107,114,128,.8)'];
@@ -606,13 +641,15 @@ function renderPieChart(agentCounts) {
   if (!pieChartInstance) {
     pieChartInstance = new Chart(canvas.getContext('2d'), {
       type: 'doughnut',
-      data: { labels, datasets: [{ data: values, backgroundColor: bgColors, borderColor: '#1c1d22', borderWidth: 2 }] },
+      data: { labels, datasets: [{ data: values, backgroundColor: bgColors, borderColor, borderWidth: 2 }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '70%', animation: false,
-        plugins: { legend: { position: 'bottom', labels: { color: '#f1f2f5', font: { size: 10, family: 'Inter' }, boxWidth: 10 } } } }
+        plugins: { legend: { position: 'bottom', labels: { color: legendColor, font: { size: 10, family: 'Inter' }, boxWidth: 10 } } } }
     });
   } else {
     pieChartInstance.data.labels = labels;
     pieChartInstance.data.datasets[0].data = values;
+    pieChartInstance.data.datasets[0].borderColor = borderColor;
+    pieChartInstance.options.plugins.legend.labels.color = legendColor;
     pieChartInstance.update('none');
   }
 }
@@ -733,7 +770,6 @@ async function prepararYDescargarZip() {
   cerrarModalDescarga();
   setLoadStatus('Preparando la lista completa de audios para el ZIP...', true);
   try {
-    // Esta consulta es independiente de la paginación de 50 filas de la tabla.
     const allRecords = await ensureFullIndex();
     const selected = filtrarPorTipoDescarga(allRecords, type, startDate, endDate);
     if (!selected.length) {
@@ -859,7 +895,6 @@ async function iniciarDescargaZip(listaAudios) {
 
       const percent = (processedCount / totalFiles) * 80;
       setZipProgress(percent, `Descargando audios: ${processedCount} de ${totalFiles} · Correctos: ${downloadedCount} · Fallidos: ${failedCount}`);
-      // Permite actualizar la barra y responder a cancelar/pausar entre archivos.
       if (i % 3 === 0) await new Promise(resolve => setTimeout(resolve, 0));
     }
 
@@ -909,7 +944,6 @@ async function iniciarDescargaZip(listaAudios) {
   }
 }
 
-// Estado inicial de los controles.
 updateLoadMoreButton();
 </script>
 </body>
