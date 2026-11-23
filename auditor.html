@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Portal de Auditoría - Central de Audios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#121317">
+<title>Central de Audios | Auditoría y Calidad</title>
 <link rel="icon" href="https://www.citypng.com/public/uploads/preview/hd-valorant-official-symbol-sign-logo-png-701751694788082d3btqfskcj.png?v=2026060820">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,7 +38,7 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;display
 .inp{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:13px;font-family:inherit;outline:none;min-width:0;flex:1;transition:border-color .2s,box-shadow .2s}
 .inp:focus{border-color:var(--p);box-shadow:0 0 0 3px var(--p-glow)}
 .btn{background:var(--p);color:#fff;border:1px solid transparent;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:filter .2s,box-shadow .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
-.btn:hover{filter:brightness(1.08);box-shadow:0 4px 12px var(--p-glow)}.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;filter:none}
+.btn:hover{filter:brightness(1.08);box-shadow:0 4px 12px var(--p-glow);transform:translateY(-1px)}.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;filter:none;transform:none}.btn:focus-visible,.inp:focus-visible{outline:2px solid var(--p);outline-offset:2px}
 .btn.sm{padding:8px 13px;font-size:12px}.btn.secondary{background:rgba(128,128,128,.08);color:var(--muted);border-color:var(--border)}
 .btn.info{background:rgba(14,165,233,.12);color:var(--info);border-color:rgba(14,165,233,.3)}
 .btn.success{background:rgba(16,185,129,.12);color:var(--success);border-color:rgba(16,185,129,.3)}
@@ -53,12 +54,12 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 .table-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,.04);flex-wrap:wrap}
 .results-info{font-size:11px;color:var(--muted)}
 .side-panel{flex:1;max-width:350px;min-width:250px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;flex-shrink:0}
+.stat-card{background:linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--p)));border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 10px 28px rgba(0,0,0,.08)}
 .stat-icon{position:absolute;right:18px;top:18px;width:40px;height:40px;background:rgba(128,128,128,.08);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .stat-label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}.stat-val{font-size:34px;font-weight:900;line-height:1;color:var(--text);overflow-wrap:anywhere}.stat-sub{font-size:11px;color:var(--muted);font-weight:600;line-height:1.4}
-.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;flex:1;min-height:290px;display:flex;flex-direction:column;flex-shrink:0}.chart-container{flex:1;position:relative;min-height:200px;margin-top:14px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;flex:1;min-height:290px;display:flex;flex-direction:column;flex-shrink:0;box-shadow:0 10px 28px rgba(0,0,0,.07)}.chart-container{flex:1;position:relative;min-height:200px;margin-top:14px}
 #toast{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;padding:12px 22px;border-radius:40px;font-size:13px;font-weight:600;transition:bottom .3s;z-index:99999;box-shadow:0 10px 25px rgba(0,0,0,.35);text-align:center;width:max-content;max-width:90%}#toast.show{bottom:25px}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10000;align-items:center;justify-content:center;padding:16px}.modal{background:var(--surface);padding:28px;border-radius:16px;width:100%;max-width:500px;border:1px solid var(--border);max-height:90vh;overflow-y:auto}.modal h2{margin-bottom:14px;font-size:20px}.modal p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:14px}.code-block{background:var(--bg);padding:12px;border-radius:8px;font-family:monospace;color:var(--text);font-size:12px;margin-bottom:10px;word-break:break-all}.progress-container{background:var(--bg);border-radius:10px;width:100%;height:24px;overflow:hidden;border:1px solid var(--border);position:relative;margin-top:18px}.progress-fill{background:linear-gradient(90deg,var(--info),var(--p));width:0%;height:100%;transition:width .2s;box-shadow:0 0 10px var(--p-glow)}.progress-text{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:11px;font-weight:800;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.8)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10000;align-items:center;justify-content:center;padding:16px}.modal{background:var(--surface);padding:28px;border-radius:18px;width:100%;max-width:540px;border:1px solid var(--border);max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.35)}.modal h2{margin-bottom:14px;font-size:20px}.modal p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:14px}.code-block{background:var(--bg);padding:12px;border-radius:8px;font-family:monospace;color:var(--text);font-size:12px;margin-bottom:10px;word-break:break-all}.progress-container{background:var(--bg);border-radius:10px;width:100%;height:24px;overflow:hidden;border:1px solid var(--border);position:relative;margin-top:18px}.progress-fill{background:linear-gradient(90deg,var(--info),var(--p));width:0%;height:100%;transition:width .25s ease;box-shadow:0 0 10px var(--p-glow);border-radius:10px}.progress-text{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:11px;font-weight:800;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.8)}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:99px}
 #auth-guard{position:fixed;inset:0;background:var(--bg);z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .3s;padding:16px}#auth-guard.hidden{opacity:0;pointer-events:none;visibility:hidden}.guard-box{background:var(--surface);border:1px solid var(--border);padding:32px;border-radius:20px;text-align:center;max-width:380px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .spinner{border:4px solid rgba(128,128,128,.2);border-left-color:var(--p);border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px}@keyframes spin{to{transform:rotate(360deg)}}
@@ -85,7 +86,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
     <span id="user-badge" class="user-badge">Verificando...</span>
     <button class="btn secondary" id="btn-theme-auditor" onclick="toggleAuditorTheme()">☀️ Claro</button>
     <button class="btn danger" onclick="cerrarSesion()">Salir</button>
-    <button class="btn info" onclick="abrirModalDescarga()">⬇ Descargar ZIP</button>
+    <button class="btn info" onclick="abrirModalDescarga()">⬇ Descargar audios</button>
     <button class="btn success" id="btn-export" onclick="exportarExcel()">Exportar datos</button>
   </div>
 </header>
@@ -133,7 +134,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 <div class="modal-overlay" id="downloadModal">
   <div class="modal">
     <h2>📦 Configurar descarga ZIP</h2>
-    <p>La descarga consulta el historial completo, no solamente los audios que estén visibles en la tabla.</p>
+    <p>La descarga consulta el historial completo, no solamente los audios visibles. En Chrome o Edge se guarda un único ZIP directamente en disco para evitar saturar la memoria; en otros navegadores se generan ZIP por partes.</p>
     <select id="dl-type" class="inp" style="width:100%;margin-bottom:16px;padding:12px;font-weight:600" onchange="toggleDlRange()">
       <option value="hoy">📅 Solo los audios de hoy</option>
       <option value="mes">📆 Los audios de este mes</option>
@@ -154,7 +155,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 
 <div class="modal-overlay" id="progressModal">
   <div class="modal" style="text-align:center">
-    <h2>Preparando descarga ZIP</h2><p id="progress-status">Preparando archivos...</p>
+    <h2>Descarga en curso</h2><p id="progress-status">Preparando archivos...</p>
     <div class="progress-container"><div class="progress-fill" id="progress-bar-fill"></div><div class="progress-text" id="progress-percent">0%</div></div>
     <div style="margin-top:22px;display:flex;justify-content:center;gap:10px">
       <button id="btn-pause-resume" class="btn sm secondary" onclick="togglePausaDescarga()">⏸ Pausar</button>
@@ -166,7 +167,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 <div class="modal-overlay" id="corsModal">
   <div class="modal">
     <h2 style="color:var(--danger)">⚠️ Bloqueo de seguridad (CORS)</h2>
-    <p>Firebase Storage puede estar bloqueando la descarga desde este dominio. Configura CORS en el bucket de Storage y vuelve a intentarlo.</p>
+    <p>El navegador no pudo leer uno o varios archivos desde Firebase Storage. Puede deberse a CORS, permisos del archivo, un enlace vencido o un problema de red. Comprueba que los enlaces sean accesibles desde el dominio del portal.</p>
     <div class="code-block">echo '[{"origin": ["https://TU-DOMINIO.com"],"method": ["GET"],"maxAgeSeconds": 3600}]' &gt; cors.json</div>
     <div class="code-block">gsutil cors set cors.json gs://crm-telecom-db014.firebasestorage.app</div>
     <p>Reemplaza TU-DOMINIO.com por el dominio real donde está publicado el portal. Evita usar <b>*</b> en producción.</p>
@@ -178,6 +179,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.3/umd/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 'use strict';
@@ -765,30 +767,56 @@ async function prepararYDescargarZip() {
   }
 
   const button = document.getElementById('btn-start-download');
+  const originalText = button.textContent;
   button.disabled = true;
-  button.textContent = 'Consultando historial...';
-  cerrarModalDescarga();
-  setLoadStatus('Preparando la lista completa de audios para el ZIP...', true);
+  button.textContent = 'Preparando destino...';
+  let saveHandle = null;
+
   try {
+    // The file picker must be opened directly from this click, before Firestore work begins.
+    if (typeof window.showSaveFilePicker === 'function' && window.fflate && window.fflate.Zip) {
+      try {
+        saveHandle = await window.showSaveFilePicker({
+          suggestedName: `Respaldos_Audios_${new Date().toISOString().slice(0, 10)}.zip`,
+          types: [{ description: 'Archivo ZIP', accept: { 'application/zip': ['.zip'] } }]
+        });
+      } catch (pickerError) {
+        if (pickerError && pickerError.name === 'AbortError') {
+          showToast('Descarga cancelada: no se seleccionó dónde guardar el ZIP.', 3500);
+          return;
+        }
+        console.warn('El selector de archivos no está disponible; se usará el modo por partes.', pickerError);
+      }
+    }
+
+    cerrarModalDescarga();
+    setLoadStatus('Preparando la lista completa de audios para la descarga...', true);
+    button.textContent = 'Consultando historial...';
     const allRecords = await ensureFullIndex();
     const selected = filtrarPorTipoDescarga(allRecords, type, startDate, endDate);
     if (!selected.length) {
-      showToast('No se encontraron audios para esta selección', 4000);
+      if (saveHandle) showToast('No se encontraron audios para esta selección.', 4000);
+      else showToast('No se encontraron audios para esta selección', 4000);
       return;
     }
-    iniciarDescargaZip(selected);
+    await iniciarDescargaZip(selected, saveHandle);
   } catch (error) {
-    console.error('No se pudo preparar el ZIP:', error);
-    showToast('No se pudo consultar el historial para el ZIP', 4000);
+    console.error('No se pudo preparar la descarga:', error);
+    showToast('No se pudo preparar la descarga. Revisa la conexión con Firebase e inténtalo otra vez.', 5000);
+    setLoadStatus('No se pudo preparar la descarga.', false);
   } finally {
     button.disabled = false;
-    button.textContent = '🚀 Iniciar descarga';
+    button.textContent = originalText;
   }
 }
-
 async function esperarSiEstaPausado() {
   while (estadoDescarga === 'pausada') {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 180));
+  }
+  if (estadoDescarga === 'cancelada') {
+    const error = new Error('Descarga cancelada');
+    error.name = 'AbortError';
+    throw error;
   }
 }
 
@@ -798,7 +826,7 @@ function togglePausaDescarga() {
   if (estadoDescarga === 'corriendo') {
     estadoDescarga = 'pausada';
     button.textContent = '▶ Reanudar';
-    status.textContent = 'Descarga en pausa...';
+    status.textContent = 'Descarga en pausa. Puedes reanudarla cuando quieras.';
   } else if (estadoDescarga === 'pausada') {
     estadoDescarga = 'corriendo';
     button.textContent = '⏸ Pausar';
@@ -807,15 +835,19 @@ function togglePausaDescarga() {
 }
 
 function cancelarDescarga() {
+  if (estadoDescarga === 'completada' || estadoDescarga === 'detenida') {
+    document.getElementById('progressModal').style.display = 'none';
+    return;
+  }
   estadoDescarga = 'cancelada';
   if (controladorAborto) controladorAborto.abort();
-  document.getElementById('progressModal').style.display = 'none';
-  showToast('Descarga cancelada', 3500);
+  showToast('Cancelando descarga de forma segura...', 2500);
 }
 
 function setZipProgress(percent, message) {
-  document.getElementById('progress-bar-fill').style.width = `${percent}%`;
-  document.getElementById('progress-percent').textContent = `${Math.floor(percent)}%`;
+  const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+  document.getElementById('progress-bar-fill').style.width = `${safePercent}%`;
+  document.getElementById('progress-percent').textContent = `${Math.floor(safePercent)}%`;
   if (message) document.getElementById('progress-status').textContent = message;
 }
 
@@ -833,11 +865,268 @@ function extensionFromUrl(url) {
   } catch (_) { return '.mp3'; }
 }
 
-async function iniciarDescargaZip(listaAudios) {
-  if (typeof JSZip === 'undefined') {
-    showToast('No se pudo cargar el módulo ZIP. Recarga la página.', 4000);
+function makeAudioZipPath(audio, index, url) {
+  const date = parseAudioDate(audio.fecha);
+  const datePart = date
+    ? `${String(date.getDate()).padStart(2, '0')}_${String(date.getMonth() + 1).padStart(2, '0')}_${date.getFullYear()}`
+    : 'Sin_Fecha';
+  const cleanName = sanitizeFilePart(audio.nombre, 'Audio');
+  const cleanAgent = sanitizeFilePart(audio.agente, 'Agente');
+  const shortId = sanitizeFilePart(audio.id || String(index + 1), String(index + 1)).slice(-12);
+  return `audios_${datePart}/${cleanName}_${cleanAgent}_${shortId}${extensionFromUrl(url)}`;
+}
+
+function isCorsOrNetworkError(error) {
+  const message = String(error && error.message || '').toLowerCase();
+  return error instanceof TypeError || message.includes('cors') || message.includes('failed to fetch') || message.includes('network');
+}
+
+async function fetchAudioBlobWithRetry(url, audioId) {
+  let lastError = null;
+  const maxAttempts = 3;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    await esperarSiEstaPausado();
+    const requestController = new AbortController();
+    const globalSignal = controladorAborto ? controladorAborto.signal : null;
+    const forwardAbort = () => requestController.abort();
+    if (globalSignal) {
+      if (globalSignal.aborted) requestController.abort();
+      else globalSignal.addEventListener('abort', forwardAbort, { once: true });
+    }
+    let timedOut = false;
+    const timeout = setTimeout(() => { timedOut = true; requestController.abort(); }, 120000);
+    try {
+      const response = await fetch(url, {
+        mode: 'cors',
+        cache: 'no-store',
+        signal: requestController.signal
+      });
+      if (!response.ok) throw new Error(`HTTP_${response.status}`);
+      const blob = await response.blob();
+      if (!blob || blob.size === 0) throw new Error('El archivo recibido está vacío');
+      return blob;
+    } catch (error) {
+      lastError = timedOut ? new Error('Tiempo de espera agotado (120 segundos)') : error;
+      if ((globalSignal && globalSignal.aborted) || estadoDescarga === 'cancelada') {
+        const abortError = new Error('Descarga cancelada');
+        abortError.name = 'AbortError';
+        throw abortError;
+      }
+      if (attempt < maxAttempts) {
+        const waitMs = attempt * 700;
+        setLoadStatus(`Reintentando audio ${audioId || ''} (${attempt + 1}/${maxAttempts})...`, true);
+        await new Promise(resolve => setTimeout(resolve, waitMs));
+      }
+    } finally {
+      clearTimeout(timeout);
+      if (globalSignal) globalSignal.removeEventListener('abort', forwardAbort);
+    }
+  }
+  throw lastError || new Error('No se pudo obtener el audio');
+}
+
+function buildDownloadReport(errors, total, downloaded) {
+  const lines = [
+    'INFORME DE DESCARGA DE AUDIOS',
+    `Fecha: ${new Date().toLocaleString('es-PE')}`,
+    `Audios seleccionados: ${total}`,
+    `Audios descargados: ${downloaded}`,
+    `Audios con error: ${errors.length}`,
+    '',
+    'DETALLE DE AUDIOS QUE NO SE PUDIERON INCLUIR:'
+  ];
+  errors.forEach((item, index) => {
+    lines.push(`${index + 1}. Referencia: ${item.name || 'Sin referencia'} | ID: ${item.id || 'N/D'} | Motivo: ${item.reason}`);
+  });
+  return lines.join('\n');
+}
+
+async function addBlobToStreamingZip(zip, filePath, blob, drainWrites) {
+  const entry = new window.fflate.ZipPassThrough(filePath);
+  zip.add(entry);
+  if (blob.stream && blob.stream().getReader) {
+    const reader = blob.stream().getReader();
+    try {
+      while (true) {
+        await esperarSiEstaPausado();
+        const result = await reader.read();
+        if (result.done) break;
+        if (result.value && result.value.length) {
+          entry.push(result.value, false);
+          await drainWrites();
+        }
+      }
+      entry.push(new Uint8Array(0), true);
+    } finally {
+      try { reader.releaseLock(); } catch (_) {}
+    }
+  } else {
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    entry.push(bytes, true);
+  }
+  await drainWrites();
+}
+
+async function iniciarDescargaZipEnDisco(listaAudios, writable) {
+  let writeQueue = Promise.resolve();
+  let writeError = null;
+  const zip = new window.fflate.Zip((error, chunk) => {
+    if (error) {
+      writeError = error;
+      return;
+    }
+    if (chunk && chunk.length) {
+      writeQueue = writeQueue.then(() => writable.write(chunk)).catch(err => {
+        writeError = err;
+      });
+    }
+  });
+  const drainWrites = async () => {
+    await writeQueue;
+    if (writeError) throw writeError;
+  };
+
+  let processed = 0;
+  let downloaded = 0;
+  let corsError = false;
+  const errors = [];
+  const total = listaAudios.length;
+
+  for (let index = 0; index < total; index++) {
+    await esperarSiEstaPausado();
+    const audio = listaAudios[index];
+    const url = safeAudioUrl(audio.audioUrl);
+    if (!url) {
+      errors.push({ id: audio.id, name: audio.nombre, reason: 'Enlace de audio vacío o no válido' });
+    } else {
+      try {
+        const blob = await fetchAudioBlobWithRetry(url, audio.id);
+        await addBlobToStreamingZip(zip, makeAudioZipPath(audio, index, url), blob, drainWrites);
+        downloaded++;
+      } catch (error) {
+        if (error && error.name === 'AbortError') throw error;
+        if (isCorsOrNetworkError(error)) corsError = true;
+        errors.push({ id: audio.id, name: audio.nombre, reason: error.message || 'Error de descarga' });
+        console.warn('No se pudo incluir un audio:', audio.id, error);
+      }
+    }
+
+    processed++;
+    const percent = (processed / total) * 92;
+    setZipProgress(percent, `Descargando y guardando: ${processed.toLocaleString('es-PE')} de ${total.toLocaleString('es-PE')} · Correctos: ${downloaded} · Fallidos: ${errors.length}`);
+    if (index % 2 === 0) await new Promise(resolve => setTimeout(resolve, 0));
+  }
+
+  if (estadoDescarga === 'cancelada') throw new Error('Descarga cancelada');
+  if (downloaded === 0) {
+    await writable.abort().catch(() => {});
+    if (corsError) document.getElementById('corsModal').style.display = 'flex';
+    else showToast('No se pudo descargar ningún audio. Comprueba los enlaces y permisos.', 5000);
+    return { downloaded, failed: errors.length, corsError, empty: true };
+  }
+
+  if (errors.length) {
+    const report = new window.fflate.ZipPassThrough('INFORME_ERRORES_DESCARGA.txt');
+    zip.add(report);
+    const reportBytes = new TextEncoder().encode(buildDownloadReport(errors, total, downloaded));
+    report.push(reportBytes, true);
+  }
+
+  setZipProgress(95, 'Cerrando la estructura ZIP y verificando la escritura...');
+  zip.end();
+  await drainWrites();
+  setZipProgress(98, 'Guardando el archivo final en tu dispositivo...');
+  await writable.close();
+  setZipProgress(100, '¡ZIP guardado correctamente!');
+  return { downloaded, failed: errors.length, corsError, empty: false };
+}
+
+function triggerBlobDownload(blob, filename) {
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = filename;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 180000);
+}
+
+async function iniciarDescargaZipPorPartes(listaAudios) {
+  if (typeof JSZip === 'undefined') throw new Error('No se pudo cargar el módulo ZIP');
+  const PART_SIZE = 20;
+  const total = listaAudios.length;
+  const totalParts = Math.ceil(total / PART_SIZE);
+  const errors = [];
+  let processed = 0;
+  let downloaded = 0;
+  let corsError = false;
+  let generatedParts = 0;
+
+  for (let partIndex = 0; partIndex < totalParts; partIndex++) {
+    await esperarSiEstaPausado();
+    const start = partIndex * PART_SIZE;
+    const partItems = listaAudios.slice(start, start + PART_SIZE);
+    const zip = new JSZip();
+    let partDownloaded = 0;
+
+    for (let offset = 0; offset < partItems.length; offset++) {
+      await esperarSiEstaPausado();
+      const audio = partItems[offset];
+      const absoluteIndex = start + offset;
+      const url = safeAudioUrl(audio.audioUrl);
+      if (!url) {
+        errors.push({ id: audio.id, name: audio.nombre, reason: 'Enlace de audio vacío o no válido' });
+      } else {
+        try {
+          const blob = await fetchAudioBlobWithRetry(url, audio.id);
+          zip.file(makeAudioZipPath(audio, absoluteIndex, url), blob, { compression: 'STORE' });
+          partDownloaded++;
+          downloaded++;
+        } catch (error) {
+          if (error && error.name === 'AbortError') throw error;
+          if (isCorsOrNetworkError(error)) corsError = true;
+          errors.push({ id: audio.id, name: audio.nombre, reason: error.message || 'Error de descarga' });
+          console.warn('No se pudo incluir un audio:', audio.id, error);
+        }
+      }
+      processed++;
+      setZipProgress((processed / total) * 88, `Procesando audios: ${processed} de ${total} · Correctos: ${downloaded} · Fallidos: ${errors.length}`);
+    }
+
+    if (partDownloaded > 0) {
+      setZipProgress(90 + (partIndex / totalParts) * 8, `Creando ZIP ${partIndex + 1} de ${totalParts}...`);
+      const content = await zip.generateAsync({ type: 'blob', compression: 'STORE', streamFiles: true }, metadata => {
+        const stage = (partIndex + metadata.percent / 100) / totalParts;
+        setZipProgress(90 + stage * 8, `Creando ZIP ${partIndex + 1}/${totalParts}: ${Math.floor(metadata.percent)}%`);
+      });
+      const suffix = totalParts > 1 ? `_Parte_${String(partIndex + 1).padStart(2, '0')}_de_${String(totalParts).padStart(2, '0')}` : '';
+      triggerBlobDownload(content, `Respaldos_Audios_${new Date().toISOString().slice(0, 10)}${suffix}.zip`);
+      generatedParts++;
+      // Give the browser time to start the download before releasing memory and creating the next part.
+      await new Promise(resolve => setTimeout(resolve, 900));
+    }
+  }
+
+  if (errors.length) {
+    const reportZip = new JSZip();
+    reportZip.file('INFORME_ERRORES_DESCARGA.txt', buildDownloadReport(errors, total, downloaded));
+    const reportBlob = await reportZip.generateAsync({ type: 'blob', compression: 'STORE' });
+    triggerBlobDownload(reportBlob, `Informe_Errores_Audios_${new Date().toISOString().slice(0, 10)}.zip`);
+    generatedParts++;
+  }
+
+  setZipProgress(100, '¡Proceso de descarga terminado!');
+  return { downloaded, failed: errors.length, corsError, empty: downloaded === 0, generatedParts, totalParts };
+}
+
+async function iniciarDescargaZip(listaAudios, saveHandle = null) {
+  if (typeof JSZip === 'undefined' && !(window.fflate && window.fflate.Zip)) {
+    showToast('No se pudo cargar el módulo ZIP. Recarga la página.', 4500);
     return;
   }
+
   estadoDescarga = 'corriendo';
   controladorAborto = new AbortController();
   const modal = document.getElementById('progressModal');
@@ -848,102 +1137,74 @@ async function iniciarDescargaZip(listaAudios) {
   pauseButton.textContent = '⏸ Pausar';
   pauseButton.disabled = false;
   cancelButton.disabled = false;
-  setZipProgress(0, `Descargando ${listaAudios.length.toLocaleString('es-PE')} audios...`);
+  cancelButton.textContent = '✖ Cancelar';
+  cancelButton.onclick = cancelarDescarga;
+  setZipProgress(0, `Preparando ${listaAudios.length.toLocaleString('es-PE')} audios...`);
   modal.style.display = 'flex';
 
-  const zip = new JSZip();
-  let processedCount = 0;
-  let downloadedCount = 0;
-  let failedCount = 0;
-  let corsError = false;
-  const totalFiles = listaAudios.length;
-
+  let writable = null;
+  let result = null;
   try {
-    for (let i = 0; i < totalFiles; i++) {
-      if (estadoDescarga === 'cancelada') return;
-      await esperarSiEstaPausado();
-      if (estadoDescarga === 'cancelada') return;
-
-      const audio = listaAudios[i];
-      processedCount++;
-      const url = safeAudioUrl(audio.audioUrl);
-      if (!url) {
-        failedCount++;
-      } else {
-        try {
-          const response = await fetch(url, { mode: 'cors', signal: controladorAborto.signal });
-          if (!response.ok) throw new Error(`HTTP_${response.status}`);
-          const blob = await response.blob();
-          const date = parseAudioDate(audio.fecha);
-          const datePart = date
-            ? `${String(date.getDate()).padStart(2,'0')}_${String(date.getMonth()+1).padStart(2,'0')}_${date.getFullYear()}`
-            : 'Sin_Fecha';
-          const folder = zip.folder(`audios_${datePart}`);
-          const cleanName = sanitizeFilePart(audio.nombre, 'Audio');
-          const cleanAgent = sanitizeFilePart(audio.agente, 'Agente');
-          const shortId = sanitizeFilePart(audio.id || String(i + 1), String(i + 1)).slice(-12);
-          const fileName = `${cleanName}_${cleanAgent}_${shortId}${extensionFromUrl(url)}`;
-          folder.file(fileName, blob);
-          downloadedCount++;
-        } catch (error) {
-          if (error && error.name === 'AbortError') return;
-          failedCount++;
-          if (error instanceof TypeError || String(error.message || '').toLowerCase().includes('cors')) corsError = true;
-          console.warn('No se pudo descargar un audio:', audio.id, error);
-        }
-      }
-
-      const percent = (processedCount / totalFiles) * 80;
-      setZipProgress(percent, `Descargando audios: ${processedCount} de ${totalFiles} · Correctos: ${downloadedCount} · Fallidos: ${failedCount}`);
-      if (i % 3 === 0) await new Promise(resolve => setTimeout(resolve, 0));
+    if (saveHandle && window.fflate && window.fflate.Zip) {
+      writable = await saveHandle.createWritable();
+      result = await iniciarDescargaZipEnDisco(listaAudios, writable);
+    } else {
+      result = await iniciarDescargaZipPorPartes(listaAudios);
     }
 
     if (estadoDescarga === 'cancelada') return;
-    if (downloadedCount === 0) {
+    if (!result || result.empty) {
+      estadoDescarga = 'detenida';
       modal.style.display = 'none';
-      if (corsError) document.getElementById('corsModal').style.display = 'flex';
-      else showToast('No se pudo descargar ningún audio. Comprueba los enlaces.', 4500);
+      if (result && result.generatedParts) {
+        showToast('No se pudo recuperar ningún audio. Se descargó un ZIP con el informe de errores.', 5500);
+      }
       return;
     }
 
+    estadoDescarga = 'completada';
     pauseButton.style.display = 'none';
     cancelButton.textContent = '✖ Cerrar';
-    cancelButton.onclick = () => { estadoDescarga = 'cancelada'; modal.style.display = 'none'; };
-    setZipProgress(80, 'Comprimiendo los archivos en un ZIP...');
-
-    const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 3 } }, metadata => {
-      if (estadoDescarga === 'cancelada') return;
-      setZipProgress(80 + metadata.percent * 0.2, `Comprimiendo ZIP: ${Math.floor(metadata.percent)}%`);
-    });
-
-    if (estadoDescarga === 'cancelada') return;
-    modal.style.display = 'none';
-    const objectUrl = URL.createObjectURL(content);
-    const link = document.createElement('a');
-    link.href = objectUrl;
-    link.download = `Respaldos_Audios_${new Date().toISOString().slice(0,10)}.zip`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-
-    let message = `ZIP descargado: ${downloadedCount} audios`;
-    if (failedCount) message += ` · ${failedCount} no se pudieron incluir`;
-    showToast(message, 5500);
-    setLoadStatus(corsError ? 'ZIP generado parcialmente: algunos enlaces no permitieron la descarga (revisa CORS/permisos).' : 'ZIP generado correctamente.', false);
+    cancelButton.onclick = cancelarDescarga;
+    const isMultipartFallback = !saveHandle;
+    const message = isMultipartFallback
+      ? `Descarga lista: ${result.downloaded} audios en ${result.generatedParts || 0} archivos ZIP${result.failed ? ` · ${result.failed} con error` : ''}.`
+      : (result.failed
+        ? `ZIP guardado: ${result.downloaded} audios correctos · ${result.failed} con error. Revisa el informe incluido.`
+        : `¡Listo! Se descargaron ${result.downloaded.toLocaleString('es-PE')} audios correctamente.`);
+    setZipProgress(100, message);
+    if (isMultipartFallback) {
+      showToast(result.failed
+        ? `Se iniciaron ${result.generatedParts} descargas ZIP. También se generó un informe de ${result.failed} errores.`
+        : `Se iniciaron ${result.generatedParts} descargas ZIP con ${result.downloaded} audios.`, 6500);
+    } else {
+      showToast(result.failed ? `Descarga terminada con ${result.failed} audios pendientes. Revisa el informe incluido.` : `Descarga completa: ${result.downloaded} audios.`, 6000);
+    }
+    setLoadStatus(result.corsError
+      ? 'Descarga finalizada parcialmente. Algunos enlaces fueron bloqueados por CORS o permisos; revisa el informe.'
+      : (isMultipartFallback ? 'Descarga por partes finalizada. Si el navegador bloqueó alguna parte, permite las descargas múltiples.' : 'Descarga ZIP finalizada correctamente.'), false);
   } catch (error) {
     console.error('Error generando ZIP:', error);
+    if (writable) {
+      try { await writable.abort(); } catch (_) {}
+    }
     modal.style.display = 'none';
-    if (error && error.name !== 'AbortError') showToast('Ocurrió un error al generar el ZIP', 4000);
+    if (error && error.name === 'AbortError' && estadoDescarga === 'cancelada') {
+      showToast('Descarga cancelada.', 3000);
+    } else {
+      showToast('Ocurrió un error al crear el ZIP. Inténtalo nuevamente o divide la descarga por fechas.', 5500);
+    }
+    setLoadStatus('La descarga no pudo completarse.', false);
   } finally {
-    if (estadoDescarga !== 'cancelada') estadoDescarga = 'detenida';
+    if (estadoDescarga !== 'completada') estadoDescarga = 'detenida';
     controladorAborto = null;
-    cancelButton.textContent = '✖ Cancelar';
-    cancelButton.onclick = cancelarDescarga;
-    pauseButton.style.display = 'inline-flex';
+    if (estadoDescarga !== 'completada') {
+      cancelButton.textContent = '✖ Cancelar';
+      cancelButton.onclick = cancelarDescarga;
+      pauseButton.style.display = 'inline-flex';
+    }
   }
 }
-
 updateLoadMoreButton();
 </script>
 </body>
