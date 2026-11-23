@@ -1413,7 +1413,7 @@ tr:hover td { background: var(--hover-bg); }
             </div>
           </div>
 
-          <!-- PODER 9: BANEAR Y DESBANEAR USUARIOS -->
+          <!-- PODER 8: BANEAR Y DESBANEAR USUARIOS -->
           <div class="admin-card">
             <div class="admin-card-head">
               <span>🚫 8. Banear y Desbanear Usuarios</span>
@@ -1438,6 +1438,37 @@ tr:hover td { background: var(--hover-bg); }
                 <div id="admin-banned-users-list" class="admin-list-box">
                   <div style="color:var(--muted); font-size:11px; text-align:center; padding:8px;">Ningún usuario baneado</div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PODER 9: CREAR USUARIOS Y CONTRASEÑAS -->
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span>👤 9. Crear Usuarios y Contraseñas</span>
+              <span>Firebase Auth</span>
+            </div>
+            <div class="admin-card-body">
+              <p style="font-size:12px; color:var(--muted); line-height:1.5;">
+                Escribe únicamente el nombre de usuario. El sistema agregará automáticamente <strong>@360.com</strong> al crear la cuenta en Firebase y guardará su perfil en Firestore.
+              </p>
+              <div>
+                <label class="field-label" for="admin-new-user-username">Nombre de usuario (sin @360.com)</label>
+                <input type="text" id="admin-new-user-username" class="inp" placeholder="Ej: Carlitos" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32" required>
+              </div>
+              <div>
+                <label class="field-label" for="admin-new-user-password">Contraseña (mínimo 6 caracteres)</label>
+                <input type="password" id="admin-new-user-password" class="inp" placeholder="Crear contraseña" minlength="6" autocomplete="new-password" required>
+              </div>
+              <div>
+                <label class="field-label" for="admin-new-user-password-confirm">Confirmar contraseña</label>
+                <input type="password" id="admin-new-user-password-confirm" class="inp" placeholder="Repetir contraseña" minlength="6" autocomplete="new-password" required>
+              </div>
+              <button class="btn success" id="btn-admin-create-user" type="button" onclick="adminCreateUser()">
+                ➕ Crear cuenta en Firebase
+              </button>
+              <div id="admin-create-user-status" aria-live="polite" style="font-size:11px; color:var(--muted); line-height:1.5; text-align:center; min-height:16px;">
+                La cuenta se creará como Agente BackOffice. No se guardará la contraseña en Firestore.
               </div>
             </div>
           </div>
@@ -3803,7 +3834,7 @@ function saveAdminCustomMetas() {
 }
 
 // ==========================================
-// PODER 9: BANEAR Y DESBANEAR USUARIOS
+// PODER 8: BANEAR Y DESBANEAR USUARIOS
 // ==========================================
 function getMergedBannedUsers() {
   const merged = { ...(adminConfigState.bannedUsers || {}) };
@@ -3890,6 +3921,175 @@ function renderAdminBanSection() {
         </div>
       `;
     }).join('');
+  }
+}
+
+// ==========================================
+// PODER 9: CREACIÓN DE CUENTAS FIREBASE
+// El administrador escribe solo el usuario. El sistema
+// agrega automáticamente el dominio @360.com.
+// Se usa una segunda instancia de Auth para no cerrar
+// la sesión principal del Administrador.
+// ==========================================
+const ADMIN_ACCOUNT_EMAIL_DOMAIN = '360.com';
+
+function getAdminAccountCreationAuth() {
+  const secondaryAppName = 'crm-admin-account-creator';
+  let secondaryApp;
+
+  try {
+    secondaryApp = firebase.app(secondaryAppName);
+  } catch (error) {
+    secondaryApp = firebase.initializeApp(FB_CFG, secondaryAppName);
+  }
+
+  return secondaryApp.auth();
+}
+
+function getAdminCreateUserErrorMessage(error) {
+  const code = error && error.code ? error.code : '';
+  const messages = {
+    'auth/email-already-in-use': 'Ese nombre de usuario ya está registrado. Prueba con otro.',
+    'auth/invalid-email': 'El nombre de usuario no se pudo convertir en un correo válido.',
+    'auth/weak-password': 'La contraseña es demasiado débil. Usa al menos 6 caracteres.',
+    'auth/operation-not-allowed': 'Debes habilitar Email/Password en Firebase Authentication.',
+    'auth/too-many-requests': 'Firebase bloqueó temporalmente los intentos. Prueba más tarde.',
+    'auth/network-request-failed': 'No se pudo conectar con Firebase. Revisa tu conexión.',
+    'permission-denied': 'Firebase rechazó guardar el perfil. Revisa las reglas de Firestore para la colección perfiles.'
+  };
+  return messages[code] || (error && error.message) || 'No se pudo crear la cuenta.';
+}
+
+function normalizeAdminUsername(value) {
+  const username = String(value || '').trim().toLowerCase();
+
+  // No se admite que el administrador escriba un correo completo.
+  // Así se evita duplicar el dominio @360.com.
+  if (!username || username.includes('@')) return '';
+  if (username.length > 32) return '';
+  if (!/^[a-z0-9](?:[a-z0-9._-]{0,30}[a-z0-9])?$/.test(username)) return '';
+  if (username.includes('..')) return '';
+
+  return username;
+}
+
+async function adminCreateUser() {
+  if (!isAdminUser() || !CU || !CU.uid) {
+    return showToast('Solo el Administrador puede crear usuarios', '❌');
+  }
+
+  const usernameInput = document.getElementById('admin-new-user-username');
+  const passwordInput = document.getElementById('admin-new-user-password');
+  const confirmInput = document.getElementById('admin-new-user-password-confirm');
+  const button = document.getElementById('btn-admin-create-user');
+  const status = document.getElementById('admin-create-user-status');
+
+  if (!usernameInput || !passwordInput || !confirmInput || !button) return;
+
+  const username = normalizeAdminUsername(usernameInput.value);
+  const password = passwordInput.value;
+  const confirmPassword = confirmInput.value;
+
+  if (!username) {
+    usernameInput.focus();
+    return showToast('Escribe solo el usuario, sin @360.com. Usa letras, números, punto, guion o guion bajo.', '⚠️');
+  }
+
+  if (username === 'admin') {
+    return showToast('No se puede crear otra cuenta con usuario admin', '⚠️');
+  }
+
+  if (password.length < 6) {
+    passwordInput.focus();
+    return showToast('La contraseña debe tener al menos 6 caracteres', '⚠️');
+  }
+
+  if (password !== confirmPassword) {
+    confirmInput.focus();
+    return showToast('Las contraseñas no coinciden', '⚠️');
+  }
+
+  const email = `${username}@${ADMIN_ACCOUNT_EMAIL_DOMAIN}`;
+  let secondaryAuth = null;
+  let createdUser = null;
+  let profileSaved = false;
+  const originalButtonText = button.innerHTML;
+
+  button.disabled = true;
+  button.innerHTML = '⏳ Creando cuenta...';
+  if (status) {
+    status.style.color = 'var(--muted)';
+    status.textContent = 'Conectando con Firebase Authentication...';
+  }
+
+  try {
+    secondaryAuth = getAdminAccountCreationAuth();
+
+    // Limpia cualquier sesión previa de la instancia secundaria.
+    // La sesión del CRM principal permanece intacta.
+    await secondaryAuth.signOut().catch(() => {});
+
+    const credential = await secondaryAuth.createUserWithEmailAndPassword(email, password);
+    createdUser = credential.user;
+
+    const displayName = username.charAt(0).toUpperCase() + username.slice(1);
+
+    // Registra los datos del agente en Firestore. La contraseña
+    // nunca se escribe ni se almacena en esta colección.
+    await db.collection('perfiles').doc(createdUser.uid).set({
+      name: displayName,
+      username: username,
+      email: email,
+      role: 'Agente BackOffice',
+      avatarUrl: '',
+      bio: '',
+      banned: false,
+      banReason: '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdBy: CU.uid
+    });
+
+    profileSaved = true;
+
+    usernameInput.value = '';
+    passwordInput.value = '';
+    confirmInput.value = '';
+
+    if (status) {
+      status.style.color = 'var(--success)';
+      status.textContent = `✅ Usuario ${username} creado correctamente. El acceso será ${email}.`;
+    }
+
+    showToast(`Usuario ${displayName} creado correctamente`, '✅');
+  } catch (error) {
+    console.error('Error creando usuario desde el panel admin:', error);
+
+    // Si Authentication creó la cuenta pero Firestore no pudo guardar
+    // el perfil, intentamos revertir la cuenta para evitar un registro incompleto.
+    if (createdUser && !profileSaved) {
+      try {
+        await createdUser.delete();
+      } catch (deleteError) {
+        console.error('No se pudo revertir la cuenta recién creada:', deleteError);
+      }
+    }
+
+    const message = getAdminCreateUserErrorMessage(error);
+    if (status) {
+      status.style.color = 'var(--danger)';
+      status.textContent = `❌ ${message}`;
+    }
+    showToast(message, '❌');
+  } finally {
+    if (secondaryAuth) {
+      try {
+        await secondaryAuth.signOut();
+      } catch (signOutError) {
+        console.warn('No se pudo cerrar la sesión secundaria:', signOutError);
+      }
+    }
+    button.disabled = false;
+    button.innerHTML = originalButtonText;
   }
 }
 
