@@ -144,9 +144,81 @@
       .options { align-items: flex-start; flex-direction: column; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  
+    /* --- Tema claro coordinado con index.html (crm2) --- */
+    body.light-mode {
+      color-scheme: light;
+      --bg: #edf3fb;
+      --panel: rgba(255,255,255,.94);
+      --muted: #64748b;
+      --text: #172033;
+      --border: rgba(100,116,139,.22);
+      background:
+        radial-gradient(ellipse at 12% 15%, rgba(59,130,246,.13), transparent 36%),
+        radial-gradient(ellipse at 90% 85%, rgba(124,92,255,.10), transparent 38%),
+        linear-gradient(135deg, #f5f8ff, #e8eef8 55%, #f8faff);
+    }
+    body.light-mode .shell {
+      background: rgba(255,255,255,.94);
+      border-color: rgba(100,116,139,.2);
+      box-shadow: 0 28px 90px rgba(30,53,94,.16);
+    }
+    body.light-mode .intro {
+      /* El panel de identidad conserva el contraste corporativo. */
+      background: linear-gradient(155deg, #142b55, #1c3766 58%, #253e70);
+      border-right-color: rgba(255,255,255,.13);
+    }
+    body.light-mode .login-panel { background: #fff; }
+    body.light-mode .login-heading h2 { color: #172033; }
+    body.light-mode .login-heading p { color: #64748b; }
+    body.light-mode .field label { color: #334155; }
+    body.light-mode .field input {
+      color: #172033;
+      background: #f8fafc;
+      border-color: #d7dfeb;
+    }
+    body.light-mode .field input::placeholder { color: #94a3b8; }
+    body.light-mode .field input:focus {
+      background: #fff;
+      border-color: #5685ff;
+      box-shadow: 0 0 0 4px rgba(86,133,255,.13);
+    }
+    body.light-mode .password-toggle { color: #64748b; }
+    body.light-mode .password-toggle:hover { color: #315fc4; background: #edf3ff; }
+    body.light-mode .remember { color: #64748b; }
+    body.light-mode .forgot { color: #315fc4; }
+    body.light-mode .secure-note { color: #64748b; }
+    .theme-switch {
+      position: fixed; top: 22px; right: 24px; z-index: 20;
+      display: inline-flex; align-items: center; gap: 9px;
+      min-height: 42px; padding: 0 15px;
+      border: 1px solid var(--border); border-radius: 999px;
+      background: rgba(15,23,42,.76); color: #f8fafc;
+      box-shadow: 0 8px 24px rgba(0,0,0,.16);
+      backdrop-filter: blur(14px);
+      font: inherit; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: .2s ease;
+    }
+    .theme-switch:hover { transform: translateY(-1px); border-color: #7da6ff; }
+    .theme-switch svg { width: 16px; height: 16px; }
+    body.light-mode .theme-switch {
+      color: #1e293b; background: rgba(255,255,255,.88);
+      border-color: #d7dfeb; box-shadow: 0 8px 24px rgba(30,53,94,.12);
+    }
+    @media (max-width: 760px) {
+      .theme-switch { top: 12px; right: 12px; min-height: 38px; padding: 0 12px; }
+      body { padding-top: 62px; }
+    }
+
   </style>
 </head>
 <body>
+
+  <button type="button" class="theme-switch" id="themeSwitch" aria-label="Cambiar tema" title="Cambiar entre modo oscuro y claro">
+    <svg id="themeSwitchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
+    <span id="themeSwitchLabel">Modo claro</span>
+  </button>
+
   <main class="shell">
     <section class="intro">
       <div class="brand">
@@ -224,6 +296,44 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+    // Preferencia de tema compartida con index.html (crm2) mediante localStorage.
+    const THEME_KEY = "crm_theme_mode";
+    const themeSwitch = document.getElementById("themeSwitch");
+    const themeSwitchLabel = document.getElementById("themeSwitchLabel");
+    const themeSwitchIcon = document.getElementById("themeSwitchIcon");
+
+    function readSharedTheme() {
+      try { return localStorage.getItem(THEME_KEY) === "light" ? "light" : "dark"; }
+      catch (_) { return "dark"; }
+    }
+
+    function applyLoginTheme(mode, persist = true) {
+      const normalized = mode === "light" ? "light" : "dark";
+      document.body.classList.toggle("light-mode", normalized === "light");
+      document.documentElement.style.colorScheme = normalized;
+      if (persist) {
+        try { localStorage.setItem(THEME_KEY, normalized); } catch (error) {
+          console.warn("No se pudo guardar la preferencia de tema:", error);
+        }
+      }
+      if (themeSwitchLabel) themeSwitchLabel.textContent = normalized === "light" ? "Modo oscuro" : "Modo claro";
+      if (themeSwitch) themeSwitch.setAttribute("aria-pressed", String(normalized === "light"));
+      if (themeSwitchIcon) {
+        themeSwitchIcon.innerHTML = normalized === "light"
+          ? '<path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"></path>'
+          : '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>';
+      }
+    }
+
+    applyLoginTheme(readSharedTheme(), false);
+    themeSwitch?.addEventListener("click", () => {
+      applyLoginTheme(document.body.classList.contains("light-mode") ? "dark" : "light");
+    });
+    window.addEventListener("storage", event => {
+      if (event.key === THEME_KEY && event.newValue) applyLoginTheme(event.newValue, false);
+    });
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyDOynPkm0oO12UVCjwOp8592tMJiwXJAz0",
