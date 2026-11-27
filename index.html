@@ -771,7 +771,9 @@ body { letter-spacing: -.01em; }
 .feed-icon-btn:hover { color:var(--p); border-color:var(--p); }
 .feed-icon-btn.delete:hover { color:var(--danger); border-color:var(--danger); }
 .feed-post-copy { white-space:pre-wrap; overflow-wrap:anywhere; color:var(--text); font-size:13px; line-height:1.7; padding:14px 1px 12px; }
-.feed-post-image { width:100%; max-height:420px; object-fit:contain; display:block; border-radius:11px; border:1px solid var(--border); background:var(--surface-alt); margin:5px 0 12px; }
+.feed-post-image, .feed-post-video { width:100%; max-height:440px; object-fit:contain; display:block; border-radius:11px; border:1px solid var(--border); background:var(--surface-alt); margin:5px 0 12px; }
+.feed-post-video { background:#090d16; max-height:460px; }
+.feed-image-preview video { width:100%; max-height:245px; object-fit:contain; background:#090d16; }
 .feed-image-unavailable { padding:18px; margin:6px 0 12px; border:1px dashed var(--border2); border-radius:10px; background:var(--surface-alt); color:var(--muted); font-size:12px; text-align:center; }
 .feed-post-footer { display:flex; align-items:center; gap:16px; border-top:1px solid var(--border); padding:11px 0; }
 .feed-action-btn { border:0; background:transparent; color:var(--muted); display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-size:11px; font-weight:700; cursor:pointer; padding:5px 3px; }
@@ -790,11 +792,22 @@ body { letter-spacing: -.01em; }
 .poll-total { font-size:10px; color:var(--muted2); }
 .feed-comments { border-top:1px solid var(--border); padding:12px 0 14px; }
 .feed-comments-empty { color:var(--muted2); font-size:11px; padding:7px 0; }
-.feed-comments-list { display:flex; flex-direction:column; gap:10px; max-height:250px; overflow:auto; }
-.feed-comment { display:flex; gap:9px; align-items:flex-start; }
-.feed-comment-avatar { width:27px; height:27px; flex:0 0 27px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--surface-alt); color:var(--p); font-size:10px; font-weight:900; }
-.feed-comment strong { color:var(--text); font-size:10px; }
-.feed-comment p { color:var(--muted); font-size:11px; line-height:1.5; margin-top:2px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.feed-comments-list { display:flex; flex-direction:column; gap:10px; max-height:310px; overflow:auto; padding-right:2px; }
+.feed-comment { display:flex; gap:9px; align-items:flex-start; background:var(--surface-alt); border:1px solid var(--border); border-radius:11px; padding:9px 11px; }
+.feed-comment-avatar { width:28px; height:28px; flex:0 0 28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--p); color:#fff; font-size:10px; font-weight:900; background-size:cover; background-position:center; cursor:pointer; }
+.feed-comment-body { flex:1; min-width:0; }
+.feed-comment-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.feed-comment-author { background:none; border:0; padding:0; color:var(--text); font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; text-align:left; }
+.feed-comment-author:hover { color:var(--p); }
+.feed-comment-date { font-size:9px; color:var(--muted2); font-weight:600; }
+.feed-comment-del-btn { background:transparent; border:1px solid transparent; color:var(--muted2); border-radius:6px; padding:2px 6px; font-size:10px; cursor:pointer; transition:.15s; }
+.feed-comment-del-btn:hover { color:var(--danger); border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.1); }
+.feed-comment p { color:var(--text); font-size:12px; line-height:1.5; margin-top:3px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.feed-comment-actions { display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:6px; }
+.comment-react-btn { display:inline-flex; align-items:center; gap:3px; border:1px solid var(--border); background:var(--bg2); color:var(--muted); border-radius:999px; padding:2px 7px; font-size:11px; font-weight:700; cursor:pointer; transition:.15s; font-family:inherit; }
+.comment-react-btn:hover { border-color:var(--p); color:var(--text); transform:scale(1.04); }
+.comment-react-btn.active { background:var(--p-glow); border-color:var(--p); color:var(--p); }
+.feed-load-more-wrap { display:flex; justify-content:center; margin:14px 0 8px; }
 .feed-comment-form { display:flex; gap:8px; margin-top:12px; }
 .feed-comment-form input { flex:1; min-width:0; border:1px solid var(--border); background:var(--surface-alt); color:var(--text); padding:9px 11px; border-radius:9px; outline:none; font-family:inherit; font-size:12px; }
 .feed-comment-form button { border:0; background:var(--p); color:white; padding:0 14px; border-radius:9px; cursor:pointer; font-size:11px; font-weight:800; }
@@ -1207,6 +1220,32 @@ body.light-mode .xmas-flake {
   text-align: center;
   font-size: 13px;
   font-weight: 650;
+}
+.history-load-more-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin: 18px 0 6px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.history-load-more-wrap[hidden] { display: none !important; }
+.history-load-more-info {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+  font-weight: 650;
+}
+.history-load-more-btn {
+  min-width: 190px;
+  min-height: 40px;
+  width: auto;
 }
 @media (max-width: 1180px) {
   .history-record-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1751,6 +1790,13 @@ body.page-hidden .pulse-dot-red {
           <div id="hist-list" class="history-list" aria-live="polite">
             <div class="history-empty">Cargando registros del mes…</div>
           </div>
+
+          <div id="hist-load-more-wrap" class="history-load-more-wrap" hidden>
+            <div id="hist-load-more-info" class="history-load-more-info" aria-live="polite"></div>
+            <button type="button" id="hist-load-more-btn" class="btn sm history-load-more-btn" onclick="loadMoreHistory()">
+              Cargar 50 audios más
+            </button>
+          </div>
         </section>
       </div>
 
@@ -1777,8 +1823,9 @@ body.page-hidden .pulse-dot-red {
             </div>
             <textarea id="feed-text" class="inp feed-textarea" maxlength="2500" placeholder="¿Qué quieres compartir con el equipo?"></textarea>
             <div id="feed-image-preview" class="feed-image-preview" hidden>
-              <img id="feed-image-preview-img" alt="Vista previa de la imagen adjunta" loading="lazy">
-              <button type="button" class="preview-remove" onclick="clearFeedImage()" aria-label="Quitar imagen">×</button>
+              <img id="feed-image-preview-img" alt="Vista previa de la imagen adjunta" loading="lazy" hidden>
+              <video id="feed-video-preview-vid" controls playsinline preload="metadata" hidden></video>
+              <button type="button" class="preview-remove" onclick="clearFeedMedia()" aria-label="Quitar archivo">×</button>
             </div>
             <div class="feed-extra-fields" id="feed-poll-fields" hidden>
               <div class="poll-field-title">Opciones de la encuesta</div>
@@ -1788,8 +1835,8 @@ body.page-hidden .pulse-dot-red {
             </div>
             <div class="composer-toolbar">
               <div class="composer-tools">
-                <label class="composer-tool" for="feed-image-file" title="Adjuntar imagen">▧ <span>Imagen</span></label>
-                <input type="file" id="feed-image-file" accept="image/*" hidden onchange="previewFeedImage(event)">
+                <label class="composer-tool" for="feed-image-file" title="Adjuntar imagen o video">🎬 <span>Foto / Video</span></label>
+                <input type="file" id="feed-image-file" accept="image/*,video/*" hidden onchange="previewFeedMedia(event)">
                 <select id="feed-post-type" class="composer-select" aria-label="Tipo de publicación" onchange="onFeedTypeChange()">
                   <option value="general">Publicación</option>
                   <option value="announcement">📢 Aviso</option>
@@ -1799,7 +1846,7 @@ body.page-hidden .pulse-dot-red {
               </div>
               <button class="btn sm feed-publish-btn" id="feed-publish-btn" onclick="publishPost()">Publicar <span aria-hidden="true">→</span></button>
             </div>
-            <div class="composer-hint">Máximo 2.500 caracteres · Las imágenes se optimizan antes de subirlas</div>
+            <div class="composer-hint">Máximo 2.500 caracteres · Imágenes (hasta 10 MB, optimizadas) y Videos (hasta 50 MB)</div>
           </section>
 
           <div class="feed-list-heading">
@@ -2430,6 +2477,10 @@ initTheme();
 // ==========================================
 let db, storage, auth;
 let CU = null, CUP = {}, histAll = [];
+// Audios del Mes: renderizado por páginas; la búsqueda siempre filtra el conjunto mensual completo.
+const HISTORY_PAGE_SIZE = 50;
+let filteredMonthlyHistory = [];
+let historyVisibleLimit = HISTORY_PAGE_SIZE;
 let dailyChart = null; 
 let trendChart = null; 
 let currentAgents = []; 
@@ -3533,7 +3584,8 @@ async function saveRec() {
     showToast('Copia local guardada. Subiendo a Firebase…', '☁️');
     const blob2 = recBlob;
     const safeAudioName = String(fname).replace(/[^a-zA-Z0-9._-]/g, '_');
-    const snap = await storage.ref(`audios_crm/${CU.uid}/${Date.now()}_${safeAudioName}`).put(blob2, {contentType: blob2.type || 'audio/webm'});
+    const audioStoragePath = `audios_crm/${CU.uid}/${Date.now()}_${safeAudioName}`;
+    const snap = await storage.ref(audioStoragePath).put(blob2, {contentType: blob2.type || 'audio/webm'});
     const url = await snap.ref.getDownloadURL();
 
     await db.collection('historial_llamadas').add({
@@ -3546,6 +3598,7 @@ async function saveRec() {
       tipoDocumento: tipoDocumento,
       numeroDocumento: numeroDocumento,
       audioUrl: url,
+      audioPath: audioStoragePath,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
 
@@ -4200,13 +4253,37 @@ function getAudiosDelMes() {
 function renderAuditoria(arr) {
   const list = document.getElementById('hist-list');
   const count = document.getElementById('hist-count');
+  const moreWrap = document.getElementById('hist-load-more-wrap');
+  const moreInfo = document.getElementById('hist-load-more-info');
+  const moreButton = document.getElementById('hist-load-more-btn');
   if (!list) return;
 
+  const total = Array.isArray(arr) ? arr.length : 0;
+  const visibleArr = (arr || []).slice(0, historyVisibleLimit);
+  const visibleCount = visibleArr.length;
+  const remaining = Math.max(0, total - visibleCount);
+
   if (count) {
-    count.textContent = `${arr.length.toLocaleString('es-PE')} ${arr.length === 1 ? 'audio' : 'audios'}`;
+    count.textContent = total > visibleCount
+      ? `Mostrando ${visibleCount.toLocaleString('es-PE')} de ${total.toLocaleString('es-PE')} audios`
+      : `${total.toLocaleString('es-PE')} ${total === 1 ? 'audio' : 'audios'}`;
   }
 
-  if (!arr.length) {
+  if (moreWrap) {
+    moreWrap.hidden = remaining <= 0;
+    if (moreInfo) {
+      const isSearching = Boolean(document.getElementById('hist-search')?.value.trim());
+      moreInfo.textContent = isSearching
+        ? `La búsqueda revisó todos los audios del mes. Se muestran ${visibleCount.toLocaleString('es-PE')} de ${total.toLocaleString('es-PE')} coincidencias.`
+        : `Se muestran ${visibleCount.toLocaleString('es-PE')} de ${total.toLocaleString('es-PE')} audios del mes.`;
+    }
+    if (moreButton) {
+      moreButton.textContent = `Cargar ${Math.min(HISTORY_PAGE_SIZE, remaining).toLocaleString('es-PE')} audios más`;
+      moreButton.disabled = remaining <= 0;
+    }
+  }
+
+  if (!visibleArr.length) {
     list.innerHTML = '<div class="history-empty">No hay audios que coincidan con la búsqueda de este mes.</div>';
     return;
   }
@@ -4227,7 +4304,7 @@ function renderAuditoria(arr) {
     grid.appendChild(item);
   };
 
-  arr.forEach(h => {
+  visibleArr.forEach(h => {
     const record = document.createElement('article');
     record.className = 'history-record';
 
@@ -4317,26 +4394,89 @@ function renderAuditoria(arr) {
   list.replaceChildren(fragment);
 }
 
+function loadMoreHistory() {
+  if (historyVisibleLimit >= filteredMonthlyHistory.length) return;
+  historyVisibleLimit = Math.min(
+    historyVisibleLimit + HISTORY_PAGE_SIZE,
+    filteredMonthlyHistory.length
+  );
+  renderAuditoria(filteredMonthlyHistory);
+}
+
 async function editRecordName(id, currentName) {
   const newName = prompt("Edita el nombre o referencia del audio:", currentName);
   if (newName !== null && newName.trim() !== "" && newName.trim() !== currentName) {
+    const cleanName = newName.trim().slice(0, 120);
     try {
-      await db.collection('historial_llamadas').doc(id).update({ nombre: newName.trim() });
-      showToast('Nombre actualizado', '✅');
+      const rec = histAll.find(item => item.id === id);
+      await db.collection('historial_llamadas').doc(id).update({
+        nombre: cleanName,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      // Actualiza también los metadatos de descarga (Content-Disposition) en Firebase Storage si existe el archivo
+      if (rec && (rec.audioPath || rec.audioUrl) && storage) {
+        try {
+          let fileRef = null;
+          if (rec.audioPath) {
+            fileRef = storage.ref(rec.audioPath);
+          } else if (rec.audioUrl && rec.audioUrl.includes('firebasestorage.googleapis.com')) {
+            const u = new URL(rec.audioUrl);
+            const idx = u.pathname.indexOf('/o/');
+            if (idx >= 0) fileRef = storage.ref(decodeURIComponent(u.pathname.slice(idx + 3)));
+          }
+          if (fileRef) {
+            const safeDlName = cleanName.replace(/[^a-zA-Z0-9._-]/g, '_') + '.webm';
+            await fileRef.updateMetadata({
+              contentDisposition: `attachment; filename="${safeDlName}"`,
+              customMetadata: { displayName: cleanName }
+            });
+          }
+        } catch (metaErr) {
+          console.warn('Nombre actualizado en Firestore; metadatos de Storage sin cambios:', metaErr);
+        }
+      }
+      showToast('Nombre del audio actualizado en Firebase', '✅');
     } catch(e) {
-      showToast('Error al actualizar', '❌');
+      console.error(e);
+      showToast('Error al actualizar el nombre del audio', '❌');
     }
   }
 }
 
 function filterHist() {
-  const q = document.getElementById('hist-search').value.toLocaleLowerCase('es');
-  renderAuditoria(getAudiosDelMes().filter(h => `${h.nombre || ''} ${h.agente || ''} ${h.fecha || ''} ${h.numeroLlamado || ''} ${h.tipoLlamada || ''} ${h.tipoDocumento || ''} ${h.numeroDocumento || ''}`.toLocaleLowerCase('es').includes(q)));
+  const searchEl = document.getElementById('hist-search');
+  const q = (searchEl ? searchEl.value : '').trim().toLocaleLowerCase('es');
+
+  // Filtra sobre TODOS los audios del mes sincronizados en histAll,
+  // no solamente sobre las tarjetas que estén dibujadas en pantalla.
+  const monthAudios = getAudiosDelMes();
+  filteredMonthlyHistory = q
+    ? monthAudios.filter(h => `${h.nombre || ''} ${h.agente || ''} ${h.fecha || ''} ${h.numeroLlamado || ''} ${h.tipoLlamada || ''} ${h.tipoDocumento || ''} ${h.numeroDocumento || ''}`.toLocaleLowerCase('es').includes(q))
+    : monthAudios;
+
+  // Cada búsqueda empieza desde la primera página; el resultado buscado puede venir
+  // de cualquier posición del conjunto mensual completo.
+  historyVisibleLimit = HISTORY_PAGE_SIZE;
+  renderAuditoria(filteredMonthlyHistory);
 }
 
 async function deleteRecord(id) {
-  if (confirm("¿Estás seguro de que deseas eliminar permanentemente este registro?")) {
-    try { await db.collection('historial_llamadas').doc(id).delete(); showToast('Eliminado', '🗑️'); } catch (e) { showToast('Error', '❌'); }
+  if (!confirm("¿Estás seguro de que deseas eliminar permanentemente este audio y su registro de Firebase?")) return;
+  try {
+    const rec = histAll.find(item => item.id === id);
+    let docData = rec;
+    if (!docData) {
+      const snap = await db.collection('historial_llamadas').doc(id).get();
+      if (snap.exists) docData = snap.data();
+    }
+    if (docData && (docData.audioPath || docData.audioUrl)) {
+      await deleteFirebaseStorageAsset(docData.audioPath, docData.audioUrl);
+    }
+    await db.collection('historial_llamadas').doc(id).delete();
+    showToast('Audio y registro eliminados de Firebase', '🗑️');
+  } catch (e) {
+    console.error(e);
+    showToast('Error al eliminar de Firebase', '❌');
   }
 }
 
@@ -4605,11 +4745,13 @@ async function uploadAndSendVoiceNote(blob, durationStr) {
     const d = new Date();
     const h = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
 
+    const voicePath = `chat_media/${CU.uid}/${fname}`;
     const payload = {
       uid: CU.uid,
       text: `🎤 Nota de voz (${durationStr})`,
       type: 'audio',
       mediaUrl: audioUrl,
+      mediaPath: voicePath,
       audioDuration: durationStr,
       hora: h,
       client_ts: Date.now(),
@@ -4675,6 +4817,7 @@ async function sendMediaMsg(event) {
       text: msgText,
       type: msgType,
       mediaUrl: mediaUrl,
+      mediaPath: mediaPath,
       hora: h,
       client_ts: Date.now(),
       ts: firebase.firestore.FieldValue.serverTimestamp()
@@ -4894,11 +5037,21 @@ function renderChatMessages() {
 
 async function deleteChatMsg(msgId) {
   if (!msgId) return;
-  if (!confirm("¿Eliminar este mensaje?")) return;
+  if (!confirm("¿Eliminar este mensaje permanentemente de Firebase?")) return;
   try {
+    const msgObj = currentChatMessages.find(m => m.id === msgId);
+    let data = msgObj;
+    if (!data) {
+      const snap = await db.collection('chat_general').doc(msgId).get();
+      if (snap.exists) data = snap.data();
+    }
+    if (data && (data.mediaPath || data.mediaUrl)) {
+      await deleteFirebaseStorageAsset(data.mediaPath, data.mediaUrl);
+    }
     await db.collection('chat_general').doc(msgId).delete();
-    showToast("Mensaje eliminado", "🗑️");
+    showToast("Mensaje y archivo eliminados de Firebase", "🗑️");
   } catch(e) {
+    console.error(e);
     showToast("No se pudo eliminar", "❌");
   }
 }
@@ -4907,6 +5060,41 @@ async function deleteChatMsg(msgId) {
 // MURO SOCIAL: PUBLICACIONES, IMÁGENES, ENCUESTAS,
 // REACCIONES, COMENTARIOS Y MODERACIÓN
 // ==========================================
+
+async function deleteFirebaseStorageAsset(storagePath, downloadUrl) {
+  if (!storage) return;
+  const targets = [];
+  if (storagePath && typeof storagePath === 'string') {
+    targets.push(storagePath.trim());
+  }
+  if (downloadUrl && typeof downloadUrl === 'string') {
+    const raw = downloadUrl.trim();
+    if (/^gs:\/\//i.test(raw)) {
+      targets.push(raw);
+    } else if (raw.includes('firebasestorage.googleapis.com')) {
+      try {
+        const u = new URL(raw);
+        const marker = '/o/';
+        const idx = u.pathname.indexOf(marker);
+        if (idx >= 0) {
+          targets.push(decodeURIComponent(u.pathname.slice(idx + marker.length)));
+        }
+      } catch (_) {}
+    }
+  }
+  const uniqueTargets = [...new Set(targets.filter(Boolean))];
+  for (const target of uniqueTargets) {
+    try {
+      const ref = /^gs:\/\//i.test(target) ? storage.refFromURL(target) : storage.ref(target.replace(/^\/+/, ''));
+      await ref.delete();
+    } catch (err) {
+      if (!err || err.code !== 'storage/object-not-found') {
+        console.warn('No se pudo eliminar archivo en Storage:', target, err);
+      }
+    }
+  }
+}
+
 function escapeHTML(value) {
   return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -5024,8 +5212,15 @@ const FEED_TYPE_META = {
   poll: { label: 'Encuesta', icon: '📊', css: 'poll' }
 };
 
-let feedImageFile = null;
+const COMMENT_REACTIONS = ['👍', '❤️', '😂', '🔥', '👏'];
+const FEED_PAGE_SIZE = 10;
+
+let feedMediaFile = null;
+let feedMediaKind = ''; // 'image' | 'video' | ''
 let feedPreviewObjectUrl = '';
+let feedVisibleLimit = FEED_PAGE_SIZE;
+let feedOpenComments = new Set();
+let feedCommentUnsubs = new Map();
 
 function onFeedTypeChange() {
   const type = document.getElementById('feed-post-type').value;
@@ -5033,41 +5228,78 @@ function onFeedTypeChange() {
   if (fields) fields.hidden = type !== 'poll';
 }
 
-function clearFeedImage() {
-  feedImageFile = null;
+function clearFeedMedia() {
+  feedMediaFile = null;
+  feedMediaKind = '';
   const input = document.getElementById('feed-image-file');
   const preview = document.getElementById('feed-image-preview');
+  const previewImg = document.getElementById('feed-image-preview-img');
+  const previewVid = document.getElementById('feed-video-preview-vid');
   if (input) input.value = '';
   if (preview) preview.hidden = true;
+  if (previewImg) { previewImg.hidden = true; previewImg.removeAttribute('src'); }
+  if (previewVid) {
+    previewVid.pause();
+    previewVid.hidden = true;
+    previewVid.removeAttribute('src');
+    previewVid.load();
+  }
   if (feedPreviewObjectUrl) URL.revokeObjectURL(feedPreviewObjectUrl);
   feedPreviewObjectUrl = '';
 }
 
-function previewFeedImage(event) {
+function clearFeedImage() {
+  clearFeedMedia();
+}
+
+function previewFeedMedia(event) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
-  if (!file.type || !file.type.startsWith('image/')) {
-    showToast('Adjunta un archivo de imagen válido', '⚠️');
+  const isImage = Boolean(file.type && file.type.startsWith('image/'));
+  const isVideo = Boolean(file.type && file.type.startsWith('video/'));
+
+  if (!isImage && !isVideo) {
+    showToast('Adjunta una imagen o un video válido (MP4, WebM, MOV)', '⚠️');
     event.target.value = '';
     return;
   }
-  if (file.size > 10 * 1024 * 1024) {
-    showToast('La imagen no debe superar los 10 MB', '⚠️');
+  const maxBytes = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    showToast(isVideo ? 'El video no debe superar los 50 MB' : 'La imagen no debe superar los 10 MB', '⚠️');
     event.target.value = '';
     return;
   }
-  feedImageFile = file;
+
+  feedMediaFile = file;
+  feedMediaKind = isVideo ? 'video' : 'image';
   if (feedPreviewObjectUrl) URL.revokeObjectURL(feedPreviewObjectUrl);
   feedPreviewObjectUrl = URL.createObjectURL(file);
+
   const previewImg = document.getElementById('feed-image-preview-img');
+  const previewVid = document.getElementById('feed-video-preview-vid');
   const previewBox = document.getElementById('feed-image-preview');
-  if (!previewImg || !previewBox) return;
-  previewImg.onload = () => { previewBox.hidden = false; };
-  previewImg.onerror = () => {
-    clearFeedImage();
-    showToast('No se pudo mostrar la vista previa de la imagen.', '⚠️');
-  };
-  previewImg.src = feedPreviewObjectUrl;
+  if (!previewBox) return;
+
+  if (isVideo && previewVid) {
+    if (previewImg) { previewImg.hidden = true; previewImg.removeAttribute('src'); }
+    previewVid.hidden = false;
+    previewVid.onloadeddata = () => { previewBox.hidden = false; };
+    previewVid.onerror = () => {
+      clearFeedMedia();
+      showToast('No se pudo cargar la vista previa del video.', '⚠️');
+    };
+    previewVid.src = feedPreviewObjectUrl;
+    previewBox.hidden = false;
+  } else if (previewImg) {
+    if (previewVid) { previewVid.pause(); previewVid.hidden = true; previewVid.removeAttribute('src'); }
+    previewImg.hidden = false;
+    previewImg.onload = () => { previewBox.hidden = false; };
+    previewImg.onerror = () => {
+      clearFeedMedia();
+      showToast('No se pudo mostrar la vista previa de la imagen.', '⚠️');
+    };
+    previewImg.src = feedPreviewObjectUrl;
+  }
 }
 
 async function compressFeedImage(file) {
@@ -5075,7 +5307,6 @@ async function compressFeedImage(file) {
   try {
     bitmap = await createImageBitmap(file);
   } catch (error) {
-    // Fallback para navegadores sin createImageBitmap.
     bitmap = await new Promise((resolve, reject) => {
       const img = new Image();
       const url = URL.createObjectURL(file);
@@ -5099,12 +5330,17 @@ async function compressFeedImage(file) {
   return new File([blob], `muro-${Date.now()}.jpg`, { type: 'image/jpeg' });
 }
 
+function loadMoreFeedPosts() {
+  feedVisibleLimit += FEED_PAGE_SIZE;
+  if (lastFeedSnapshot) renderFeedSnapshot(lastFeedSnapshot);
+}
+
 function renderFeedSnapshot(snap) {
   lastFeedSnapshot = snap;
   const list = document.getElementById('feed-list');
   if (!list) return;
-  const posts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  posts.sort((a, b) => {
+  const allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  allPosts.sort((a, b) => {
     if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
     const at = a.ts && a.ts.toMillis ? a.ts.toMillis() : (a.createdAtMs || 0);
     const bt = b.ts && b.ts.toMillis ? b.ts.toMillis() : (b.createdAtMs || 0);
@@ -5112,7 +5348,7 @@ function renderFeedSnapshot(snap) {
   });
 
   const total = document.getElementById('feed-count');
-  if (total) total.textContent = `${posts.length} ${posts.length === 1 ? 'publicación' : 'publicaciones'}`;
+  if (total) total.textContent = `${allPosts.length} ${allPosts.length === 1 ? 'publicación' : 'publicaciones'}`;
   const composerName = document.getElementById('feed-composer-name');
   const composerAvatar = document.getElementById('feed-composer-avatar');
   if (composerName && myProfile && myProfile.name) composerName.textContent = myProfile.name;
@@ -5124,13 +5360,47 @@ function renderFeedSnapshot(snap) {
     }
   }
 
-  if (!posts.length) {
+  // Limpiar suscripciones de comentarios de publicaciones que ya no existen
+  const existingIds = new Set(allPosts.map(p => p.id));
+  for (const [postId, unsub] of feedCommentUnsubs.entries()) {
+    if (!existingIds.has(postId)) {
+      try { unsub(); } catch (_) {}
+      feedCommentUnsubs.delete(postId);
+      feedOpenComments.delete(postId);
+    }
+  }
+
+  if (!allPosts.length) {
     list.innerHTML = '<div class="feed-empty"><span>✦</span><strong>El muro está tranquilo</strong><p>Cuando alguien comparta una novedad, aparecerá aquí.</p></div>';
     return;
   }
-  list.innerHTML = posts.map(renderFeedPost).join('');
-  hydrateFeedAvatars(posts);
-  hydrateFeedStorageImages(posts);
+
+  const visiblePosts = allPosts.slice(0, feedVisibleLimit);
+  const remaining = Math.max(0, allPosts.length - visiblePosts.length);
+
+  let html = visiblePosts.map(renderFeedPost).join('');
+  if (remaining > 0) {
+    html += `<div class="feed-load-more-wrap">
+      <button type="button" class="btn sm ghost" style="width:auto;" onclick="loadMoreFeedPosts()">
+        Cargar más publicaciones (${remaining} restantes)
+      </button>
+    </div>`;
+  }
+
+  list.innerHTML = html;
+  hydrateFeedAvatars(visiblePosts);
+  hydrateFeedStorageImages(visiblePosts);
+
+  // Re-abrir comentarios que el usuario tenía abiertos antes de la actualización en tiempo real
+  visiblePosts.forEach(post => {
+    if (feedOpenComments.has(post.id)) {
+      const panel = document.getElementById(`feed-comments-${post.id}`);
+      if (panel) {
+        panel.hidden = false;
+        subscribeFeedComments(post.id);
+      }
+    }
+  });
 }
 
 async function ensureProfileLoaded(uid) {
@@ -5224,22 +5494,22 @@ function hydrateFeedAvatars(posts) {
 function hydrateFeedStorageImages(posts) {
   const list = document.getElementById('feed-list');
   if (!list || !storage) return;
-  list.querySelectorAll('img[data-feed-storage-path]').forEach(img => {
-    if (img.dataset.resolving === '1') return;
-    img.dataset.resolving = '1';
-    const path = img.dataset.feedStoragePath;
+  list.querySelectorAll('[data-feed-storage-path]').forEach(mediaEl => {
+    if (mediaEl.dataset.resolving === '1') return;
+    mediaEl.dataset.resolving = '1';
+    const path = mediaEl.dataset.feedStoragePath;
     storage.ref(path).getDownloadURL().then(url => {
-      if (img.isConnected) {
-        img.src = url;
-        img.removeAttribute('data-feed-storage-path');
+      if (mediaEl.isConnected) {
+        mediaEl.src = url;
+        mediaEl.removeAttribute('data-feed-storage-path');
       }
     }).catch(error => {
-      console.error('No se pudo resolver la imagen del muro desde Storage:', path, error);
-      if (img.isConnected) {
+      console.error('No se pudo resolver el archivo del muro desde Storage:', path, error);
+      if (mediaEl.isConnected) {
         const fallback = document.createElement('div');
         fallback.className = 'feed-image-unavailable';
-        fallback.textContent = 'Imagen no disponible. Comprueba los permisos de Firebase Storage.';
-        img.replaceWith(fallback);
+        fallback.textContent = 'Archivo multimedia no disponible en Firebase Storage.';
+        mediaEl.replaceWith(fallback);
       }
     });
   });
@@ -5251,9 +5521,15 @@ function renderFeedPost(post) {
   const avatarUid = profileEntry.uid || post.uid || '';
   const author = profile.name || post.autor || 'Agente';
   const avatar = getProfileAvatarUrl(profile);
+
+  const rawVideoUrl = post.videoUrl || '';
+  const postVideoUrl = safeHttpsUrl(rawVideoUrl);
+  const postVideoPath = post.videoPath || '';
+
   const rawPostImage = post.imageUrl || post.imageURL || post.photoUrl || post.photoURL || post.fotoUrl || post.imagenUrl || post.imagen || post.foto || post.image || post.mediaUrl || '';
   const postImageUrl = safeHttpsUrl(rawPostImage);
   const postImagePath = post.imagePath || post.storagePath || post.imageStoragePath || (typeof rawPostImage === 'string' && /^(gs:\/\/|social_feed\/)/.test(rawPostImage) ? rawPostImage : '');
+
   const type = FEED_TYPE_META[post.type] || FEED_TYPE_META.general;
   const likedBy = Array.isArray(post.likedBy) ? post.likedBy : [];
   const liked = Boolean(CU && likedBy.includes(CU.uid));
@@ -5270,9 +5546,16 @@ function renderFeedPost(post) {
   const safeAvatarUid = escapeHTML(avatarUid);
   const avatarContent = `<div class="feed-avatar ${avatar ? '' : 'feed-avatar-initial'}" ${avatarStyle ? `style="${avatarStyle}"` : ''} data-feed-avatar-uid="${safeAvatarUid}" data-feed-user="${safeUid}" data-feed-name="${safeAuthor}">${avatar ? '' : escapeHTML(author.charAt(0).toUpperCase())}</div>`;
 
-  const imageHTML = postImageUrl
-    ? `<img class="feed-post-image" src="${escapeHTML(postImageUrl)}" alt="Imagen adjunta por ${safeAuthor}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`
-    : (postImagePath ? `<img class="feed-post-image" data-feed-storage-path="${escapeHTML(postImagePath)}" alt="Imagen adjunta por ${safeAuthor}" loading="lazy" decoding="async">` : '');
+  let mediaHTML = '';
+  if (postVideoUrl) {
+    mediaHTML = `<video class="feed-post-video" src="${escapeHTML(postVideoUrl)}" controls playsinline preload="metadata"></video>`;
+  } else if (postVideoPath) {
+    mediaHTML = `<video class="feed-post-video" data-feed-storage-path="${escapeHTML(postVideoPath)}" controls playsinline preload="metadata"></video>`;
+  } else if (postImageUrl) {
+    mediaHTML = `<img class="feed-post-image" src="${escapeHTML(postImageUrl)}" alt="Imagen adjunta por ${safeAuthor}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+  } else if (postImagePath) {
+    mediaHTML = `<img class="feed-post-image" data-feed-storage-path="${escapeHTML(postImagePath)}" alt="Imagen adjunta por ${safeAuthor}" loading="lazy" decoding="async">`;
+  }
 
   let pollHTML = '';
   if (post.type === 'poll' && Array.isArray(post.pollOptions)) {
@@ -5289,6 +5572,9 @@ function renderFeedPost(post) {
     }).join('')}<div class="poll-total">${totalVotes} ${totalVotes === 1 ? 'voto' : 'votos'}${myVote >= 0 ? ' · Ya participaste' : ' · Selecciona una opción'}</div></div>`;
   }
 
+  const commentsCount = Number(post.commentsCount) || 0;
+  const commentsBtnLabel = commentsCount > 0 ? `${commentsCount} Comentarios` : 'Comentar';
+
   return `<article class="feed-post card" data-post-id="${safePostId}">
     <div class="feed-post-head">
       <div class="feed-author-group">
@@ -5301,15 +5587,15 @@ function renderFeedPost(post) {
       <div class="feed-post-head-actions">
         <span class="feed-type-pill ${type.css}">${type.icon} ${type.label}</span>
         ${canPin ? `<button class="feed-icon-btn" type="button" data-feed-action="pin" data-post-id="${safePostId}" title="${post.pinned ? 'Desfijar publicación' : 'Fijar publicación'}">${post.pinned ? '📍' : '⌖'}</button>` : ''}
-        ${canDelete ? `<button class="feed-icon-btn delete" type="button" data-feed-action="delete" data-post-id="${safePostId}" title="Eliminar publicación">···</button>` : ''}
+        ${canDelete ? `<button class="feed-icon-btn delete" type="button" data-feed-action="delete" data-post-id="${safePostId}" title="Eliminar publicación y archivo de Firebase">🗑️</button>` : ''}
       </div>
     </div>
     ${text ? `<div class="feed-post-copy">${text}</div>` : ''}
-    ${imageHTML}
+    ${mediaHTML}
     ${pollHTML}
     <div class="feed-post-footer">
       <button type="button" class="feed-action-btn ${liked ? 'is-liked' : ''}" data-feed-action="like" data-post-id="${safePostId}">${liked ? '♥' : '♡'} <span>${likedBy.length ? likedBy.length : ''} Me gusta</span></button>
-      <button type="button" class="feed-action-btn" data-feed-action="comments" data-post-id="${safePostId}">▤ <span>Comentar</span></button>
+      <button type="button" class="feed-action-btn" data-feed-action="comments" data-post-id="${safePostId}">💬 <span>${commentsBtnLabel}</span></button>
       <span class="feed-post-spacer"></span>
       <span class="feed-post-reaction-total">${likedBy.length ? `${likedBy.length} reacciones` : ''}</span>
     </div>
@@ -5323,35 +5609,132 @@ function renderFeedPost(post) {
   </article>`;
 }
 
-async function loadFeedComments(postId) {
+function subscribeFeedComments(postId) {
+  if (!postId || !db) return;
+  if (feedCommentUnsubs.has(postId)) return;
+
   const container = document.getElementById(`feed-comments-list-${postId}`);
-  if (!container) return;
-  container.innerHTML = '<div class="feed-comments-empty">Cargando comentarios…</div>';
-  try {
-    const snap = await db.collection('social_feed').doc(postId).collection('comments')
-      .orderBy('ts', 'asc').limit(40).get();
-    if (snap.empty) {
-      container.innerHTML = '<div class="feed-comments-empty">Sé el primero en comentar.</div>';
-      return;
-    }
-    const comments = snap.docs.map(doc => doc.data());
-    container.innerHTML = comments.map(comment => {
-      const profile = allProfilesCache[comment.uid] || {};
-      const name = escapeHTML(profile.name || comment.autor || 'Agente');
-      const content = escapeHTML(comment.contenido || '');
-      return `<div class="feed-comment"><div class="feed-comment-avatar">${escapeHTML(name.charAt(0).toUpperCase())}</div><div><strong>${name}</strong><p>${content}</p></div></div>`;
-    }).join('');
-  } catch (error) {
-    console.error(error);
-    container.innerHTML = '<div class="feed-comments-empty">No se pudieron cargar los comentarios. Verifica las reglas de Firestore.</div>';
-  }
+  if (container) container.innerHTML = '<div class="feed-comments-empty">Cargando comentarios…</div>';
+
+  const unsub = db.collection('social_feed').doc(postId).collection('comments')
+    .orderBy('ts', 'asc').limit(60)
+    .onSnapshot(snap => {
+      const box = document.getElementById(`feed-comments-list-${postId}`);
+      if (!box) return;
+      if (snap.empty) {
+        box.innerHTML = '<div class="feed-comments-empty">Sé el primero en comentar.</div>';
+        return;
+      }
+
+      const postDoc = lastFeedSnapshot && lastFeedSnapshot.docs.find(d => d.id === postId);
+      const postOwnerUid = postDoc ? (postDoc.data().uid || '') : '';
+
+      box.innerHTML = snap.docs.map(doc => {
+        const comment = doc.data() || {};
+        const commentId = escapeHTML(doc.id);
+        const safePostId = escapeHTML(postId);
+        const cUid = comment.uid || '';
+        const profile = allProfilesCache[cUid] || {};
+        const rawName = profile.name || comment.autor || 'Agente';
+        const name = escapeHTML(rawName);
+        const content = escapeHTML(comment.contenido || '');
+        const cAvatar = getProfileAvatarUrl(profile);
+        const avStyle = cAvatar ? `style="background-image:url('${escapeHTML(cAvatar)}')"` : '';
+        const avText = cAvatar ? '' : escapeHTML(rawName.charAt(0).toUpperCase());
+        const cDate = escapeHTML(comment.fecha || '');
+
+        const canDeleteComment = Boolean(CU && (cUid === CU.uid || postOwnerUid === CU.uid)) || isAdminUser();
+        const delCommentBtn = canDeleteComment
+          ? `<button type="button" class="feed-comment-del-btn" data-feed-action="delete-comment" data-post-id="${safePostId}" data-comment-id="${commentId}" title="Eliminar comentario de Firebase">🗑️</button>`
+          : '';
+
+        const reactions = (comment.reactions && typeof comment.reactions === 'object') ? comment.reactions : {};
+        const reactionsHTML = COMMENT_REACTIONS.map(em => {
+          const users = Array.isArray(reactions[em]) ? reactions[em] : [];
+          const count = users.length;
+          const isMine = Boolean(CU && users.includes(CU.uid));
+          const namesTitle = count > 0
+            ? users.map(u => (allProfilesCache[u] && allProfilesCache[u].name) || 'Agente').join(', ')
+            : `Reaccionar con ${em}`;
+          return `<button type="button" class="comment-react-btn ${isMine ? 'active' : ''}" data-feed-action="react-comment" data-post-id="${safePostId}" data-comment-id="${commentId}" data-emoji="${em}" title="${escapeHTML(namesTitle)}">${em}${count > 0 ? ` <span>${count}</span>` : ''}</button>`;
+        }).join('');
+
+        return `<div class="feed-comment" data-comment-id="${commentId}">
+          <div class="feed-comment-avatar" ${avStyle} data-feed-user="${escapeHTML(cUid)}" data-feed-name="${name}">${avText}</div>
+          <div class="feed-comment-body">
+            <div class="feed-comment-head">
+              <div>
+                <button type="button" class="feed-comment-author" data-feed-user="${escapeHTML(cUid)}" data-feed-name="${name}">${name}</button>
+                ${cDate ? `<span class="feed-comment-date"> · ${cDate}</span>` : ''}
+              </div>
+              ${delCommentBtn}
+            </div>
+            <p>${content}</p>
+            <div class="feed-comment-actions">${reactionsHTML}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }, error => {
+      console.error(error);
+      const box = document.getElementById(`feed-comments-list-${postId}`);
+      if (box) box.innerHTML = '<div class="feed-comments-empty">No se pudieron cargar los comentarios.</div>';
+    });
+
+  feedCommentUnsubs.set(postId, unsub);
 }
 
 async function toggleFeedComments(postId) {
   const panel = document.getElementById(`feed-comments-${postId}`);
   if (!panel) return;
   panel.hidden = !panel.hidden;
-  if (!panel.hidden) await loadFeedComments(postId);
+  if (!panel.hidden) {
+    feedOpenComments.add(postId);
+    subscribeFeedComments(postId);
+  } else {
+    feedOpenComments.delete(postId);
+    if (feedCommentUnsubs.has(postId)) {
+      try { feedCommentUnsubs.get(postId)(); } catch (_) {}
+      feedCommentUnsubs.delete(postId);
+    }
+  }
+}
+
+async function toggleFeedCommentReaction(postId, commentId, emoji) {
+  if (!CU || !postId || !commentId || !emoji) return;
+  const commentRef = db.collection('social_feed').doc(postId).collection('comments').doc(commentId);
+  try {
+    await db.runTransaction(async tx => {
+      const snap = await tx.get(commentRef);
+      if (!snap.exists) return;
+      const data = snap.data() || {};
+      const reactions = (data.reactions && typeof data.reactions === 'object') ? { ...data.reactions } : {};
+      const list = Array.isArray(reactions[emoji]) ? [...reactions[emoji]] : [];
+      const idx = list.indexOf(CU.uid);
+      if (idx >= 0) list.splice(idx, 1);
+      else list.push(CU.uid);
+      reactions[emoji] = list;
+      tx.update(commentRef, { reactions });
+    });
+  } catch (error) {
+    console.error('Error al reaccionar al comentario:', error);
+    showToast('No se pudo guardar la reacción en el comentario.', '⚠️');
+  }
+}
+
+async function deleteFeedComment(postId, commentId) {
+  if (!postId || !commentId) return;
+  if (!confirm('¿Eliminar este comentario permanentemente de Firebase?')) return;
+  try {
+    const postRef = db.collection('social_feed').doc(postId);
+    await postRef.collection('comments').doc(commentId).delete();
+    await postRef.update({
+      commentsCount: firebase.firestore.FieldValue.increment(-1)
+    }).catch(() => {});
+    showToast('Comentario eliminado de Firebase', '🗑️');
+  } catch (error) {
+    console.error('Error eliminando comentario:', error);
+    showToast('No se pudo eliminar el comentario.', '❌');
+  }
 }
 
 async function toggleFeedLike(postId) {
@@ -5415,13 +5798,20 @@ async function submitFeedComment(postId, content) {
   const text = String(content || '').trim();
   if (!text || !CU) return;
   try {
-    await db.collection('social_feed').doc(postId).collection('comments').add({
+    const postRef = db.collection('social_feed').doc(postId);
+    await postRef.collection('comments').add({
       uid: CU.uid,
       autor: myProfile.name || 'Agente',
       contenido: text.slice(0, 500),
+      fecha: getDateStr(),
+      reactions: {},
       ts: firebase.firestore.FieldValue.serverTimestamp()
     });
-    await loadFeedComments(postId);
+    await postRef.update({
+      commentsCount: firebase.firestore.FieldValue.increment(1)
+    }).catch(() => {});
+    feedOpenComments.add(postId);
+    subscribeFeedComments(postId);
   } catch (error) {
     console.error(error);
     showToast('No se pudo publicar el comentario. Revisa reglas de Firestore.', '⚠️');
@@ -5444,24 +5834,38 @@ async function publishPost() {
         return el ? el.value.trim() : '';
       }).filter(Boolean).slice(0, 3)
     : [];
-  if (!text && !feedImageFile) return showToast('Escribe un mensaje o adjunta una imagen.', '⚠️');
+  if (!text && !feedMediaFile) return showToast('Escribe un mensaje o adjunta una foto o video.', '⚠️');
   if (type === 'poll' && (!text || pollOptions.length < 2)) return showToast('La encuesta necesita una pregunta y al menos dos opciones.', '⚠️');
 
   button.disabled = true;
-  button.textContent = 'Publicando…';
+  button.textContent = feedMediaKind === 'video' ? 'Subiendo video…' : 'Publicando…';
   let uploadedRef = null;
   try {
     let imageUrl = '';
     let imagePath = '';
-    if (feedImageFile) {
-      const optimizedFile = await compressFeedImage(feedImageFile);
-      imagePath = `social_feed/${CU.uid}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
-      uploadedRef = storage.ref(imagePath);
-      await uploadedRef.put(optimizedFile, {
-        contentType: 'image/jpeg',
-        cacheControl: 'public,max-age=3600'
-      });
-      imageUrl = await uploadedRef.getDownloadURL();
+    let videoUrl = '';
+    let videoPath = '';
+
+    if (feedMediaFile) {
+      if (feedMediaKind === 'video') {
+        const ext = (feedMediaFile.name.split('.').pop() || 'mp4').replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'mp4';
+        videoPath = `social_feed/${CU.uid}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        uploadedRef = storage.ref(videoPath);
+        await uploadedRef.put(feedMediaFile, {
+          contentType: feedMediaFile.type || 'video/mp4',
+          cacheControl: 'public,max-age=3600'
+        });
+        videoUrl = await uploadedRef.getDownloadURL();
+      } else {
+        const optimizedFile = await compressFeedImage(feedMediaFile);
+        imagePath = `social_feed/${CU.uid}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+        uploadedRef = storage.ref(imagePath);
+        await uploadedRef.put(optimizedFile, {
+          contentType: 'image/jpeg',
+          cacheControl: 'public,max-age=3600'
+        });
+        imageUrl = await uploadedRef.getDownloadURL();
+      }
     }
 
     const d = new Date();
@@ -5475,6 +5879,10 @@ async function publishPost() {
       createdAtMs: Date.now(),
       type,
       imageUrl,
+      imagePath,
+      videoUrl,
+      videoPath,
+      commentsCount: 0,
       pollOptions,
       votes: {},
       likedBy: [],
@@ -5488,12 +5896,12 @@ async function publishPost() {
       if (el) el.value = '';
     });
     onFeedTypeChange();
-    clearFeedImage();
+    clearFeedMedia();
     showToast('Publicación compartida con el equipo.', '✅');
   } catch (error) {
     console.error('Error publicando en el muro:', error);
     if (uploadedRef) {
-      try { await uploadedRef.delete(); } catch (cleanupError) { console.warn('No se pudo limpiar la imagen no publicada:', cleanupError); }
+      try { await uploadedRef.delete(); } catch (cleanupError) { console.warn('No se pudo limpiar el archivo no publicado:', cleanupError); }
     }
     showToast(describeFirebaseError(error, 'No se pudo publicar en el muro'), '❌');
   } finally {
@@ -5503,14 +5911,38 @@ async function publishPost() {
 }
 
 async function deleteFeedPost(postId) {
-  const message = isAdminUser() ? '¿Eliminar esta publicación del muro?' : '¿Eliminar tu publicación del muro?';
+  const message = isAdminUser()
+    ? '¿Eliminar esta publicación, sus comentarios y su archivo multimedia de Firebase?'
+    : '¿Eliminar tu publicación, sus comentarios y su archivo multimedia de Firebase?';
   if (!confirm(message)) return;
   try {
-    await db.collection('social_feed').doc(postId).delete();
-    showToast('Publicación eliminada', '🗑️');
+    const postRef = db.collection('social_feed').doc(postId);
+    const snap = await postRef.get();
+    if (snap.exists) {
+      const data = snap.data() || {};
+      await deleteFirebaseStorageAsset(data.imagePath, data.imageUrl);
+      await deleteFirebaseStorageAsset(data.videoPath, data.videoUrl);
+    }
+
+    // Eliminar subcolección de comentarios en Firestore
+    const commentsSnap = await postRef.collection('comments').get();
+    if (!commentsSnap.empty) {
+      const batch = db.batch();
+      commentsSnap.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    }
+
+    if (feedCommentUnsubs.has(postId)) {
+      try { feedCommentUnsubs.get(postId)(); } catch (_) {}
+      feedCommentUnsubs.delete(postId);
+    }
+    feedOpenComments.delete(postId);
+
+    await postRef.delete();
+    showToast('Publicación y archivos eliminados de Firebase', '🗑️');
   } catch (error) {
     console.error(error);
-    showToast('No se pudo eliminar. Revisa los permisos de Firebase.', '❌');
+    showToast('No se pudo eliminar completamente de Firebase.', '❌');
   }
 }
 
@@ -5520,12 +5952,12 @@ async function deleteFeedPost(postId) {
     const list = document.getElementById('feed-list');
     if (!list) return;
     list.addEventListener('error', event => {
-      const img = event.target;
-      if (img && img.matches && img.matches('img.feed-post-image')) {
+      const media = event.target;
+      if (media && media.matches && media.matches('img.feed-post-image, video.feed-post-video')) {
         const fallback = document.createElement('div');
         fallback.className = 'feed-image-unavailable';
-        fallback.textContent = 'No se pudo cargar esta imagen. Verifica que el archivo siga disponible en Firebase Storage.';
-        img.replaceWith(fallback);
+        fallback.textContent = 'No se pudo cargar este archivo multimedia desde Firebase Storage.';
+        media.replaceWith(fallback);
       }
     }, true);
     list.addEventListener('click', event => {
@@ -5536,12 +5968,14 @@ async function deleteFeedPost(postId) {
       }
       const actionEl = event.target.closest('[data-feed-action]');
       if (!actionEl) return;
-      const { feedAction, postId } = actionEl.dataset;
+      const { feedAction, postId, commentId, emoji } = actionEl.dataset;
       if (feedAction === 'like') toggleFeedLike(postId);
       else if (feedAction === 'comments') toggleFeedComments(postId);
       else if (feedAction === 'vote') voteFeedPoll(postId, Number(actionEl.dataset.optionIndex));
       else if (feedAction === 'pin') toggleFeedPin(postId);
       else if (feedAction === 'delete') deleteFeedPost(postId);
+      else if (feedAction === 'react-comment') toggleFeedCommentReaction(postId, commentId, emoji);
+      else if (feedAction === 'delete-comment') deleteFeedComment(postId, commentId);
     });
     list.addEventListener('submit', event => {
       const form = event.target.closest('[data-feed-comment-form]');
@@ -6130,13 +6564,19 @@ async function adminUnbanUser(targetUid, targetName) {
 }
 
 async function clearGeneralChatAdmin() {
-  if (!confirm("¿Seguro que deseas borrar todos los mensajes visibles de la Sala General?")) return;
-  showToast("Limpiando Sala General...", "🧹");
+  if (!confirm("¿Seguro que deseas borrar todos los mensajes y archivos de la Sala General en Firebase?")) return;
+  showToast("Limpiando Sala General y archivos en Firebase...", "🧹");
   try {
     const genMsgs = currentChatMessages.filter(m => !m.targetUid);
-    await Promise.all(genMsgs.map(m => db.collection('chat_general').doc(m.id).delete()));
-    showToast("Sala General vaciada con éxito", "✅");
+    await Promise.all(genMsgs.map(async m => {
+      if (m.mediaPath || m.mediaUrl) {
+        await deleteFirebaseStorageAsset(m.mediaPath, m.mediaUrl);
+      }
+      return db.collection('chat_general').doc(m.id).delete();
+    }));
+    showToast("Sala General y archivos eliminados de Firebase", "✅");
   } catch (e) {
+    console.error(e);
     showToast("Error al limpiar algunos mensajes", "❌");
   }
 }
@@ -6260,11 +6700,13 @@ async function adminAddAudioToMonth() {
 
   try {
     let audioUrl = '';
+    let audioPath = '';
     if (audioFile) {
       if (!audioFile.type || !audioFile.type.startsWith('audio/')) throw new Error('Selecciona un archivo de audio válido.');
       if (audioFile.size >= 30 * 1024 * 1024) throw new Error('El audio supera el límite de 30 MB.');
       const safeFileName = `${nombre.replace(/[^a-zA-Z0-9_-]/g, '_')}_${Date.now()}_${String(audioFile.name).replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-      const snap = await storage.ref(`audios_crm/${CU.uid}/${safeFileName}`).put(audioFile, { contentType: audioFile.type });
+      audioPath = `audios_crm/${CU.uid}/${safeFileName}`;
+      const snap = await storage.ref(audioPath).put(audioFile, { contentType: audioFile.type });
       audioUrl = await snap.ref.getDownloadURL();
     }
 
@@ -6279,6 +6721,7 @@ async function adminAddAudioToMonth() {
       tipoDocumento: tipoDocumento,
       numeroDocumento: numeroDocumento,
       audioUrl: audioUrl,
+      audioPath: audioPath,
       addedByAdmin: true,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
