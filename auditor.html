@@ -46,11 +46,11 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;display
 .agent-filter{max-width:190px}.date-filter-container{display:flex;align-items:center;gap:8px}.date-filter-container>span{font-size:12px;color:var(--muted);font-weight:600}.date-filter{max-width:145px;padding:9px 12px;color-scheme:var(--scheme)}
 .load-status{width:100%;min-height:16px;color:var(--muted);font-size:11px;padding:0 2px}.load-status.busy{color:var(--p)}
 .table-container{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
-table{width:100%;border-collapse:collapse;text-align:left;min-width:760px}
+table{width:100%;border-collapse:collapse;text-align:left;min-width:1180px}
 th{background:var(--bg);padding:14px 16px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:500;vertical-align:middle}tbody tr:hover td{background:var(--surface-hover)}
 audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}audio::-webkit-media-controls-panel{background-color:var(--bg)}audio::-webkit-media-controls-play-button,audio::-webkit-media-controls-mute-button{filter:invert(var(--media-invert))}audio::-webkit-media-controls-current-time-display,audio::-webkit-media-controls-time-remaining-display{color:var(--text)}
-.tag{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(128,128,128,.12);white-space:nowrap;display:inline-block}.tag.purple{color:var(--p);background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.3)}
+.tag{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(128,128,128,.12);white-space:nowrap;display:inline-block}.tag.purple{color:var(--p);background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.3)}.tag.success{color:var(--success);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3)}
 .table-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,.04);flex-wrap:wrap}
 .results-info{font-size:11px;color:var(--muted)}
 .side-panel{flex:1;max-width:350px;min-width:250px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
@@ -94,7 +94,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 <div class="layout">
   <main class="main-content">
     <div class="toolbar">
-      <input type="text" id="search-input" class="inp" placeholder="Buscar en todo el historial por referencia, agente o fecha..." oninput="applyFilters()" autocomplete="off">
+      <input type="text" id="search-input" class="inp" placeholder="Buscar por referencia, número, tipo, observación, agente o fecha..." oninput="applyFilters()" autocomplete="off">
       <select id="agent-filter" class="inp agent-filter" onchange="applyFilters()"><option value="ALL">Todos los agentes</option></select>
       <div class="date-filter-container">
         <span>Fecha:</span>
@@ -106,8 +106,8 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 
     <div class="table-container">
       <table>
-        <thead><tr><th>Fecha / Hora</th><th>Referencia</th><th>Duración</th><th>Agente</th><th>Reproductor integrado</th></tr></thead>
-        <tbody id="audio-table-body"><tr><td colspan="5" style="text-align:center;padding:40px;color:var(--muted)">Cargando primeros audios...</td></tr></tbody>
+        <thead><tr><th>Fecha / Hora</th><th>Referencia</th><th>Número llamado</th><th>Tipo de llamada</th><th>Observación</th><th>Duración</th><th>Agente</th><th>Reproductor integrado</th></tr></thead>
+        <tbody id="audio-table-body"><tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted)">Cargando primeros audios...</td></tr></tbody>
       </table>
     </div>
     <div class="table-footer">
@@ -309,7 +309,7 @@ async function cargarPrimeraPagina() {
   } catch (error) {
     console.error('Error al cargar audios:', error);
     setLoadStatus('Error al consultar Firebase. Revisa la conexión y las reglas de Firestore.', false);
-    document.getElementById('audio-table-body').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--danger)">No se pudo cargar el historial.</td></tr>';
+    document.getElementById('audio-table-body').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--danger)">No se pudo cargar el historial.</td></tr>';
   } finally {
     isLoadingPage = false;
     updateLoadMoreButton();
@@ -434,7 +434,7 @@ async function ensureFullIndex() {
 }
 
 function audioMatchesCriteria(audio, criteria) {
-  const text = `${audio.nombre || ''} ${audio.agente || ''} ${audio.fecha || ''}`.toLocaleLowerCase('es');
+  const text = `${audio.nombre || ''} ${audio.agente || ''} ${audio.fecha || ''} ${audio.numeroLlamado || ''} ${audio.tipoLlamada || ''} ${audio.observacion || ''}`.toLocaleLowerCase('es');
   const matchText = !criteria.q || text.includes(criteria.q);
   const agent = String(audio.agente || '').trim().toUpperCase();
   const matchAgent = criteria.agent === 'ALL' || agent === criteria.agent;
@@ -544,7 +544,7 @@ function renderTableHTML(dataArray) {
   if (!dataArray.length) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
-    cell.colSpan = 5;
+    cell.colSpan = 8;
     cell.textContent = 'No hay resultados con estos filtros.';
     cell.style.cssText = 'text-align:center;padding:40px;color:var(--muted);font-weight:600';
     row.appendChild(cell);
@@ -554,16 +554,25 @@ function renderTableHTML(dataArray) {
 
   dataArray.forEach(audioData => {
     const row = document.createElement('tr');
-    const dateCell = createCell(audioData.fecha || 'Sin fecha');
-    dateCell.style.cssText = 'color:var(--muted);font-size:12px;white-space:nowrap';
-    row.appendChild(dateCell);
-
-    const refCell = document.createElement('td');
+    row.appendChild(createCell(audioData.fecha || 'Sin fecha'));
+    const refCell = createCell(audioData.nombre || 'Sin referencia');
     const refStrong = document.createElement('strong');
     refStrong.textContent = audioData.nombre || 'Sin referencia';
-    refStrong.style.color = 'var(--text)';
+    refCell.textContent = '';
     refCell.appendChild(refStrong);
     row.appendChild(refCell);
+    row.appendChild(createCell(audioData.numeroLlamado || '—'));
+
+    const typeCell = document.createElement('td');
+    const typeTag = document.createElement('span');
+    typeTag.className = 'tag ' + (audioData.tipoLlamada === 'whatsapp' ? 'success' : 'purple');
+    typeTag.textContent = audioData.tipoLlamada === 'whatsapp' ? 'WhatsApp' : audioData.tipoLlamada === 'directa' ? 'Llamada directa' : 'Sin especificar';
+    typeCell.appendChild(typeTag);
+    row.appendChild(typeCell);
+
+    const observationCell = createCell(audioData.observacion || '—');
+    observationCell.style.cssText = 'max-width:280px;white-space:normal;overflow-wrap:anywhere;color:var(--muted);';
+    row.appendChild(observationCell);
 
     const durationCell = document.createElement('td');
     const durationTag = document.createElement('span');
@@ -669,8 +678,8 @@ async function exportarExcel() {
       showToast('No hay datos para exportar');
       return;
     }
-    const headers = ['FECHA','REFERENCIA','DURACION','AGENTE','LINK_AUDIO'];
-    const csvRows = [headers, ...rows.map(row => [row.fecha || '', row.nombre || '', row.duracion || '', row.agente || '', row.audioUrl || ''])];
+    const headers = ['FECHA','REFERENCIA','NUMERO_LLAMADO','TIPO_LLAMADA','OBSERVACION','DURACION','AGENTE','LINK_AUDIO'];
+    const csvRows = [headers, ...rows.map(row => [row.fecha || '', row.nombre || '', row.numeroLlamado || '', row.tipoLlamada || '', row.observacion || '', row.duracion || '', row.agente || '', row.audioUrl || ''])];
     const csv = '\uFEFF' + csvRows.map(row => row.map(csvEscape).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
