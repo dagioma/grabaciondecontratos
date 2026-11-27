@@ -1233,6 +1233,77 @@ body.light-mode .xmas-flake {
   .history-record-actions { width: 100%; }
 }
 
+
+/* ==========================================
+   OPTIMIZACIÓN DE RENDIMIENTO · SIN CAMBIAR EL DISEÑO BASE
+   ========================================== */
+.feed-post {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
+}
+.feed-post-image,
+.chat-media {
+  max-width: 100%;
+}
+.chat-media[loading="lazy"] {
+  content-visibility: auto;
+}
+
+/* Perfil ligero activado automáticamente solo en equipos limitados. */
+body.performance-lite {
+  text-rendering: auto;
+}
+body.performance-lite .xmas-flake {
+  display: none !important;
+}
+body.performance-lite .xmas-bulb,
+body.performance-lite .xmas-bulb::before {
+  animation: none !important;
+  box-shadow: none !important;
+}
+body.performance-lite .pulse-dot,
+body.performance-lite .pulse-dot.anim,
+body.performance-lite .pulse-dot-red {
+  animation: none !important;
+  box-shadow: none !important;
+}
+body.performance-lite .modal-backdrop,
+body.performance-lite #mega-alert-overlay,
+body.performance-lite #offline-overlay {
+  backdrop-filter: none !important;
+}
+body.performance-lite .sidebar,
+body.performance-lite .topbar,
+body.performance-lite .card,
+body.performance-lite .stat-card,
+body.performance-lite .admin-card,
+body.performance-lite .user-profile-modal {
+  box-shadow: var(--shadow-sm) !important;
+}
+body.performance-lite .view {
+  scroll-behavior: auto;
+}
+
+/* Al cambiar de pestaña, se detienen únicamente los adornos animados. */
+body.page-hidden .xmas-flake,
+body.page-hidden .xmas-bulb,
+body.page-hidden .confetti-piece,
+body.page-hidden .pulse-dot,
+body.page-hidden .pulse-dot-red {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2717,8 +2788,8 @@ auth.onAuthStateChanged(async (user) => {
       renderChatContacts();
       renderChatMessages();
       renderPresenceUI();
-      renderDashboardCharts();
-      if (lastFeedSnapshot) renderFeedSnapshot(lastFeedSnapshot);
+      if (document.getElementById('v-dashboard')?.classList.contains('active')) renderDashboardCharts();
+      if (lastFeedSnapshot && !document.hidden && document.getElementById('v-feed')?.classList.contains('active')) renderFeedSnapshot(lastFeedSnapshot);
       checkIfCurrentUserIsBanned();
     }, error => {
       console.error('Error escuchando perfiles:', error);
@@ -3369,9 +3440,15 @@ function goto(viewId, element) {
     if (unreadDMs[activeChatChannel]) {
       delete unreadDMs[activeChatChannel];
       updateGlobalChatBadge();
-      renderChatContacts();
     }
+    renderChatContacts();
     renderChatMessages();
+  } else if (viewId === 'dashboard') {
+    renderDashboardCharts();
+  } else if (viewId === 'history') {
+    filterHist();
+  } else if (viewId === 'feed' && lastFeedSnapshot) {
+    renderFeedSnapshot(lastFeedSnapshot);
   }
 }
 
@@ -3690,7 +3767,10 @@ function initListeners() {
   });
 
   // 2. SOCIAL FEED (MURO): publicaciones enriquecidas y render seguro
-  db.collection('social_feed').orderBy('ts','desc').limit(30).onSnapshot(renderFeedSnapshot, error => {
+  db.collection('social_feed').orderBy('ts','desc').limit(30).onSnapshot(snap => {
+    lastFeedSnapshot = snap;
+    if (!document.hidden && document.getElementById('v-feed')?.classList.contains('active')) renderFeedSnapshot(snap);
+  }, error => {
     console.error('Error cargando el muro:', error);
     const list = document.getElementById('feed-list');
     if (list) list.innerHTML = `<div class="feed-empty"><strong>No se pudo cargar el muro</strong><p>${escapeHTML(describeFirebaseError(error, 'Muro'))}</p></div>`;
@@ -3701,8 +3781,8 @@ function initListeners() {
     histAll = []; 
     snap.forEach(doc => { let data = doc.data(); data.id = doc.id; histAll.push(data); });
     document.getElementById('stat-total').textContent = snap.size;
-    renderDashboardCharts();
-    filterHist();
+    if (document.getElementById('v-dashboard')?.classList.contains('active')) renderDashboardCharts();
+    if (document.getElementById('v-history')?.classList.contains('active')) filterHist();
     updateMyProfileStats();
   }, error => {
     console.error('Error escuchando historial_llamadas:', error);
@@ -3720,7 +3800,7 @@ function initListeners() {
     console.error('Error escuchando presence:', error);
     showToast(describeFirebaseError(error, 'No se pudo sincronizar la presencia'), '⚠️');
   });
-  setInterval(() => { renderPresenceUI(); renderChatContacts(); }, 15000);
+  setInterval(() => { renderPresenceUI(); renderChatContacts(); }, 30000);
 }
 
 function applyAdminConfigToUI() {
@@ -3936,7 +4016,7 @@ function renderDashboardCharts() {
     const ctxD = document.getElementById('dailyChart').getContext('2d');
     dailyChart = new Chart(ctxD, {
       type: 'bar', data: { labels: labelsHoy, datasets: [{ label: 'Hoy', data: dataHoy, backgroundColor: 'rgba(59, 130, 246, 0.85)', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 6 }] },
-      options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: chartMutedColor, font: { size: 10 } }, grid: { color: chartGridColor } }, x: { ticks: { color: chartTextColor, font: { size: 11, weight: '600' } }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+      options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: chartMutedColor, font: { size: 10 } }, grid: { color: chartGridColor } }, x: { ticks: { color: chartTextColor, font: { size: 11, weight: '600' } }, grid: { display: false } } }, plugins: { legend: { display: false } } }
     });
   } else {
     dailyChart.data.labels = labelsHoy;
@@ -3944,7 +4024,7 @@ function renderDashboardCharts() {
     dailyChart.options.scales.y.ticks.color = chartMutedColor;
     dailyChart.options.scales.y.grid.color = chartGridColor;
     dailyChart.options.scales.x.ticks.color = chartTextColor;
-    dailyChart.update();
+    dailyChart.update('none');
   }
 
   const listHoy = document.getElementById('dash-agent-stats-hoy');
@@ -3986,14 +4066,14 @@ function renderDashboardCharts() {
 
   if (!trendChart) {
     const ctxT = document.getElementById('trendChart').getContext('2d');
-    trendChart = new Chart(ctxT, { type: 'line', data: { labels: labelsFechas, datasets: datasetsGrafico }, options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 5, color: chartMutedColor, font: { size: 10 } }, grid: { color: chartGridColor, borderDash: [5, 5] } }, x: { ticks: { color: chartTextColor, font: { size: 10 } }, grid: { display: false } } } } });
+    trendChart = new Chart(ctxT, { type: 'line', data: { labels: labelsFechas, datasets: datasetsGrafico }, options: { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 5, color: chartMutedColor, font: { size: 10 } }, grid: { color: chartGridColor, borderDash: [5, 5] } }, x: { ticks: { color: chartTextColor, font: { size: 10 } }, grid: { display: false } } } } });
   } else {
     trendChart.data.labels = labelsFechas;
     trendChart.data.datasets = datasetsGrafico;
     trendChart.options.scales.y.ticks.color = chartMutedColor;
     trendChart.options.scales.y.grid.color = chartGridColor;
     trendChart.options.scales.x.ticks.color = chartTextColor;
-    trendChart.update();
+    trendChart.update('none');
   }
 
   const listTrend = document.getElementById('dash-agent-stats-trend');
@@ -4296,6 +4376,8 @@ function getMsgTimestampScore(m) {
 }
 
 function renderChatContacts() {
+  const chatView = document.getElementById('v-chat');
+  if (document.hidden || (chatView && !chatView.classList.contains('active'))) return;
   const list = document.getElementById('chat-contacts-list');
   if (!list || !CU) return;
 
@@ -4352,15 +4434,21 @@ function renderChatContacts() {
     }
   });
 
+  // Indexar los últimos mensajes y presencia evita recorrer todos los mensajes
+  // una vez por cada contacto cuando se actualiza el chat.
+  const latestDMByUid = new Map();
+  currentChatMessages.forEach(m => {
+    if (!m.targetUid) return;
+    if (m.uid === CU.uid) latestDMByUid.set(m.targetUid, m);
+    else if (m.targetUid === CU.uid) latestDMByUid.set(m.uid, m);
+  });
+  const presenceByUid = new Map(currentAgents.map(a => [a.uid, a]));
+
   const contacts = Object.values(userMap).map(u => {
-    const dmMsgs = currentChatMessages.filter(m =>
-      (m.uid === CU.uid && m.targetUid === u.uid) ||
-      (m.uid === u.uid && m.targetUid === CU.uid)
-    );
-    const lastMsg = dmMsgs.length ? dmMsgs[dmMsgs.length - 1] : null;
+    const lastMsg = latestDMByUid.get(u.uid) || null;
     const lastScore = lastMsg ? getMsgTimestampScore(lastMsg) : 0;
     const lastSeq = lastMsg ? (lastMsg._seq || 0) : 0;
-    const pres = currentAgents.find(a => a.uid === u.uid);
+    const pres = presenceByUid.get(u.uid);
     const isOnline = Boolean(pres && (pres.online === true || pres.status !== 'offline') && (now - (pres.lastSeen || 0) < 60000));
     const unread = unreadDMs[u.uid] || 0;
 
@@ -4665,8 +4753,14 @@ async function toggleMessageReaction(msgId, emoji) {
 }
 
 function renderChatMessages() {
+  // Evita reconstruir cientos de nodos mientras el usuario está en otra sección.
   if (!CU) return;
-  const box = document.getElementById('chat-msgs'); box.innerHTML = ''; 
+  const chatView = document.getElementById('v-chat');
+  if (document.hidden || (chatView && !chatView.classList.contains('active'))) return;
+
+  const box = document.getElementById('chat-msgs');
+  if (!box) return;
+  const wasNearBottom = (box.scrollHeight - box.scrollTop - box.clientHeight) < 100;
 
   const titleEl = document.getElementById('chat-room-title');
   const actionsEl = document.getElementById('chat-header-actions');
@@ -4695,17 +4789,22 @@ function renderChatMessages() {
     inpEl.disabled = false;
   }
 
-  const filteredMsgs = currentChatMessages.filter(m => {
+  const filteredMsgs = [];
+  let generalCount = 0;
+  for (const m of currentChatMessages) {
+    if (!m.targetUid) generalCount++;
     if (activeChatChannel === 'general') {
-      return !m.targetUid;
-    } else {
-      return (m.uid === CU.uid && m.targetUid === activeChatChannel) ||
-             (m.uid === activeChatChannel && m.targetUid === CU.uid);
+      if (!m.targetUid) filteredMsgs.push(m);
+    } else if (
+      (m.uid === CU.uid && m.targetUid === activeChatChannel) ||
+      (m.uid === activeChatChannel && m.targetUid === CU.uid)
+    ) {
+      filteredMsgs.push(m);
     }
-  });
+  }
 
   document.getElementById('chat-count').textContent = `${filteredMsgs.length} mensajes`;
-  document.getElementById('stat-msgs').textContent = currentChatMessages.filter(m => !m.targetUid).length;
+  document.getElementById('stat-msgs').textContent = generalCount;
 
   if (filteredMsgs.length === 0) {
     box.innerHTML = `<div style="margin:auto;text-align:center;color:var(--muted);font-size:13px;padding:30px;">
@@ -4714,35 +4813,37 @@ function renderChatMessages() {
     return;
   }
 
-  filteredMsgs.forEach(m => {
-    const isMe = m.uid === CU.uid; const cls = isMe ? 'out' : 'in';
+  // Construye el HTML en memoria y actualiza el DOM una sola vez.
+  const html = [];
+  for (const m of filteredMsgs) {
+    const isMe = m.uid === CU.uid;
+    const cls = isMe ? 'out' : 'in';
     const authorProfile = allProfilesCache[m.uid] || { name: 'Agente', avatarUrl: '' };
     const safeName = (authorProfile.name || 'Agente').replace(/'/g, "\\'");
 
     let mediaHTML = '';
     if (m.type === 'image' && m.mediaUrl) {
-      mediaHTML = `<img src="${m.mediaUrl}" class="chat-media" onclick="openLightbox('${m.mediaUrl}')" title="Clic para ampliar">`;
+      mediaHTML = `<img src="${m.mediaUrl}" loading="lazy" decoding="async" class="chat-media" onclick="openLightbox('${m.mediaUrl}')" title="Clic para ampliar">`;
     } else if (m.type === 'video' && m.mediaUrl) {
-      mediaHTML = `<video src="${m.mediaUrl}" controls class="chat-media" style="max-height: 200px;"></video>`;
+      mediaHTML = `<video src="${m.mediaUrl}" preload="none" controls class="chat-media" style="max-height: 200px;"></video>`;
     } else if (m.type === 'audio' && m.mediaUrl) {
       const durLabel = m.audioDuration ? ` · ${m.audioDuration}` : '';
       mediaHTML = `
         <div class="voice-badge">🎤 Nota de voz${durLabel}</div>
         <div class="voice-note-box">
-          <audio controls preload="metadata" src="${m.mediaUrl}"></audio>
+          <audio controls preload="none" src="${m.mediaUrl}"></audio>
         </div>`;
     }
-    
-    let avatarHTML = !isMe
+
+    const avatarHTML = !isMe
       ? (authorProfile.avatarUrl
           ? `<div class="msg-avatar" onclick="openUserProfile('${m.uid}', '${safeName}')" title="Ver perfil de ${safeName}" style="background-image:url('${authorProfile.avatarUrl}'); border: 2px solid var(--p);"></div>`
-          : `<div class="msg-avatar" onclick="openUserProfile('${m.uid}', '${safeName}')" title="Ver perfil de ${safeName}" style="background:var(--p); color:#fff;">${authorProfile.name.charAt(0).toUpperCase()}</div>`)
+          : `<div class="msg-avatar" onclick="openUserProfile('${m.uid}', '${safeName}')" title="Ver perfil de ${safeName}" style="background:var(--p); color:#fff;">${(authorProfile.name || 'A').charAt(0).toUpperCase()}</div>`)
       : '';
-    
-    const nameStr = !isMe ? `<div class="msg-author" onclick="openUserProfile('${m.uid}', '${safeName}')">${authorProfile.name}</div>` : '';
+
+    const nameStr = !isMe ? `<div class="msg-author" onclick="openUserProfile('${m.uid}', '${safeName}')">${authorProfile.name || 'Agente'}</div>` : '';
     const canDeleteMsg = isMe || isAdminUser();
     const delBtn = canDeleteMsg ? `<button class="msg-del-btn" onclick="deleteChatMsg('${m.id}')" title="Eliminar mensaje">🗑️</button>` : '';
-
     const hideDefaultMediaText = m.text === '📷 Imagen enviada' || m.text === '🎥 Video enviado' || m.type === 'audio';
     const textContentHTML = (!hideDefaultMediaText && m.text) ? `<div>${m.text}</div>` : '';
 
@@ -4764,7 +4865,7 @@ function renderChatMessages() {
       }
     });
 
-    box.innerHTML += `
+    html.push(`
       <div class="msg ${cls}">
         ${avatarHTML}
         <div class="bubble-wrap">
@@ -4783,9 +4884,12 @@ function renderChatMessages() {
             ${delBtn}
           </div>
         </div>
-      </div>`;
-  });
-  box.scrollTop = box.scrollHeight;
+      </div>`);
+  }
+
+  box.innerHTML = html.join('');
+  // No interrumpe a quien está leyendo mensajes anteriores.
+  if (wasNearBottom) box.scrollTop = box.scrollHeight;
 }
 
 async function deleteChatMsg(msgId) {
@@ -6213,7 +6317,7 @@ function triggerScreenShake(msg) {
 function triggerConfetti() {
   const overlay = document.getElementById('celebration-overlay'); overlay.innerHTML = ''; overlay.style.display = 'block';
   const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'];
-  for(let i=0; i<28; i++) {
+  for(let i=0; i<(document.body.classList.contains('performance-lite') ? 12 : 28); i++) {
     const c = document.createElement('div'); c.className = 'confetti-piece'; c.style.left = Math.random() * 100 + 'vw';
     c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; c.style.animationDuration = (Math.random() * 2 + 2) + 's'; c.style.animationDelay = (Math.random() * 1) + 's';
     overlay.appendChild(c);
@@ -6227,9 +6331,40 @@ function triggerConfetti() {
 // DECORACIÓN NAVIDEÑA INTERACTIVA (LUCES Y NIEVE)
 // ==========================================
 function initChristmasDecorations() {
+  // Detecta equipos modestos sin depender de una marca o modelo concreto.
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const lowResourceDevice =
+    (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4) ||
+    (typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4) ||
+    Boolean(connection && connection.saveData);
+
+  document.body.classList.toggle('performance-lite', lowResourceDevice);
+  const syncVisibility = () => {
+    document.body.classList.toggle('page-hidden', document.hidden);
+    if (document.hidden) return;
+
+    // Recupera la sección visible al volver a la pestaña, sin procesar DOM en segundo plano.
+    const activeView = document.querySelector('.view.active');
+    if (!activeView) return;
+    if (activeView.id === 'v-chat') {
+      renderChatContacts();
+      renderChatMessages();
+    } else if (activeView.id === 'v-feed' && lastFeedSnapshot) {
+      renderFeedSnapshot(lastFeedSnapshot);
+    } else if (activeView.id === 'v-dashboard') {
+      renderDashboardCharts();
+    } else if (activeView.id === 'v-history') {
+      filterHist();
+    }
+  };
+  document.addEventListener('visibilitychange', syncVisibility, { passive: true });
+  syncVisibility();
+
   const garland = document.getElementById('xmas-lights-garland');
   if (garland && !garland.children.length) {
-    const count = Math.max(18, Math.floor(window.innerWidth / 48));
+    const count = lowResourceDevice
+      ? Math.max(8, Math.floor(window.innerWidth / 120))
+      : Math.max(18, Math.floor(window.innerWidth / 48));
     for (let i = 0; i < count; i++) {
       const bulb = document.createElement('span');
       bulb.className = 'xmas-bulb';
@@ -6240,7 +6375,7 @@ function initChristmasDecorations() {
   const snowLayer = document.getElementById('xmas-snow-layer');
   if (snowLayer && !snowLayer.children.length) {
     const symbols = ['❄', '❅', '❆', '✨'];
-    const flakesCount = 26;
+    const flakesCount = lowResourceDevice ? 8 : 26;
     for (let i = 0; i < flakesCount; i++) {
       const flake = document.createElement('span');
       flake.className = 'xmas-flake';
