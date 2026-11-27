@@ -3,32 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#121317">
+<meta name="theme-color" content="#101827">
 <title>Central de Audios | Auditoría y Calidad</title>
 <link rel="icon" href="https://www.citypng.com/public/uploads/preview/hd-valorant-official-symbol-sign-logo-png-701751694788082d3btqfskcj.png?v=2026060820">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#121317; --surface:#1c1d22; --surface-hover:#26272e;
-  --border:#2d2f36; --text:#f1f2f5; --muted:#8b92a5;
-  --p:#8b5cf6; --p-glow:rgba(139,92,246,.2);
-  --info:#0ea5e9; --success:#10b981; --danger:#ef4444;
-  --media-invert:1; --scheme:dark; --scroll-thumb:#4a4d5a;
+ :root {
+  /* Paleta oficial Interconexiones 360: modo oscuro */
+  color-scheme:dark;
+  --bg:#101827;
+  --surface:#18263b;
+  --surface-hover:#243751;
+  --border:#2a3b54;
+  --text:#edf3fb;
+  --muted:#a8b7ca;
+  --p:#4f8df7;
+  --p2:#3576e8;
+  --p3:#79adff;
+  --p-glow:rgba(79,141,247,.17);
+  --p-soft:rgba(79,141,247,.14);
+  --p-border:rgba(79,141,247,.30);
+  --info:#40a7c9;
+  --success:#25b98a;
+  --danger:#ef6464;
+  --warning:#e6a947;
+  --media-invert:1;
+  --scheme:dark;
+  --scroll-thumb:#40536d;
 }
 body.light-mode {
-  --bg:#eef2f7; --surface:#ffffff; --surface-hover:#f1f5f9;
-  --border:#cbd5e1; --text:#0f172a; --muted:#475569;
-  --p:#7c3aed; --p-glow:rgba(124,58,237,.16);
-  --info:#0284c7; --success:#059669; --danger:#dc2626;
-  --media-invert:0; --scheme:light; --scroll-thumb:#cbd5e1;
+  /* Paleta oficial Interconexiones 360: modo claro */
+  color-scheme:light;
+  --bg:#f3f6fb;
+  --surface:#ffffff;
+  --surface-hover:#eaf0f8;
+  --border:#dbe3ee;
+  --text:#17263d;
+  --muted:#52647b;
+  --p:#2563c9;
+  --p2:#1d4fa9;
+  --p3:#4d83d6;
+  --p-glow:rgba(37,99,201,.11);
+  --p-soft:rgba(37,99,201,.09);
+  --p-border:rgba(37,99,201,.24);
+  --info:#137da5;
+  --success:#118463;
+  --danger:#d94d58;
+  --warning:#a86b14;
+  --media-invert:0;
+  --scheme:light;
+  --scroll-thumb:#c5d0df;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:background-color .25s ease,color .25s ease}
 .topbar{background:var(--surface);min-height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:10;gap:16px}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
-.logo-box{background:linear-gradient(135deg,var(--p),#c4b5fd);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;box-shadow:0 4px 10px var(--p-glow);flex-shrink:0}
+.logo-box{background:linear-gradient(145deg,#2460ae,#3f88dc);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;box-shadow:0 4px 10px var(--p-glow);flex-shrink:0}
 .brand-text h1{font-size:18px;font-weight:800;letter-spacing:-.5px}.brand-text p{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 .topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .user-badge{font-size:12px;font-weight:700;color:var(--muted);background:rgba(128,128,128,.08);padding:7px 12px;border-radius:8px;border:1px solid var(--border)}
@@ -40,17 +72,17 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;display
 .btn{background:var(--p);color:#fff;border:1px solid transparent;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:filter .2s,box-shadow .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
 .btn:hover{filter:brightness(1.08);box-shadow:0 4px 12px var(--p-glow);transform:translateY(-1px)}.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;filter:none;transform:none}.btn:focus-visible,.inp:focus-visible{outline:2px solid var(--p);outline-offset:2px}
 .btn.sm{padding:8px 13px;font-size:12px}.btn.secondary{background:rgba(128,128,128,.08);color:var(--muted);border-color:var(--border)}
-.btn.info{background:rgba(14,165,233,.12);color:var(--info);border-color:rgba(14,165,233,.3)}
-.btn.success{background:rgba(16,185,129,.12);color:var(--success);border-color:rgba(16,185,129,.3)}
-.btn.danger{background:rgba(239,68,68,.12);color:var(--danger);border-color:rgba(239,68,68,.3)}
+.btn.info{background:color-mix(in srgb,var(--info) 13%,transparent);color:var(--info);border-color:color-mix(in srgb,var(--info) 32%,transparent)}
+.btn.success{background:color-mix(in srgb,var(--success) 13%,transparent);color:var(--success);border-color:color-mix(in srgb,var(--success) 32%,transparent)}
+.btn.danger{background:color-mix(in srgb,var(--danger) 13%,transparent);color:var(--danger);border-color:color-mix(in srgb,var(--danger) 32%,transparent)}
 .agent-filter{max-width:190px}.date-filter-container{display:flex;align-items:center;gap:8px}.date-filter-container>span{font-size:12px;color:var(--muted);font-weight:600}.date-filter{max-width:145px;padding:9px 12px;color-scheme:var(--scheme)}
 .load-status{width:100%;min-height:16px;color:var(--muted);font-size:11px;padding:0 2px}.load-status.busy{color:var(--p)}
 .table-container{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
-table{width:100%;border-collapse:collapse;text-align:left;min-width:1180px}
+table{width:100%;border-collapse:collapse;text-align:left;min-width:1360px}
 th{background:var(--bg);padding:14px 16px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:500;vertical-align:middle}tbody tr:hover td{background:var(--surface-hover)}
 audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}audio::-webkit-media-controls-panel{background-color:var(--bg)}audio::-webkit-media-controls-play-button,audio::-webkit-media-controls-mute-button{filter:invert(var(--media-invert))}audio::-webkit-media-controls-current-time-display,audio::-webkit-media-controls-time-remaining-display{color:var(--text)}
-.tag{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(128,128,128,.12);white-space:nowrap;display:inline-block}.tag.purple{color:var(--p);background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.3)}.tag.success{color:var(--success);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3)}
+.tag{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(128,128,128,.12);white-space:nowrap;display:inline-block}.tag.purple{color:var(--p);background:var(--p-soft);border:1px solid var(--p-border)}.tag.success{color:var(--success);background:color-mix(in srgb,var(--success) 13%,transparent);border:1px solid color-mix(in srgb,var(--success) 32%,transparent)}
 .table-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,.04);flex-wrap:wrap}
 .results-info{font-size:11px;color:var(--muted)}
 .side-panel{flex:1;max-width:350px;min-width:250px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
@@ -94,7 +126,7 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 <div class="layout">
   <main class="main-content">
     <div class="toolbar">
-      <input type="text" id="search-input" class="inp" placeholder="Buscar por referencia, número, tipo, observación, agente o fecha..." oninput="applyFilters()" autocomplete="off">
+      <input type="text" id="search-input" class="inp" placeholder="Buscar por referencia, DNI, CE, RUC, documento, número llamado, tipo, agente o fecha..." oninput="applyFilters()" autocomplete="off">
       <select id="agent-filter" class="inp agent-filter" onchange="applyFilters()"><option value="ALL">Todos los agentes</option></select>
       <div class="date-filter-container">
         <span>Fecha:</span>
@@ -106,8 +138,8 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 
     <div class="table-container">
       <table>
-        <thead><tr><th>Fecha / Hora</th><th>Referencia</th><th>Número llamado</th><th>Tipo de llamada</th><th>Observación</th><th>Duración</th><th>Agente</th><th>Reproductor integrado</th></tr></thead>
-        <tbody id="audio-table-body"><tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted)">Cargando primeros audios...</td></tr></tbody>
+        <thead><tr><th>Fecha / Hora</th><th>Referencia</th><th>Tipo documento</th><th>N.º documento</th><th>Número llamado</th><th>Tipo de llamada</th><th>Duración</th><th>Agente</th><th>Reproductor integrado</th></tr></thead>
+        <tbody id="audio-table-body"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Cargando primeros audios...</td></tr></tbody>
       </table>
     </div>
     <div class="table-footer">
@@ -130,6 +162,27 @@ audio{height:32px;width:220px;max-width:100%;outline:none;border-radius:20px}aud
 </div>
 
 <div id="toast" role="status" aria-live="polite">Acción completada</div>
+
+<div class="modal-overlay" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+  <div class="modal">
+    <h2 id="export-modal-title">📊 Exportar datos</h2>
+    <p>Elige qué registros incluir en el reporte CSV, compatible con Excel. Se conservarán la búsqueda y el agente seleccionados en la tabla; el período se define aquí.</p>
+    <label for="export-type" style="display:block;font-size:11px;color:var(--muted);font-weight:800;margin-bottom:7px">PERÍODO DEL REPORTE</label>
+    <select id="export-type" class="inp" style="width:100%;margin-bottom:16px;padding:12px;font-weight:700" onchange="toggleExportRange()">
+      <option value="mes">📆 Este mes</option>
+      <option value="todo">📚 Historial total</option>
+      <option value="rango">🗓️ Personalizado (rango de fechas)</option>
+    </select>
+    <div id="export-range-container" style="display:none;gap:12px;margin-bottom:16px">
+      <div style="flex:1;min-width:0"><label for="export-start" style="font-size:11px;color:var(--muted);font-weight:700">DESDE:</label><input type="date" id="export-start" class="inp" style="width:100%;color-scheme:var(--scheme);margin-top:4px"></div>
+      <div style="flex:1;min-width:0"><label for="export-end" style="font-size:11px;color:var(--muted);font-weight:700">HASTA:</label><input type="date" id="export-end" class="inp" style="width:100%;color-scheme:var(--scheme);margin-top:4px"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap">
+      <button class="btn sm secondary" type="button" onclick="cerrarModalExportar()">Cancelar</button>
+      <button class="btn sm" type="button" id="btn-confirm-export" onclick="ejecutarExportacionDatos()">⬇ Descargar reporte</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="downloadModal">
   <div class="modal">
@@ -189,6 +242,8 @@ let lastAgentCounts = Object.create(null);
 function applyAuditorTheme(mode, syncChart = true) {
   const isLight = mode === 'light';
   document.body.classList.toggle('light-mode', isLight);
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute('content', isLight ? '#f3f6fb' : '#101827');
   localStorage.setItem('crm_theme_mode', mode);
   const btn = document.getElementById('btn-theme-auditor');
   if (btn) btn.textContent = isLight ? '🌙 Oscuro' : '☀️ Claro';
@@ -211,6 +266,20 @@ window.addEventListener('storage', (e) => {
 });
 window.addEventListener('pageshow', () => {
   applyAuditorTheme(localStorage.getItem('crm_theme_mode') || 'dark', true);
+});
+
+document.addEventListener('click', event => {
+  if (event.target && event.target.classList && event.target.classList.contains('modal-overlay')) {
+    event.target.style.display = 'none';
+  }
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    ['exportModal', 'downloadModal', 'progressModal', 'corsModal'].forEach(id => {
+      const modal = document.getElementById(id);
+      if (modal && modal.style.display === 'flex' && id !== 'progressModal') modal.style.display = 'none';
+    });
+  }
 });
 
 const FB_CFG = {
@@ -309,7 +378,7 @@ async function cargarPrimeraPagina() {
   } catch (error) {
     console.error('Error al cargar audios:', error);
     setLoadStatus('Error al consultar Firebase. Revisa la conexión y las reglas de Firestore.', false);
-    document.getElementById('audio-table-body').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--danger)">No se pudo cargar el historial.</td></tr>';
+    document.getElementById('audio-table-body').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--danger)">No se pudo cargar el historial.</td></tr>';
   } finally {
     isLoadingPage = false;
     updateLoadMoreButton();
@@ -434,7 +503,7 @@ async function ensureFullIndex() {
 }
 
 function audioMatchesCriteria(audio, criteria) {
-  const text = `${audio.nombre || ''} ${audio.agente || ''} ${audio.fecha || ''} ${audio.numeroLlamado || ''} ${audio.tipoLlamada || ''} ${audio.observacion || ''}`.toLocaleLowerCase('es');
+  const text = `${audio.nombre || ''} ${audio.agente || ''} ${audio.fecha || ''} ${audio.tipoDocumento || ''} ${audio.numeroDocumento || ''} ${audio.numeroLlamado || ''} ${audio.tipoLlamada || ''}`.toLocaleLowerCase('es');
   const matchText = !criteria.q || text.includes(criteria.q);
   const agent = String(audio.agente || '').trim().toUpperCase();
   const matchAgent = criteria.agent === 'ALL' || agent === criteria.agent;
@@ -544,7 +613,7 @@ function renderTableHTML(dataArray) {
   if (!dataArray.length) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
-    cell.colSpan = 8;
+    cell.colSpan = 9;
     cell.textContent = 'No hay resultados con estos filtros.';
     cell.style.cssText = 'text-align:center;padding:40px;color:var(--muted);font-weight:600';
     row.appendChild(cell);
@@ -561,6 +630,18 @@ function renderTableHTML(dataArray) {
     refCell.textContent = '';
     refCell.appendChild(refStrong);
     row.appendChild(refCell);
+    const docTypeCell = document.createElement('td');
+    const docTypeTag = document.createElement('span');
+    const docType = String(audioData.tipoDocumento || '').trim().toUpperCase();
+    docTypeTag.className = 'tag purple';
+    docTypeTag.textContent = docType || '—';
+    docTypeCell.appendChild(docTypeTag);
+    row.appendChild(docTypeCell);
+
+    const docNumberCell = createCell(audioData.numeroDocumento || '—');
+    docNumberCell.style.cssText = 'font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;';
+    row.appendChild(docNumberCell);
+
     row.appendChild(createCell(audioData.numeroLlamado || '—'));
 
     const typeCell = document.createElement('td');
@@ -569,10 +650,6 @@ function renderTableHTML(dataArray) {
     typeTag.textContent = audioData.tipoLlamada === 'whatsapp' ? 'WhatsApp' : audioData.tipoLlamada === 'directa' ? 'Llamada directa' : 'Sin especificar';
     typeCell.appendChild(typeTag);
     row.appendChild(typeCell);
-
-    const observationCell = createCell(audioData.observacion || '—');
-    observationCell.style.cssText = 'max-width:280px;white-space:normal;overflow-wrap:anywhere;color:var(--muted);';
-    row.appendChild(observationCell);
 
     const durationCell = document.createElement('td');
     const durationTag = document.createElement('span');
@@ -647,7 +724,7 @@ function renderPieChart(agentCounts) {
 
   const labels = Object.keys(agentCounts);
   const values = Object.values(agentCounts);
-  const bgColors = ['rgba(139,92,246,.8)','rgba(16,185,129,.8)','rgba(14,165,233,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.8)','rgba(107,114,128,.8)'];
+  const bgColors = ['rgba(79,141,247,.82)','rgba(37,185,138,.82)','rgba(64,167,201,.82)','rgba(230,169,71,.82)','rgba(239,100,100,.82)','rgba(130,148,172,.82)'];
   const canvas = document.getElementById('agentPieChart');
   if (!pieChartInstance) {
     pieChartInstance = new Chart(canvas.getContext('2d'), {
@@ -665,32 +742,103 @@ function renderPieChart(agentCounts) {
   }
 }
 
-async function exportarExcel() {
-  const button = document.getElementById('btn-export');
-  const criteria = getFilterCriteria();
-  button.disabled = true;
+function exportarExcel() {
+  abrirModalExportar();
+}
+
+function abrirModalExportar() {
+  const modal = document.getElementById('exportModal');
+  if (!modal) return;
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const toISODate = date => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  document.getElementById('export-start').value = toISODate(firstDay);
+  document.getElementById('export-end').value = toISODate(lastDay);
+  modal.style.display = 'flex';
+  toggleExportRange();
+}
+
+function cerrarModalExportar() {
+  const modal = document.getElementById('exportModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function toggleExportRange() {
+  const custom = document.getElementById('export-type').value === 'rango';
+  document.getElementById('export-range-container').style.display = custom ? 'flex' : 'none';
+}
+
+function filtrarDatosParaExportar(data, type, startDate, endDate, criteria) {
+  const now = new Date();
+  return data.filter(audio => {
+    // Mantener los filtros de texto y agente elegidos en la tabla.
+    const searchable = `${audio.nombre || ''} ${audio.tipoDocumento || ''} ${audio.numeroDocumento || ''} ${audio.numeroLlamado || ''} ${audio.tipoLlamada || ''} ${audio.agente || ''} ${audio.fecha || ''}`.toLocaleLowerCase('es');
+    if (criteria.q && !searchable.includes(criteria.q)) return false;
+    const agent = String(audio.agente || '').trim().toUpperCase();
+    if (criteria.agent !== 'ALL' && agent !== criteria.agent) return false;
+
+    // El período del modal controla la fecha; no se usa el filtro de fecha de la tabla.
+    if (type === 'todo') return true;
+    const date = parseAudioDate(audio.fecha);
+    if (!date) return false;
+    if (type === 'mes') return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    if (type === 'rango') return date >= startDate && date <= endDate;
+    return false;
+  });
+}
+
+function nombreArchivoExportacion(type, startDate, endDate) {
+  const today = new Date();
+  const stamp = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const iso = date => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  if (type === 'mes') return `Reporte_Calidad_${stamp.slice(0,7)}.csv`;
+  if (type === 'rango') return `Reporte_Calidad_${iso(startDate)}_al_${iso(endDate)}.csv`;
+  return `Reporte_Calidad_Historial_Total_${stamp}.csv`;
+}
+
+async function ejecutarExportacionDatos() {
+  const button = document.getElementById('btn-confirm-export');
   const originalText = button.textContent;
-  button.textContent = 'Preparando...';
+  const type = document.getElementById('export-type').value;
+  const criteria = getFilterCriteria();
+  let startDate = null;
+  let endDate = null;
+
+  if (type === 'rango') {
+    const startValue = document.getElementById('export-start').value;
+    const endValue = document.getElementById('export-end').value;
+    if (!startValue || !endValue) return showToast('Selecciona las dos fechas del período personalizado', 3500);
+    startDate = parseDateInput(startValue);
+    endDate = parseDateInput(endValue);
+    if (!startDate || !endDate || startDate > endDate) return showToast('El rango de fechas no es válido', 3500);
+    endDate.setHours(23, 59, 59, 999);
+  }
+
+  button.disabled = true;
+  button.textContent = 'Preparando reporte...';
   try {
     const data = await ensureFullIndex();
-    const rows = data.filter(audio => audioMatchesCriteria(audio, criteria));
+    const rows = filtrarDatosParaExportar(data, type, startDate, endDate, criteria);
     if (!rows.length) {
-      showToast('No hay datos para exportar');
+      showToast('No hay registros para el período y los filtros seleccionados', 4000);
       return;
     }
-    const headers = ['FECHA','REFERENCIA','NUMERO_LLAMADO','TIPO_LLAMADA','OBSERVACION','DURACION','AGENTE','LINK_AUDIO'];
-    const csvRows = [headers, ...rows.map(row => [row.fecha || '', row.nombre || '', row.numeroLlamado || '', row.tipoLlamada || '', row.observacion || '', row.duracion || '', row.agente || '', row.audioUrl || ''])];
+
+    const headers = ['FECHA','REFERENCIA','TIPO_DOCUMENTO','NUMERO_DOCUMENTO','NUMERO_LLAMADO','TIPO_LLAMADA','DURACION','AGENTE','LINK_AUDIO'];
+    const csvRows = [headers, ...rows.map(row => [row.fecha || '', row.nombre || '', row.tipoDocumento || '', row.numeroDocumento || '', row.numeroLlamado || '', row.tipoLlamada || '', row.duracion || '', row.agente || '', row.audioUrl || ''])];
     const csv = '\uFEFF' + csvRows.map(row => row.map(csvEscape).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `Reporte_Calidad_${new Date().toISOString().slice(0,10)}.csv`;
+    link.download = nombreArchivoExportacion(type, startDate, endDate);
     document.body.appendChild(link);
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    showToast(`Reporte exportado (${rows.length.toLocaleString('es-PE')} registros)`, 4500);
+    cerrarModalExportar();
+    showToast(`Reporte exportado: ${rows.length.toLocaleString('es-PE')} registros`, 4500);
   } catch (error) {
     console.error('Error al exportar:', error);
     showToast('No se pudo exportar el historial', 3500);
