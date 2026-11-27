@@ -350,6 +350,8 @@ body.light-mode input[type="date"]::-webkit-calendar-picker-indicator { filter: 
 .ctrl-btn.rec-btn:hover:not(:disabled) { background: var(--danger); color: #fff; }
 
 .input-grid-wsp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.rec-meta-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 560px) { .rec-meta-grid { grid-template-columns: 1fr; } }
 
 /* =========================================
    7. TABLAS, AUDITORÍA, CHAT, NOTAS DE VOZ Y REACCIONES
@@ -1289,8 +1291,26 @@ body.light-mode .xmas-flake {
             </div>
             <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;">
               <div>
-                <label class="field-label">Nombre del audio / Referencia</label>
-                <input type="text" id="rec-title" class="inp" placeholder="Ej: Audio_Prueba_01">
+                <label class="field-label" for="rec-title">Nombre del audio / Referencia</label>
+                <input type="text" id="rec-title" class="inp" placeholder="Ej: Audio_Prueba_01" maxlength="120">
+              </div>
+              <div class="rec-meta-grid">
+                <div>
+                  <label class="field-label" for="rec-phone">Número llamado (opcional)</label>
+                  <input type="tel" id="rec-phone" class="inp" placeholder="Ej: +51 987 654 321" maxlength="30" autocomplete="tel">
+                </div>
+                <div>
+                  <label class="field-label" for="rec-call-type">Tipo de llamada</label>
+                  <select id="rec-call-type" class="inp" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="directa">Llamada directa</option>
+                    <option value="whatsapp">WhatsApp</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="field-label" for="rec-observation">Observación (opcional)</label>
+                <textarea id="rec-observation" class="inp" rows="3" maxlength="500" placeholder="Detalle adicional de la llamada..."></textarea>
               </div>
               <button class="btn" id="btn-rec-save" onclick="saveRec()" disabled>Guardar audio</button>
             </div>
@@ -1395,13 +1415,16 @@ body.light-mode .xmas-flake {
                 <thead><tr>
                   <th>Fecha</th>
                   <th>Referencia/Nombre</th>
+                  <th>Número llamado</th>
+                  <th>Tipo de llamada</th>
+                  <th>Observación</th>
                   <th>Duración</th>
                   <th>Agente</th>
                   <th>Audio</th>
                   <th>Acciones</th>
                 </tr></thead>
                 <tbody id="hist-body">
-                  <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros del mes…</td></tr>
+                  <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);font-weight:500;">Cargando registros del mes…</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1806,6 +1829,24 @@ body.light-mode .xmas-flake {
                   <label class="field-label">Archivo de audio (Opcional)</label>
                   <input type="file" id="admin-audio-file" accept="audio/*" class="inp" style="padding:7px 10px; font-size:12px;">
                 </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div>
+                  <label class="field-label" for="admin-audio-phone">Número llamado (opcional)</label>
+                  <input type="tel" id="admin-audio-phone" class="inp" placeholder="+51 987 654 321" maxlength="30" style="padding:9px 12px;">
+                </div>
+                <div>
+                  <label class="field-label" for="admin-audio-call-type">Tipo de llamada</label>
+                  <select id="admin-audio-call-type" class="inp" required style="padding:9px 12px;">
+                    <option value="">Selecciona una opción</option>
+                    <option value="directa">Llamada directa</option>
+                    <option value="whatsapp">WhatsApp</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="field-label" for="admin-audio-observation">Observación (opcional)</label>
+                <textarea id="admin-audio-observation" class="inp" rows="2" maxlength="500" placeholder="Detalle adicional..." style="padding:9px 12px;"></textarea>
               </div>
               <button class="btn success" id="btn-admin-add-audio" onclick="adminAddAudioToMonth()">
                 ➕ Agregar a Audios del Mes
@@ -3117,34 +3158,70 @@ function setRecUI(st) {
 }
 
 async function saveRec() {
-  if(!recBlob) return;
+  if (!recBlob) return;
   if (recBlob.size >= 30 * 1024 * 1024) return showToast('La grabación supera el límite de 30 MB.', '⚠️');
-  const title = document.getElementById('rec-title').value.trim() || 'Audio_Manual_'+Date.now();
+
+  const title = document.getElementById('rec-title').value.trim() || 'Audio_Manual_' + Date.now();
+  const numeroLlamado = document.getElementById('rec-phone').value.trim();
+  const tipoLlamada = document.getElementById('rec-call-type').value;
+  const observacion = document.getElementById('rec-observation').value.trim();
+  if (!tipoLlamada) return showToast('Selecciona si fue llamada directa o WhatsApp.', '⚠️');
+
   const fname = `${title}.webm`;
+  const saveButton = document.getElementById('btn-rec-save');
+  saveButton.disabled = true;
+  saveButton.textContent = 'Guardando y subiendo…';
   try {
-    if(window.showSaveFilePicker) {
-      const h = await window.showSaveFilePicker({suggestedName:fname,types:[{description:'Audio',accept:{'audio/webm':['.webm']}}]});
-      const w = await h.createWritable(); await w.write(recBlob); await w.close();
+    // Conserva la copia local y registra también el audio y sus metadatos en Firebase.
+    if (window.showSaveFilePicker) {
+      const h = await window.showSaveFilePicker({suggestedName: fname, types: [{description: 'Audio', accept: {'audio/webm': ['.webm']}}]});
+      const w = await h.createWritable();
+      await w.write(recBlob);
+      await w.close();
     } else {
-      const u = URL.createObjectURL(recBlob); const a = document.createElement('a'); a.href=u; a.download=fname; a.click();
+      const localUrl = URL.createObjectURL(recBlob);
+      const a = document.createElement('a');
+      a.href = localUrl;
+      a.download = fname;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(localUrl), 1000);
     }
-    showToast('Guardado local. Subiendo a Firebase…','☁️');
-    
+
+    showToast('Copia local guardada. Subiendo a Firebase…', '☁️');
     const blob2 = recBlob;
-    document.getElementById('btn-rec-save').disabled=true;
-    document.getElementById('rec-title').value='';
-    document.getElementById('rec-time').textContent='00:00';
-    recBlob=null; setRecUI('idle');
-    
     const safeAudioName = String(fname).replace(/[^a-zA-Z0-9._-]/g, '_');
-    const snap = await storage.ref(`audios_crm/${CU.uid}/${Date.now()}_${safeAudioName}`).put(blob2, { contentType: blob2.type || 'audio/webm' });
+    const snap = await storage.ref(`audios_crm/${CU.uid}/${Date.now()}_${safeAudioName}`).put(blob2, {contentType: blob2.type || 'audio/webm'});
     const url = await snap.ref.getDownloadURL();
-    
+
     await db.collection('historial_llamadas').add({
-      fecha:getDateStr(), nombre:title, duracion:recDur, agente:CUP.name, audioUrl:url, timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      fecha: getDateStr(),
+      nombre: title,
+      duracion: recDur,
+      agente: CUP.name,
+      numeroLlamado: numeroLlamado,
+      tipoLlamada: tipoLlamada,
+      observacion: observacion,
+      audioUrl: url,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
-    showToast('Sincronizado en Firebase','✅');
-  } catch(e){ console.error(e); showToast('Error al guardar','❌'); }
+
+    document.getElementById('rec-title').value = '';
+    document.getElementById('rec-phone').value = '';
+    document.getElementById('rec-call-type').value = '';
+    document.getElementById('rec-observation').value = '';
+    document.getElementById('rec-time').textContent = '00:00';
+    recBlob = null;
+    recDur = '';
+    saveButton.textContent = 'Guardar audio';
+    setRecUI('idle');
+    showToast('Audio y datos sincronizados en Firebase.', '✅');
+  } catch (e) {
+    console.error('Error guardando grabación:', e);
+    showToast(e && e.name === 'AbortError' ? 'Guardado cancelado.' : 'Error al guardar el audio en Firebase.', '❌');
+  } finally {
+    saveButton.disabled = !recBlob;
+    if (recBlob) saveButton.textContent = 'Reintentar guardado';
+  }
 }
 
 // ==========================================
@@ -3773,13 +3850,102 @@ function getAudiosDelMes() {
 }
 
 function renderAuditoria(arr) {
-  const tbody=document.getElementById('hist-body');
-  if(!arr.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);font-weight:500;">No hay audios guardados en este mes.</td></tr>'; return; }
-  tbody.innerHTML = arr.map(h => {
-    let uidFound = findUidByName(h.agente) || '';
-    let safeAg = (h.agente || 'Agente').replace(/'/g, "\\'");
-    return `<tr><td style="white-space:nowrap; color:var(--muted); font-size:12px;">${h.fecha}</td><td><strong style="font-size:13px; color:var(--text);">${h.nombre}</strong></td><td><span class="tag purple">${h.duracion}</span></td><td><span class="tag blue" style="cursor:pointer;" onclick="openUserProfile('${uidFound}', '${safeAg}')">${h.agente}</span></td><td>${h.audioUrl?`<a href="${h.audioUrl}" target="_blank" class="btn-dl-mini">⬇ Audio</a>`:'<span style="color:var(--muted2);font-size:12px;font-weight:600;">Sin audio</span>'}</td><td><div style="display:flex; gap:6px;"><button class="btn-dl-mini" style="background:var(--tag-blue-bg); color:var(--tag-blue-text); border-color:var(--tag-blue-border); padding:6px 10px;" onclick="editRecordName('${h.id}', '${h.nombre.replace(/'/g, "\\'")}')" title="Editar nombre">✏️</button><button class="btn-dl-mini" style="background:rgba(239,68,68,0.14); color:var(--danger); border-color:rgba(239,68,68,0.35); padding:6px 10px;" onclick="deleteRecord('${h.id}')" title="Eliminar">🗑️</button></div></td></tr>`;
-  }).join('');
+  const tbody = document.getElementById('hist-body');
+  if (!arr.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted);font-weight:500;">No hay audios guardados en este mes.</td></tr>';
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  arr.forEach(h => {
+    const row = document.createElement('tr');
+    const addTextCell = (value, style = '') => {
+      const cell = document.createElement('td');
+      cell.textContent = value == null || value === '' ? '—' : String(value);
+      if (style) cell.style.cssText = style;
+      row.appendChild(cell);
+      return cell;
+    };
+
+    addTextCell(h.fecha || 'Sin fecha', 'white-space:nowrap;color:var(--muted);font-size:12px;');
+    const nameCell = addTextCell(h.nombre || 'Sin referencia');
+    const nameStrong = document.createElement('strong');
+    nameStrong.textContent = h.nombre || 'Sin referencia';
+    nameCell.textContent = '';
+    nameCell.appendChild(nameStrong);
+    addTextCell(h.numeroLlamado || '—');
+
+    const typeCell = document.createElement('td');
+    const typeTag = document.createElement('span');
+    typeTag.className = 'tag';
+    if (h.tipoLlamada === 'whatsapp') {
+      typeTag.style.cssText = 'color:#0b9b63;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);';
+      typeTag.textContent = 'WhatsApp';
+    } else if (h.tipoLlamada === 'directa') {
+      typeTag.style.cssText = 'color:var(--info);background:rgba(64,167,201,.12);border:1px solid rgba(64,167,201,.3);';
+      typeTag.textContent = 'Llamada directa';
+    } else {
+      typeTag.textContent = 'Sin especificar';
+    }
+    typeCell.appendChild(typeTag);
+    row.appendChild(typeCell);
+
+    const observationCell = addTextCell(h.observacion || '—');
+    observationCell.style.cssText = 'max-width:260px;white-space:normal;overflow-wrap:anywhere;color:var(--muted);';
+
+    const durationCell = document.createElement('td');
+    const durationTag = document.createElement('span');
+    durationTag.className = 'tag purple';
+    durationTag.textContent = h.duracion || '00:00';
+    durationCell.appendChild(durationTag);
+    row.appendChild(durationCell);
+
+    const agentCell = document.createElement('td');
+    const agentTag = document.createElement('span');
+    agentTag.className = 'tag blue';
+    agentTag.style.cursor = 'pointer';
+    agentTag.textContent = h.agente || 'Agente';
+    agentTag.addEventListener('click', () => openUserProfile(findUidByName(h.agente) || '', h.agente || 'Agente'));
+    agentCell.appendChild(agentTag);
+    row.appendChild(agentCell);
+
+    const audioCell = document.createElement('td');
+    if (h.audioUrl) {
+      const link = document.createElement('a');
+      link.href = h.audioUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'btn-dl-mini';
+      link.textContent = '⬇ Audio';
+      audioCell.appendChild(link);
+    } else {
+      const noAudio = document.createElement('span');
+      noAudio.textContent = 'Sin audio';
+      noAudio.style.cssText = 'color:var(--muted2);font-size:12px;font-weight:600;';
+      audioCell.appendChild(noAudio);
+    }
+    row.appendChild(audioCell);
+
+    const actionsCell = document.createElement('td');
+    const actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;gap:6px;';
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-dl-mini';
+    editBtn.textContent = '✏️';
+    editBtn.title = 'Editar referencia';
+    editBtn.addEventListener('click', () => editRecordName(h.id, h.nombre || ''));
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-dl-mini';
+    deleteBtn.style.cssText = 'background:rgba(239,68,68,0.14);color:var(--danger);border-color:rgba(239,68,68,0.35);';
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.title = 'Eliminar';
+    deleteBtn.addEventListener('click', () => deleteRecord(h.id));
+    actions.append(editBtn, deleteBtn);
+    actionsCell.appendChild(actions);
+    row.appendChild(actionsCell);
+    fragment.appendChild(row);
+  });
+  tbody.replaceChildren(fragment);
 }
 
 async function editRecordName(id, currentName) {
@@ -3795,8 +3961,8 @@ async function editRecordName(id, currentName) {
 }
 
 function filterHist() {
-  const q = document.getElementById('hist-search').value.toLowerCase();
-  renderAuditoria(getAudiosDelMes().filter(h => `${h.nombre} ${h.agente} ${h.fecha}`.toLowerCase().includes(q)));
+  const q = document.getElementById('hist-search').value.toLocaleLowerCase('es');
+  renderAuditoria(getAudiosDelMes().filter(h => `${h.nombre || ''} ${h.agente || ''} ${h.fecha || ''} ${h.numeroLlamado || ''} ${h.tipoLlamada || ''} ${h.observacion || ''}`.toLocaleLowerCase('es').includes(q)));
 }
 
 async function deleteRecord(id) {
@@ -5632,13 +5798,16 @@ function exportCallsCSV(scope = 'mes') {
   if (!rowsData || !rowsData.length) {
     return showToast("No hay registros de llamadas para exportar", "⚠️");
   }
-  const headers = ['Fecha', 'Referencia_Nombre', 'Duracion', 'Agente', 'URL_Audio'];
+  const headers = ['Fecha', 'Referencia_Nombre', 'Numero_Llamado', 'Tipo_Llamada', 'Observacion', 'Duracion', 'Agente', 'URL_Audio'];
   const csvRows = [headers.join(',')];
 
   rowsData.forEach(r => {
     const row = [
       `"${(r.fecha || '').replace(/"/g, '""')}"`,
       `"${(r.nombre || '').replace(/"/g, '""')}"`,
+      `"${(r.numeroLlamado || '').replace(/"/g, '""')}"`,
+      `"${(r.tipoLlamada || '').replace(/"/g, '""')}"`,
+      `"${(r.observacion || '').replace(/"/g, '""')}"`,
       `"${(r.duracion || '').replace(/"/g, '""')}"`,
       `"${(r.agente || '').replace(/"/g, '""')}"`,
       `"${(r.audioUrl || '').replace(/"/g, '""')}"`
@@ -5678,12 +5847,14 @@ async function adminAddAudioToMonth() {
   const nombre = document.getElementById('admin-audio-nombre').value.trim();
   const duracion = document.getElementById('admin-audio-duracion').value.trim() || '01:00';
   const fechaCustom = document.getElementById('admin-audio-fecha').value.trim();
+  const numeroLlamado = document.getElementById('admin-audio-phone').value.trim();
+  const tipoLlamada = document.getElementById('admin-audio-call-type').value;
+  const observacion = document.getElementById('admin-audio-observation').value.trim();
   const fileInput = document.getElementById('admin-audio-file');
   const audioFile = fileInput && fileInput.files ? fileInput.files[0] : null;
 
-  if (!nombre) {
-    return showToast("Ingresa el nombre o referencia del audio", "⚠️");
-  }
+  if (!nombre) return showToast("Ingresa el nombre o referencia del audio", "⚠️");
+  if (!tipoLlamada) return showToast("Selecciona si fue llamada directa o WhatsApp", "⚠️");
 
   const btn = document.getElementById('btn-admin-add-audio');
   btn.disabled = true;
@@ -5705,6 +5876,9 @@ async function adminAddAudioToMonth() {
       nombre: nombre,
       duracion: duracion,
       agente: agente,
+      numeroLlamado: numeroLlamado,
+      tipoLlamada: tipoLlamada,
+      observacion: observacion,
       audioUrl: audioUrl,
       addedByAdmin: true,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -5712,6 +5886,9 @@ async function adminAddAudioToMonth() {
 
     document.getElementById('admin-audio-nombre').value = '';
     document.getElementById('admin-audio-fecha').value = '';
+    document.getElementById('admin-audio-phone').value = '';
+    document.getElementById('admin-audio-call-type').value = '';
+    document.getElementById('admin-audio-observation').value = '';
     if (fileInput) fileInput.value = '';
     showToast(`Audio "${nombre}" agregado para ${agente}`, "✅");
   } catch (e) {
